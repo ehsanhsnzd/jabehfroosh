@@ -1,0 +1,11 @@
+.idea
+.phpunit.cache
+build
+composer.lock
+package-lock.json
+coverage
+vendor
+node_modules
+
+public/themes/shop/visual-velocity/visual-velocity-vite.hot
+!public/themes/shop/visual-velocity
