@@ -123,41 +123,53 @@
 @pushOnce('scripts')
 <script>
 (() => {
-    if (window.__shamimVisualHeaderBound) return;
-    window.__shamimVisualHeaderBound = true;
+    if (window.__shamimPackHeaderBound) return;
+    window.__shamimPackHeaderBound = true;
+
     const get = id => document.getElementById(id);
     const setPanelState = (panel, open) => {
-        panel?.classList.toggle('open', open);
-        panel?.setAttribute('aria-hidden', open ? 'false' : 'true');
+        if (!panel) return;
+        panel.classList.toggle('open', open);
+        panel.setAttribute('aria-hidden', open ? 'false' : 'true');
     };
+
     function closeAll() {
-        ['menuDrawer', 'cartDrawer'].forEach(id => setPanelState(get(id), false));
-        setPanelState(get('searchLayer'), false);
+        ['menuDrawer', 'cartDrawer', 'searchLayer'].forEach(id => setPanelState(get(id), false));
         get('shBackdrop')?.classList.remove('show');
         document.body.classList.remove('sh-lock');
-        document.querySelectorAll('[data-open]').forEach(item => item.setAttribute('aria-expanded', 'false'));
+        document.querySelectorAll('#shHeader [data-open]').forEach(item => item.setAttribute('aria-expanded', 'false'));
     }
+
     function openPanel(type, button) {
+        const panelId = type === 'search' ? 'searchLayer' : `${type}Drawer`;
+        const panel = get(panelId);
         closeAll();
-        const panel = type === 'search' ? get('searchLayer') : get(type + 'Drawer');
         if (!panel) return;
+
         setPanelState(panel, true);
-        if (type !== 'search') get('shBackdrop')?.classList.add('show');
+        get('shBackdrop')?.classList.add('show');
         document.body.classList.add('sh-lock');
         button?.setAttribute('aria-expanded', 'true');
-        if (type === 'search') setTimeout(() => panel.querySelector('input')?.focus(), 80);
+
+        if (type === 'search') window.setTimeout(() => panel.querySelector('input')?.focus(), 120);
     }
+
     document.addEventListener('click', event => {
-        const opener = event.target.closest('[data-open]');
+        const opener = event.target.closest('#shHeader [data-open]');
         if (opener) {
             event.preventDefault();
+            event.stopPropagation();
             openPanel(opener.dataset.open, opener);
             return;
         }
+
         if (event.target.closest('[data-close]') || event.target.id === 'shBackdrop') closeAll();
     });
+
     document.addEventListener('keydown', event => event.key === 'Escape' && closeAll());
+    window.addEventListener('pageshow', closeAll);
     window.addEventListener('scroll', () => get('shHeader')?.classList.toggle('is-scrolled', scrollY > 20), { passive: true });
+
     let announcementIndex = 0;
     window.setInterval(() => {
         const track = get('announceTrack');
@@ -165,7 +177,9 @@
         announcementIndex = (announcementIndex + 1) % 3;
         track.style.transform = `translateY(${-36 * announcementIndex}px)`;
     }, 3500);
-    window.shamimUI = { open: openPanel, close: closeAll, isReady: true };
+
+    closeAll();
+    window.shamimPackUI = { open: openPanel, close: closeAll, isReady: true };
 })();
 </script>
 @endPushOnce
