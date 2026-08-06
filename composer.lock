@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1205b58113a9682502061a30fd5bdea7",
+    "content-hash": "806ac5501a553f4d77b0af689c317835",
     "packages": [
         {
             "name": "andreiio/blade-remix-icon",
@@ -498,6 +498,63 @@
                 "source": "https://github.com/bagistoplus/couleur/tree/v0.2.0"
             },
             "time": "2026-04-29T13:19:14+00:00"
+        },
+        {
+            "name": "bagistoplus/shamim-pack",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/BagistoPlus/ShamimPackVisual",
+                "reference": "bf92739631ed3974547426fadda058e898c105a7"
+            },
+            "require": {
+                "bagistoplus/visual": "^1.1",
+                "illuminate/contracts": "^10.0||^11.0||^12.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "bagisto/bagisto": "^2.2",
+                "larastan/larastan": "^2.9",
+                "laravel/pint": "^1.14",
+                "nunomaduro/collision": "^8.1.1||^7.10.0",
+                "orchestra/testbench": "^9.0.0||^8.22.0",
+                "pestphp/pest": "^2.34",
+                "pestphp/pest-plugin-arch": "^2.7",
+                "pestphp/pest-plugin-laravel": "^2.3",
+                "phpstan/extension-installer": "^1.3",
+                "phpstan/phpstan-deprecation-rules": "^1.1",
+                "phpstan/phpstan-phpunit": "^1.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "BagistoPlus\\ShamimPackVisual\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "BagistoPlus\\ShamimPackVisual\\": "src/"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Bagisto Visual Theme: ShamimPackVisual",
+            "keywords": [
+                "bagisto",
+                "bagisto visual",
+                "extension",
+                "theme"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "bagistoplus/shamim-visual",
@@ -15919,6 +15976,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "bagistoplus/shamim-pack": 20,
         "bagistoplus/shamim-visual": 20,
         "bagistoplus/visual-velocity": 20
     },

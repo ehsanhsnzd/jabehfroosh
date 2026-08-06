@@ -18,6 +18,7 @@
         "ext-pdo_mysql": "*",
         "ext-tokenizer": "*",
         "astrotomic/laravel-translatable": "^11.16",
+        "bagistoplus/shamim-pack": "@dev",
         "bagistoplus/shamim-visual": "@dev",
         "bagistoplus/visual": "^1.1",
         "bagistoplus/visual-velocity": "@dev",

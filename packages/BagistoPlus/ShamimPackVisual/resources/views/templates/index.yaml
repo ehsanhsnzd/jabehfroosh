@@ -1,0 +1,126 @@
+sections:
+  hero:
+    type: shamim-pack::furniture-hero
+    settings:
+      image: /themes/shop/shamim-pack/images/pack-hero.png
+      eyebrow: تولید و فروش تخصصی بسته‌بندی غذا
+      heading: بسته‌بندی حرفه‌ای برای طعم‌های ماندگار
+      description: جعبه و کاغذ استاندارد غذایی با طراحی کاربردی، قیمت همکاری و امکان چاپ اختصاصی برای رستوران، فست‌فود و کافه.
+      button_text: مشاهده محصولات ←
+      button_url: /search
+      price: قیمت ویژه سفارش عمده
+      badge_1_title: بسته‌بندی Food Grade
+      badge_1_text: ایمن و مناسب تماس با غذا
+      badge_2_title: چاپ اختصاصی برند
+      badge_2_text: از طراحی تا تولید
+  categories:
+    type: shamim-pack::furniture-categories
+    settings:
+      eyebrow: انتخاب سریع محصول
+      heading: محصولات بسته‌بندی شمیم پک
+      description: برای هر غذای محبوب، بسته‌بندی مناسب و حرفه‌ای
+    blocks:
+      burger:
+        type: category
+        settings: { image: "/themes/shop/shamim-pack/images/pack-burger.png", title: جعبه برگر, count: مدل کرافت و ایندربرد, url: "/search?query=جعبه برگر" }
+      sandwich:
+        type: category
+        settings: { image: "/themes/shop/shamim-pack/images/pack-sandwich.png", title: جعبه ساندویچ, count: ساده و چاپ اختصاصی, url: "/search?query=جعبه ساندویچ" }
+      chicken:
+        type: category
+        settings: { image: "/themes/shop/shamim-pack/images/pack-chicken.png", title: جعبه سوخاری, count: مقاوم در برابر چربی, url: "/search?query=جعبه سوخاری" }
+      fries:
+        type: category
+        settings: { image: "/themes/shop/shamim-pack/images/pack-fries.png", title: جعبه سیب زمینی, count: سایزبندی متنوع, url: "/search?query=جعبه سیب زمینی" }
+      kraft:
+        type: category
+        settings: { image: "/themes/shop/shamim-pack/images/pack-kraft.png", title: کاغذ کرافت, count: رولی و شیت غذایی, url: "/search?query=کاغذ کرافت" }
+    blocks_order: [burger, sandwich, chicken, fries, kraft]
+  products:
+    type: shamim-pack::furniture-products
+    settings:
+      eyebrow: انتخاب حرفه‌ای‌ها
+      heading: پرفروش‌ترین بسته‌بندی‌ها
+      limit: 10
+  story:
+    type: shamim-pack::furniture-story
+    settings:
+      image: /themes/shop/shamim-pack/images/pack-kraft.png
+      eyebrow: هویت برند شما روی بسته‌بندی
+      heading: چاپ اختصاصی، از ایده تا تحویل
+      description: تیم شمیم پک برای انتخاب جنس، ابعاد، ساختار و چاپ کنار شماست؛ تا بسته‌بندی نهایی هم از غذا محافظت کند و هم برندتان را حرفه‌ای‌تر نشان دهد.
+      button_text: دریافت مشاوره چاپ ←
+      button_url: /contact-us
+    blocks:
+      experience: { type: stat, settings: { value: ۱۰+, label: سال تجربه تولید } }
+      designs: { type: stat, settings: { value: ۲۵۰+, label: قالب و سایز آماده } }
+      customers: { type: stat, settings: { value: ۹۸٪, label: رضایت مشتریان عمده } }
+    blocks_order: [experience, designs, customers]
+  editorial:
+    type: shamim-pack::editorial-stories
+    settings:
+      eyebrow: انتخاب آگاهانه
+      heading: راهنمای بسته‌بندی حرفه‌ای
+    blocks:
+      material:
+        type: story
+        settings:
+          image: /themes/shop/shamim-pack/images/pack-burger.png
+          category: راهنمای انتخاب
+          title: برای غذای گرم چه جعبه‌ای مناسب‌تر است؟
+          link_text: مطالعه راهنما ←
+          url: /search
+      printing:
+        type: story
+        settings:
+          image: /themes/shop/shamim-pack/images/pack-kraft.png
+          category: چاپ و برندینگ
+          title: بسته‌بندی چگونه فروش دوباره را بیشتر می‌کند؟
+          link_text: مشاهده مطلب ←
+          url: /search
+    blocks_order: [material, printing]
+  quote:
+    type: shamim-pack::quote-banner
+    settings:
+      quote: مشتری قبل از چشیدن غذا، کیفیت برند شما را از بسته‌بندی آن قضاوت می‌کند.
+      cite: — شمیم پک، همراه برندهای خوش‌طعم
+  marquee:
+    type: shamim-pack::furniture-marquee
+    blocks:
+      foodgrade: { type: item, settings: { text: مواد اولیه Food Grade } }
+      custom: { type: item, settings: { text: چاپ اختصاصی برند } }
+      wholesale: { type: item, settings: { text: قیمت همکاری و عمده } }
+      sustainable: { type: item, settings: { text: محصولات کرافت پایدار } }
+      shipping: { type: item, settings: { text: ارسال به سراسر ایران } }
+    blocks_order: [foodgrade, custom, wholesale, sustainable, shipping]
+  brands:
+    type: shamim-pack::brand-strip
+    settings:
+      eyebrow: برای کسب‌وکار شما
+      heading: بسته‌بندی مناسب هر مدل فروش غذا
+    blocks:
+      restaurant: { type: brand, settings: { name: رستوران } }
+      fastfood: { type: brand, settings: { name: فست‌فود } }
+      cafe: { type: brand, settings: { name: کافه } }
+      catering: { type: brand, settings: { name: کترینگ } }
+      bakery: { type: brand, settings: { name: قنادی } }
+    blocks_order: [restaurant, fastfood, cafe, catering, bakery]
+  benefits:
+    type: shamim-pack::benefit-strip
+    blocks:
+      quality: { type: benefit, settings: { icon: "✓", title: کیفیت غذایی, description: مواد اولیه استاندارد } }
+      wholesale: { type: benefit, settings: { icon: "٪", title: قیمت عمده, description: مناسب خرید سازمانی } }
+      shipping: { type: benefit, settings: { icon: "🚚", title: ارسال سراسری, description: بسته‌بندی امن بار } }
+      support: { type: benefit, settings: { icon: "☎", title: مشاوره تخصصی, description: انتخاب جنس و ابعاد } }
+    blocks_order: [quality, wholesale, shipping, support]
+
+order:
+  - hero
+  - categories
+  - products
+  - story
+  - editorial
+  - quote
+  - marquee
+  - brands
+  - benefits

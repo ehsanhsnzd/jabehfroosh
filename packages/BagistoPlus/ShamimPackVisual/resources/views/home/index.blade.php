@@ -1,0 +1,14 @@
+@php
+    $channel = core()->getCurrentChannel();
+@endphp
+
+@push('meta')
+    <meta name="title" content="شمیم پک | فروش تخصصی بسته‌بندی غذا">
+    <meta name="description" content="فروشگاه فارسی جعبه غذا، کاغذ کرافت و بسته‌بندی اختصاصی شمیم پک">
+@endPush
+
+<x-shop::layouts :has-feature="false">
+    <x-slot:title>شمیم پک | فروش تخصصی بسته‌بندی غذا</x-slot>
+
+    @includeIf('shop::templates.index')
+</x-shop::layouts>
