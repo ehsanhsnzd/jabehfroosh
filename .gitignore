@@ -37,6 +37,7 @@ package-lock.json
 /lang/vendor
 skills-lock.json
 /storage/*.key
+/storage/bagisto-visual/
 /storage/dcc-data/
 /test-results
 /vendor

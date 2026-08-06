@@ -2,95 +2,57 @@
 
 namespace BagistoPlus\ShamimVisual\Sections;
 
-use BagistoPlus\Visual\Settings\Image;
 use BagistoPlus\Visual\Sections\BladeSection;
 use BagistoPlus\Visual\Sections\Block;
-use BagistoPlus\Visual\Settings\Checkbox;
-use BagistoPlus\Visual\Settings\ColorScheme;
-use BagistoPlus\Visual\Settings\Icon;
-use BagistoPlus\Visual\Settings\Number;
-use BagistoPlus\Visual\Settings\RichText;
+use BagistoPlus\Visual\Settings\Image;
+use BagistoPlus\Visual\Settings\Link;
 use BagistoPlus\Visual\Settings\Text;
 use BagistoPlus\Visual\Settings\Textarea;
-
-use function BagistoPlus\ShamimVisual\_t;
 
 class Header extends BladeSection
 {
     protected static string $view = 'shop::sections.header';
+    protected static string $wrapper = 'header#shHeader.sh-head';
+
+    protected static string $name = 'هدر و منوی شمیم';
+
+    protected static string $description = 'لوگو، جستجو، منوی اصلی، مگامنو و drawerهای موبایل';
 
     protected static array $disabledOn = ['*'];
 
     public static function settings(): array
     {
         return [
-            ColorScheme::make('scheme', _t('common.scheme_label'))
-                ->info(_t('common.scheme_info'))
+            Text::make('logo_text', 'نام برند')->default('شمیم هوم'),
+            Text::make('logo_subtitle', 'زیرعنوان لوگو')->default('SHAMIM LIVING'),
+            Text::make('logo_mark', 'حرف لوگو')->default('ش'),
+            Text::make('search_placeholder', 'متن جستجو')->default('جستجو میان بیش از ۱۲۰ محصول...'),
+            Text::make('sale_text', 'پیام فروش ویژه')->default('● فروش ویژه تا ۳۰٪ تخفیف'),
+            Text::make('drawer_title', 'عنوان منوی موبایل')->default('منوی فروشگاه'),
+            Text::make('cart_title', 'عنوان سبد خرید')->default('سبد خرید شما'),
+            Text::make('support_phone', 'تلفن پشتیبانی')->default('۰۲۱–۸۸۷۷۶۶۵۵'),
         ];
     }
 
     public static function blocks(): array
     {
         return [
-            Block::make('logo', _t('header.blocks.logo.name'))
-                ->limit(1)
-                ->settings([
-                    Image::make('logo', _t('header.blocks.logo.settings.logo_image_label'))
-                        ->default(asset('themes/shop/shamim-visual/images/logo.svg')),
-
-                    Text::make('logo_text', _t('header.blocks.logo.settings.logo_text_label'))
-                        ->default(_t('header.blocks.logo.settings.logo_text_default'))
-                        ->info(_t('header.blocks.logo.settings.logo_text_info')),
-                ]),
-
-            Block::make('navigation', _t('header.blocks.navigation.name'))
-                ->limit(1)
-                ->settings([
-                    Checkbox::make('show_in_sidebar', _t('header.blocks.navigation.settings.show_in_sidebar_label'))
-                        ->default(true),
-
-                    Number::make('number_of_items_in_header', _t('header.blocks.navigation.settings.number_of_items_in_header_label'))
-                        ->default(3)
-                        ->min(0)
-                        ->max(6),
-                ]),
-
-            Block::make('search', _t('header.blocks.search.name'))
-                ->limit(1)
-                ->settings([
-                    Icon::make('search_icon', _t('header.blocks.search.settings.search_icon_label'))
-                        ->default('lucide-search'),
-                ]),
-
-            Block::make('compare', _t('header.blocks.compare.name'))
-                ->limit(1)
-                ->settings([
-                    Icon::make('icon', _t('header.blocks.compare.settings.icon_label'))
-                ]),
-
-            Block::make('minicart', _t('header.blocks.minicart.name'))
-                ->limit(1)
-                ->settings([
-                    Icon::make('icon', _t('header.blocks.minicart.settings.icon_label')),
-
-                    Text::make('heading', _t('header.blocks.minicart.settings.heading_label'))
-                        ->default(__('shop::app.checkout.cart.mini-cart.shopping-cart')),
-
-                    RichText::make('description', _t('header.blocks.minicart.settings.description_label'))
-                        ->default(_t('header.blocks.minicart.settings.description_default')),
-                ]),
-
-            Block::make('user', _t('header.blocks.user.name'))
-                ->limit(1)
-                ->settings([
-                    Icon::make('icon', _t('header.blocks.user.settings.icon_label')),
-
-                    Text::make('guest_heading', _t('header.blocks.user.settings.guest_heading_label'))
-                        ->default(trans('shop::app.components.layouts.header.desktop.bottom.welcome-guest')),
-
-                    Textarea::make('guest_description', _t('header.blocks.user.settings.guest_description_label'))
-                        ->default(trans('shop::app.components.layouts.header.desktop.bottom.dropdown-text'))
-                ]),
+            Block::make('menu_link', 'لینک منو')->settings([
+                Text::make('title', 'عنوان')->default('خانه'),
+                Link::make('url', 'آدرس')->default('/'),
+            ]),
+            Block::make('mega_menu', 'مگامنو')->limit(1)->settings([
+                Text::make('title', 'عنوان منو')->default('مبلمان'),
+                Text::make('group_1_title', 'عنوان ستون اول')->default('فضای نشیمن'),
+                Textarea::make('group_1_links', 'لینک‌های ستون اول (هر خط: عنوان|آدرس)')->default("مبل راحتی|/search?query=مبل\nصندلی تک|/search?query=صندلی\nمیز جلو مبلی|/search?query=میز\nپاف و نیمکت|/search"),
+                Text::make('group_2_title', 'عنوان ستون دوم')->default('اتاق خواب'),
+                Textarea::make('group_2_links', 'لینک‌های ستون دوم')->default("تخت خواب|/search\nپاتختی|/search\nدراور|/search\nآینه|/search"),
+                Text::make('group_3_title', 'عنوان ستون سوم')->default('دکوراسیون'),
+                Textarea::make('group_3_links', 'لینک‌های ستون سوم')->default("نورپردازی|/search\nفرش و بافت|/search\nگلدان|/search\nاکسسوری|/search"),
+                Image::make('promo_image', 'تصویر مگامنو')->default(asset('themes/shop/shamim-visual/images/shamim-hero.png')),
+                Text::make('promo_text', 'متن تصویر')->default('کالکشن خانه آرام ←'),
+                Link::make('promo_url', 'لینک تصویر')->default('/search'),
+            ]),
         ];
     }
 
@@ -98,12 +60,12 @@ class Header extends BladeSection
     {
         return [
             'blocks' => [
-                ['type' => 'logo'],
-                ['type' => 'navigation'],
-                ['type' => 'search'],
-                ['type' => 'compare'],
-                ['type' => 'minicart'],
-                ['type' => 'user'],
+                ['type' => 'menu_link', 'settings' => ['title' => 'خانه', 'url' => '/']],
+                ['type' => 'mega_menu'],
+                ['type' => 'menu_link', 'settings' => ['title' => 'پرفروش‌ها', 'url' => '#bestsellers']],
+                ['type' => 'menu_link', 'settings' => ['title' => 'کالکشن جدید', 'url' => '#collections']],
+                ['type' => 'menu_link', 'settings' => ['title' => 'مجله دکوراسیون', 'url' => '/search']],
+                ['type' => 'menu_link', 'settings' => ['title' => 'درباره شمیم', 'url' => '#contact']],
             ],
         ];
     }

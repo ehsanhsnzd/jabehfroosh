@@ -1,136 +1,135 @@
 sections:
-  slideshow:
-    type: shamim-visual::slideshow
+  hero:
+    type: shamim-visual::furniture-hero
+    settings:
+      image: /themes/shop/shamim-visual/images/shamim-hero.png
+      eyebrow: کالکشن تازه ۱۴۰۵
+      heading: زیباییِ آرام برای خانه شما
+      description: مجموعه‌ای از مبلمان مدرن و دست‌ساز؛ ساخته‌شده با متریال طبیعی برای لحظه‌هایی که ماندگار می‌شوند.
+      button_text: مشاهده کالکشن ←
+      button_url: /search
+      price: از ۱۲,۹۰۰,۰۰۰ تومان
+      badge_1_title: مبل بوکله آرا
+      badge_1_text: از ۳۸ میلیون تومان
+      badge_2_title: میز گردو نوا
+      badge_2_text: ساخت دست ایران
+  categories:
+    type: shamim-visual::furniture-categories
+    settings:
+      eyebrow: انتخاب بر اساس فضا
+      heading: دسته‌بندی‌های محبوب
+      description: هر گوشه از خانه، داستان خودش را دارد
     blocks:
-      hero:
-        type: slide
+      sofa:
+        type: category
+        settings: { icon: "🛋️", title: مبل راحتی, count: ۲۴ محصول, url: "/search?query=مبل" }
+      chair:
+        type: category
+        settings: { icon: "🪑", title: صندلی, count: ۱۸ محصول, url: "/search?query=صندلی" }
+      table:
+        type: category
+        settings: { icon: "▱", title: میز پذیرایی, count: ۱۶ محصول, url: "/search?query=میز" }
+      bed:
+        type: category
+        settings: { icon: "🛏️", title: تخت خواب, count: ۱۲ محصول, url: "/search?query=تخت" }
+      decor:
+        type: category
+        settings: { icon: "🏺", title: دکور, count: ۳۱ محصول, url: "/search?query=دکور" }
+      light:
+        type: category
+        settings: { icon: "💡", title: نورپردازی, count: ۱۴ محصول, url: "/search?query=نور" }
+    blocks_order: [sofa, chair, table, bed, decor, light]
+  products:
+    type: shamim-visual::furniture-products
+    settings:
+      eyebrow: منتخب مشتریان
+      heading: پرفروش‌های این هفته
+      limit: 10
+  story:
+    type: shamim-visual::furniture-story
+    settings:
+      image: /themes/shop/shamim-visual/images/shamim-hero.png
+      eyebrow: طراحی مسئولانه
+      heading: زیبایی که نسل‌ها می‌ماند
+      description: از انتخاب چوب تا آخرین دوخت، هر قطعه با دقت و احترام به طبیعت ساخته می‌شود. طراحی ساده، کیفیت بالا و آسایشی که هر روز حس می‌کنید.
+      button_text: داستان محصولات ما
+      button_url: /search
+    blocks:
+      warranty:
+        type: stat
+        settings: { value: ۱۰ سال, label: ضمانت سازه }
+      designs:
+        type: stat
+        settings: { value: ۱۲۰+, label: طرح اختصاصی }
+      satisfaction:
+        type: stat
+        settings: { value: ۹۶٪, label: رضایت مشتریان }
+    blocks_order: [warranty, designs, satisfaction]
+  editorial:
+    type: shamim-visual::editorial-stories
+    settings:
+      eyebrow: ایده‌هایی برای خانه
+      heading: داستان‌های شمیم
+    blocks:
+      small_space:
+        type: story
         settings:
           image: /themes/shop/shamim-visual/images/shamim-hero.png
-          heading: خانه‌ای که دوستش دارید
-          heading_size: 2xlarge
-          subheading: مجموعه مبلمان شمیم؛ طراحی ماندگار برای زندگی امروز
-          subheading_size: large
-          button_text: مشاهده مجموعه
-          button_link: /
-          content_placement: start
-    blocks_order:
-      - hero
-  home-offer:
-    type: shamim-visual::promo-banner
+          category: راهنمای چیدمان
+          title: چطور مبل مناسب فضای کوچک انتخاب کنیم؟
+          link_text: مطالعه مقاله ←
+          url: /
+      materials:
+        type: story
+        settings:
+          image: /themes/shop/shamim-visual/images/shamim-hero.png
+          category: پشت صحنه طراحی
+          title: از چوب خام تا یک قطعه ماندگار
+          link_text: مشاهده داستان ←
+          url: /
+    blocks_order: [small_space, materials]
+  quote:
+    type: shamim-visual::quote-banner
     settings:
-      text: ارسال رایگان برای سفارش‌های منتخب مبلمان شمیم
-      link: /
-  categories:
-    type: shamim-visual::category-carousel
-  new-products:
-    type: shamim-visual::product-carousel
-  top-collection:
-    type: shamim-visual::collection-tiles
-    settings:
-      heading: مجموعه‌های تازه برای خانه شما
+      quote: خانه فقط مجموعه‌ای از اشیا نیست؛ روایتی است از چیزهایی که دوست داریم و لحظه‌هایی که می‌خواهیم نگه داریم.
+      cite: — استودیوی طراحی شمیم
+  marquee:
+    type: shamim-visual::furniture-marquee
     blocks:
-      tile1:
-        type: tile
-        settings:
-          image: /themes/shop/shamim-visual/images/top-collection/1.webp
-      tile2:
-        type: tile
-        settings:
-          image: /themes/shop/shamim-visual/images/top-collection/2.webp
-      tile3:
-        type: tile
-        settings:
-          image: /themes/shop/shamim-visual/images/top-collection/3.webp
-      tile4:
-        type: tile
-        settings:
-          image: /themes/shop/shamim-visual/images/top-collection/4.webp
-      tile5:
-        type: tile
-        settings:
-          image: /themes/shop/shamim-visual/images/top-collection/5.webp
-      tile6:
-        type: tile
-        settings:
-          image: /themes/shop/shamim-visual/images/top-collection/6.webp
-    blocks_order:
-      - tile1
-      - tile2
-      - tile3
-      - tile4
-      - tile5
-      - tile6
-  bold-collection:
-    type: shamim-visual::text-with-image
+      iranian: { type: item, settings: { text: طراحی ایرانی } }
+      sustainable: { type: item, settings: { text: متریال پایدار } }
+      warranty: { type: item, settings: { text: ده سال ضمانت } }
+      custom: { type: item, settings: { text: ساخت سفارشی } }
+      shipping: { type: item, settings: { text: ارسال سراسر ایران } }
+    blocks_order: [iranian, sustainable, warranty, custom, shipping]
+  brands:
+    type: shamim-visual::brand-strip
     settings:
-      image: themes/shop/shamim-visual/images/bold-collection/image1.webp
+      eyebrow: همراه بهترین‌ها
+      heading: برندهای منتخب
     blocks:
-      heading:
-        type: heading
-        settings:
-          text: آرامش و زیبایی در هر گوشه خانه
-      content:
-        type: body
-        settings:
-          content: مبلمان شمیم با ترکیب طراحی ماندگار، متریال باکیفیت و جزئیات دقیق، فضایی گرم و شخصی برای خانه شما می‌سازد.
-      cta:
-        type: button
-        settings:
-          text: مشاهده مجموعه‌ها
-  featured-products:
-    type: shamim-visual::product-carousel
-    settings:
-      heading: محصولات منتخب
-      filter_featured: true
-  game-collection:
-    type: shamim-visual::collection-tiles
-    settings:
-      heading: مجموعه‌های تازه برای خانه شما
-      columns_mobile: 1
-      columns_desktop: 2
-      text_alignment_horizontal: start
+      nova: { type: brand, settings: { name: NOVA } }
+      forma: { type: brand, settings: { name: FORMA } }
+      living: { type: brand, settings: { name: LIVING } }
+      arco: { type: brand, settings: { name: ARCO } }
+      madera: { type: brand, settings: { name: MADERA } }
+    blocks_order: [nova, forma, living, arco, madera]
+  benefits:
+    type: shamim-visual::benefit-strip
     blocks:
-      tile1:
-        type: tile
-        settings:
-          image: /themes/shop/shamim-visual/images/game-collection/1.webp
-      tile2:
-        type: tile
-        settings:
-          image: /themes/shop/shamim-visual/images/game-collection/2.webp
-  all-products:
-    type: shamim-visual::product-carousel
-    settings:
-      heading: همه محصولات
-      filter_new: false
-      filter_featured: false
-  bold-collection-2:
-    type: shamim-visual::text-with-image
-    settings:
-      image_position: right
-      image: themes/shop/shamim-visual/images/bold-collection/image2.webp
-    blocks:
-      heading:
-        type: heading
-        settings:
-          text: آرامش و زیبایی در هر گوشه خانه
-      content:
-        type: body
-        settings:
-          content: مبلمان شمیم با ترکیب طراحی ماندگار، متریال باکیفیت و جزئیات دقیق، فضایی گرم و شخصی برای خانه شما می‌سازد.
-      cta:
-        type: button
-        settings:
-          text: مشاهده مجموعه‌ها
+      shipping: { type: benefit, settings: { icon: "🚚", title: ارسال مطمئن, description: به سراسر ایران } }
+      returns: { type: benefit, settings: { icon: "♻", title: ۷ روز بازگشت, description: خرید با خیال راحت } }
+      original: { type: benefit, settings: { icon: "◇", title: ضمانت اصالت, description: تضمین کیفیت } }
+      support: { type: benefit, settings: { icon: "☏", title: مشاوره تخصصی, description: پیش و پس از خرید } }
+    blocks_order: [shipping, returns, original, support]
 
 order:
-  - slideshow
-  - home-offer
+  - hero
   - categories
-  - new-products
-  - top-collection
-  - bold-collection
-  - featured-products
-  - game-collection
-  - all-products
-  - bold-collection-2
+  - products
+  - story
+  - editorial
+  - quote
+  - marquee
+  - brands
+  - benefits

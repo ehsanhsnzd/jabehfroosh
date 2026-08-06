@@ -3,57 +3,32 @@
 namespace BagistoPlus\ShamimVisual\Sections;
 
 use BagistoPlus\Visual\Sections\BladeSection;
-use BagistoPlus\Visual\Settings\Checkbox;
-use BagistoPlus\Visual\Settings\ColorScheme;
 use BagistoPlus\Visual\Settings\Link;
-use BagistoPlus\Visual\Settings\Select;
 use BagistoPlus\Visual\Settings\Text;
-
-use function BagistoPlus\ShamimVisual\_t;
 
 class TopBar extends BladeSection
 {
     protected static string $view = 'shop::sections.top-bar';
+    protected static string $wrapper = 'div.sh-announce';
+
+    protected static string $name = 'نوار اعلان شمیم';
+
+    protected static string $description = 'پیام‌های چرخشی و لینک‌های بالای سایت';
 
     protected static array $disabledOn = ['*'];
 
     public static function settings(): array
     {
         return [
-            Checkbox::make('show_announcement', _t('top-bar.settings.show_announcement_label'))
-                ->default(true),
-
-            Text::make('announcement', _t('top-bar.settings.announcement_label'))
-                ->default(_t('top-bar.settings.announcement_default')),
-
-            Link::make('announcement_link', _t('top-bar.settings.announcement_link_label'))
-                ->default('/'),
-
-            Text::make('announcement_link_text', _t('top-bar.settings.announcement_link_text_label'))
-                ->default(_t('top-bar.settings.announcement_link_text_default')),
-
-            Checkbox::make('show_currency_switcher', _t('top-bar.settings.show_currency_switcher_label'))
-                ->default(true),
-
-            Checkbox::make('show_locale_switcher', _t('top-bar.settings.show_locale_switcher_label'))
-                ->default(true),
-
-            Select::make('variant', _t('top-bar.settings.variant_label'))
-                ->options([
-                    'default'   => 'Default',
-                    'primary'   => 'Primary',
-                    'secondary' => 'Secondary',
-                    'accent'    => 'Accent',
-                ])->default('default'),
-
-            ColorScheme::make('scheme', _t('common.scheme_label'))
-                ->info(_t('common.scheme_info'))
+            Text::make('message_1', 'پیام اول')->default('ارسال رایگان برای خریدهای بالای ۳ میلیون تومان'),
+            Text::make('message_2', 'پیام دوم')->default('۷ روز ضمانت بازگشت بدون قید و شرط'),
+            Text::make('message_3', 'پیام سوم')->default('مشاوره رایگان چیدمان با کارشناسان شمیم'),
+            Text::make('link_1_text', 'عنوان لینک اول')->default('شعب فروشگاه'),
+            Link::make('link_1_url', 'آدرس لینک اول')->default('/'),
+            Text::make('link_2_text', 'عنوان لینک دوم')->default('پیگیری سفارش'),
+            Link::make('link_2_url', 'آدرس لینک دوم')->default('/'),
+            Text::make('link_3_text', 'عنوان لینک سوم')->default('سؤالات متداول'),
+            Link::make('link_3_url', 'آدرس لینک سوم')->default('/'),
         ];
-    }
-
-    public static function blocks(): array
-    {
-        // section blocks
-        return [];
     }
 }

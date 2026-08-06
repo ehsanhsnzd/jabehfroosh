@@ -59,7 +59,7 @@
 
     </head>
 
-    <body class="bg-background text-on-background">
+    <body class="bg-background text-on-background shamim-visual-theme">
         {!! view_render_event('bagisto.shop.layout.body.before') !!}
 
         <a href="#main" class="skip-to-main-content-link">
@@ -71,7 +71,6 @@
             @if ($hasHeader)
                 <visual:section name="shamim-visual::top-bar" />
                 <visual:section name="shamim-visual::header" />
-                <visual:section name="shamim-visual::mobile-header" />
             @endif
 
             @if (core()->getConfigData('general.gdpr.settings.enabled') && core()->getConfigData('general.gdpr.cookie.enabled'))
@@ -91,7 +90,6 @@
 
             <!-- Page Services Blade Component -->
             @if ($hasFeature)
-                <visual:section name="shamim-visual::feature-icons" />
             @endif
 
             <!-- Page Footer Blade Component -->

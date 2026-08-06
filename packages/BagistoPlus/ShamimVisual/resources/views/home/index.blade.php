@@ -1,21 +1,14 @@
 @php
-  $channel = core()->getCurrentChannel();
+    $channel = core()->getCurrentChannel();
 @endphp
 
-<!-- SEO Meta Content -->
 @push('meta')
-  <meta name="title" content="{{ $channel->home_seo['meta_title'] ?? '' }}" />
-
-  <meta name="description" content="{{ $channel->home_seo['meta_description'] ?? '' }}" />
-
-  <meta name="keywords" content="{{ $channel->home_seo['meta_keywords'] ?? '' }}" />
+    <meta name="title" content="شمیم هوم | مبلمان مدرن برای خانه شما">
+    <meta name="description" content="فروشگاه مبلمان و دکوراسیون شمیم هوم">
 @endPush
 
-<x-shop::layouts>
-  <!-- Page Title -->
-  <x-slot:title>
-    {{ $channel->home_seo['meta_title'] ?? '' }}
-  </x-slot>
+<x-shop::layouts :has-feature="false">
+    <x-slot:title>شمیم هوم | مبلمان مدرن برای خانه شما</x-slot>
 
-  @includeIf('shop::templates.index')
+    @includeIf('shop::templates.index')
 </x-shop::layouts>

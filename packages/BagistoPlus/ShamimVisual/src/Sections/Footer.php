@@ -4,134 +4,66 @@ namespace BagistoPlus\ShamimVisual\Sections;
 
 use BagistoPlus\Visual\Sections\BladeSection;
 use BagistoPlus\Visual\Sections\Block;
-use BagistoPlus\Visual\Settings\Checkbox;
-use BagistoPlus\Visual\Settings\ColorScheme;
 use BagistoPlus\Visual\Settings\Link;
-use BagistoPlus\Visual\Settings\RichText;
 use BagistoPlus\Visual\Settings\Text;
-use Webkul\Theme\Repositories\ThemeCustomizationRepository;
-
-use function BagistoPlus\ShamimVisual\_t;
+use BagistoPlus\Visual\Settings\Textarea;
 
 class Footer extends BladeSection
 {
     protected static string $view = 'shop::sections.footer';
+    protected static string $wrapper = 'footer#contact.foot';
+
+    protected static string $name = 'فوتر شمیم';
+
+    protected static string $description = 'خبرنامه، معرفی برند، ستون لینک‌ها و اطلاعات تماس';
 
     protected static array $disabledOn = ['*'];
-
-    protected static string $wrapper = 'footer';
-
-    public function getLinks()
-    {
-        $groups = collect();
-        $currentGroup = ['group' => '', 'links' => collect()];
-
-        collect($this->section->blocks)->each(function ($block) use (&$groups, &$currentGroup) {
-            if ($block->type === 'group') {
-                $currentGroup = [
-                    'group' => $block->settings->title ?? '',
-                    'links' => collect(),
-                ];
-
-                $groups->push($currentGroup);
-            }
-
-            if ($block->type === 'link' && $currentGroup) {
-                $currentGroup['links']->push([
-                    'text' => $block->settings->text,
-                    'url' => $block->settings->link
-                ]);
-            }
-        });
-
-        if ($groups->isEmpty() && $currentGroup['links']->isNotEmpty()) {
-            $groups->push($currentGroup);
-        }
-
-        $groups = $groups->filter(fn($group) => $group['links']->isNotEmpty());
-
-        return $groups->isEmpty() ? $this->getDefaultLinks() : $groups;
-    }
-
-    protected function getDefaultLinks()
-    {
-        $themeCustomizationRepository = app(ThemeCustomizationRepository::class);
-        $channel = core()->getCurrentChannel();
-
-        $footerLinks = $themeCustomizationRepository->findOneWhere([
-            'type'       => 'footer_links',
-            'status'     => 1,
-            'channel_id' => core()->getCurrentChannel()->id,
-            'theme_code' => 'default',
-        ]);
-
-        if (!$footerLinks) {
-            return [];
-        }
-
-        return collect($footerLinks->options)->map(function ($links, $group) {
-            return [
-                'group' => $group,
-                'links' => collect($links)
-                    ->sortBy('sort_order')
-                    ->map(fn($link) => ['url' => $this->appendCurrentQueryString($link['url']), 'text' => $link['title']])
-            ];
-        });
-    }
-
-    private function appendCurrentQueryString(string $url): string
-    {
-        $currentQuery = request()->query();
-
-        $parsedUrl = parse_url($url);
-        parse_str($parsedUrl['query'] ?? '', $targetQuery);
-
-        $mergedQuery = array_merge($targetQuery, $currentQuery);
-
-        $base = strtok($url, '?');
-        $finalQuery = http_build_query($mergedQuery);
-
-        return $finalQuery ? $base . '?' . $finalQuery : $base;
-    }
-
-    public static function name(): string
-    {
-        return _t('footer.name');
-    }
-
-    public static function description(): string
-    {
-        return _t('footer.description');
-    }
 
     public static function settings(): array
     {
         return [
-            RichText::make('copyright', _t('footer.settings.copyright_label'))
-                ->default(_t('footer.settings.copyright_default')),
-
-            ColorScheme::make('scheme', _t('common.scheme_label'))
-                ->info(_t('common.scheme_info'))
+            Text::make('newsletter_label', 'برچسب خبرنامه')->default('نامه‌های شمیم'),
+            Text::make('newsletter_title', 'عنوان خبرنامه')->default('تازه‌های طراحی را از دست ندهید'),
+            Text::make('newsletter_placeholder', 'متن فیلد ایمیل')->default('آدرس ایمیل شما'),
+            Text::make('newsletter_button', 'متن دکمه')->default('عضویت ←'),
+            Text::make('brand_name', 'نام برند')->default('شمیم هوم'),
+            Textarea::make('brand_description', 'توضیح برند')->default('مبلمانی برای زندگی امروز؛ طراحی ماندگار، متریال اصیل و جزئیاتی که خانه را به جای دلخواه شما تبدیل می‌کند.'),
+            Text::make('contact_title', 'عنوان تماس')->default('با ما در تماس باشید'),
+            Textarea::make('address', 'آدرس و ساعات کاری')->default("تهران، خیابان ولیعصر\nشنبه تا چهارشنبه، ۹ تا ۱۸"),
+            Text::make('phone', 'تلفن')->default('۰۲۱–۸۸۷۷۶۶۵۵'),
+            Text::make('email', 'ایمیل')->default('hello@shamimhome.ir'),
+            Text::make('copyright', 'کپی‌رایت')->default('شمیم هوم — تمامی حقوق محفوظ است.'),
+            Text::make('legal_text', 'متن لینک‌های قانونی')->default('حریم خصوصی · قوانین فروشگاه · پرداخت امن'),
         ];
     }
 
     public static function blocks(): array
     {
         return [
-            Block::make('group', _t('footer.blocks.group.name'))
-                ->settings([
-                    Text::make('title', _t('footer.blocks.group.settings.title_label'))
-                        ->default(_t('footer.blocks.group.settings.title_default')),
-                ]),
+            Block::make('link_group', 'ستون لینک‌ها')->settings([
+                Text::make('title', 'عنوان ستون')->default('فروشگاه'),
+                Textarea::make('links', 'لینک‌ها (هر خط: عنوان|آدرس)')->default("همه محصولات|/search\nمبلمان نشیمن|#categories\nاتاق خواب|#categories\nکالکشن جدید|#collections\nفروش ویژه|#bestsellers"),
+            ]),
+            Block::make('social_link', 'شبکه اجتماعی')->settings([
+                Text::make('label', 'عنوان کوتاه')->default('in'),
+                Link::make('url', 'آدرس')->default('/'),
+            ]),
+        ];
+    }
 
-            Block::make('link', _t('footer.blocks.link.name'))
-                ->settings([
-                    Text::make('text', _t('footer.blocks.link.settings.text_label'))
-                        ->default(_t('footer.blocks.link.settings.text_default')),
-
-                    Link::make('link', _t('footer.blocks.link.settings.link_label'))
-                        ->default('/'),
-                ]),
+    public static function default(): array
+    {
+        return [
+            'blocks' => [
+                ['type' => 'link_group'],
+                ['type' => 'link_group', 'settings' => [
+                    'title' => 'راهنمای مشتریان',
+                    'links' => "ارسال و تحویل|/\nشرایط بازگشت|/\nضمانت محصولات|/\nراهنمای نگهداری|/\nسؤالات متداول|/",
+                ]],
+                ['type' => 'social_link', 'settings' => ['label' => 'in', 'url' => '/']],
+                ['type' => 'social_link', 'settings' => ['label' => '●', 'url' => '/']],
+                ['type' => 'social_link', 'settings' => ['label' => '▶', 'url' => '/']],
+            ],
         ];
     }
 }
