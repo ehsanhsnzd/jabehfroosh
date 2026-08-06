@@ -1,0 +1,136 @@
+sections:
+  slideshow:
+    type: shamim-visual::slideshow
+    blocks:
+      hero:
+        type: slide
+        settings:
+          image: /themes/shop/shamim-visual/images/shamim-hero.png
+          heading: خانه‌ای که دوستش دارید
+          heading_size: 2xlarge
+          subheading: مجموعه مبلمان شمیم؛ طراحی ماندگار برای زندگی امروز
+          subheading_size: large
+          button_text: مشاهده مجموعه
+          button_link: /
+          content_placement: start
+    blocks_order:
+      - hero
+  home-offer:
+    type: shamim-visual::promo-banner
+    settings:
+      text: ارسال رایگان برای سفارش‌های منتخب مبلمان شمیم
+      link: /
+  categories:
+    type: shamim-visual::category-carousel
+  new-products:
+    type: shamim-visual::product-carousel
+  top-collection:
+    type: shamim-visual::collection-tiles
+    settings:
+      heading: مجموعه‌های تازه برای خانه شما
+    blocks:
+      tile1:
+        type: tile
+        settings:
+          image: /themes/shop/shamim-visual/images/top-collection/1.webp
+      tile2:
+        type: tile
+        settings:
+          image: /themes/shop/shamim-visual/images/top-collection/2.webp
+      tile3:
+        type: tile
+        settings:
+          image: /themes/shop/shamim-visual/images/top-collection/3.webp
+      tile4:
+        type: tile
+        settings:
+          image: /themes/shop/shamim-visual/images/top-collection/4.webp
+      tile5:
+        type: tile
+        settings:
+          image: /themes/shop/shamim-visual/images/top-collection/5.webp
+      tile6:
+        type: tile
+        settings:
+          image: /themes/shop/shamim-visual/images/top-collection/6.webp
+    blocks_order:
+      - tile1
+      - tile2
+      - tile3
+      - tile4
+      - tile5
+      - tile6
+  bold-collection:
+    type: shamim-visual::text-with-image
+    settings:
+      image: themes/shop/shamim-visual/images/bold-collection/image1.webp
+    blocks:
+      heading:
+        type: heading
+        settings:
+          text: آرامش و زیبایی در هر گوشه خانه
+      content:
+        type: body
+        settings:
+          content: مبلمان شمیم با ترکیب طراحی ماندگار، متریال باکیفیت و جزئیات دقیق، فضایی گرم و شخصی برای خانه شما می‌سازد.
+      cta:
+        type: button
+        settings:
+          text: مشاهده مجموعه‌ها
+  featured-products:
+    type: shamim-visual::product-carousel
+    settings:
+      heading: محصولات منتخب
+      filter_featured: true
+  game-collection:
+    type: shamim-visual::collection-tiles
+    settings:
+      heading: مجموعه‌های تازه برای خانه شما
+      columns_mobile: 1
+      columns_desktop: 2
+      text_alignment_horizontal: start
+    blocks:
+      tile1:
+        type: tile
+        settings:
+          image: /themes/shop/shamim-visual/images/game-collection/1.webp
+      tile2:
+        type: tile
+        settings:
+          image: /themes/shop/shamim-visual/images/game-collection/2.webp
+  all-products:
+    type: shamim-visual::product-carousel
+    settings:
+      heading: همه محصولات
+      filter_new: false
+      filter_featured: false
+  bold-collection-2:
+    type: shamim-visual::text-with-image
+    settings:
+      image_position: right
+      image: themes/shop/shamim-visual/images/bold-collection/image2.webp
+    blocks:
+      heading:
+        type: heading
+        settings:
+          text: آرامش و زیبایی در هر گوشه خانه
+      content:
+        type: body
+        settings:
+          content: مبلمان شمیم با ترکیب طراحی ماندگار، متریال باکیفیت و جزئیات دقیق، فضایی گرم و شخصی برای خانه شما می‌سازد.
+      cta:
+        type: button
+        settings:
+          text: مشاهده مجموعه‌ها
+
+order:
+  - slideshow
+  - home-offer
+  - categories
+  - new-products
+  - top-collection
+  - bold-collection
+  - featured-products
+  - game-collection
+  - all-products
+  - bold-collection-2

@@ -1,0 +1,11 @@
+.idea
+.phpunit.cache
+build
+composer.lock
+package-lock.json
+coverage
+vendor
+node_modules
+
+public/themes/shop/shamim-visual/shamim-visual-vite.hot
+!public/themes/shop/shamim-visual
