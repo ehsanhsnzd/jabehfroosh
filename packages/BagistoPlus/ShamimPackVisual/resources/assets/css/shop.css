@@ -647,6 +647,22 @@ img.lazy {
     .reveal, .cat, .hero-bg, .sh-drawer, .search-layer { transition: none !important; animation: none !important; }
 }
 /* Mobile containment and RTL navigation */
+/* Fixed panels must use the viewport, not the filtered sticky header. */
+body.sh-lock .sh-head {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+.sh-drawer,
+.sh-backdrop,
+.search-layer {
+    max-height: 100dvh;
+}
+
+.sh-drawer,
+.search-layer {
+    height: 100dvh;
+}
 html,
 body,
 #app {
