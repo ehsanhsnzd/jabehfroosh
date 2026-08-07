@@ -737,3 +737,11 @@ body,
 @supports not (overflow: clip) {
     html, body, #app { overflow-x: hidden; }
 }
+
+/* Floating hero badges overlap the editable copy on phone/tablet previews. */
+@media (max-width: 900px) {
+    .hero .hero-deco,
+    .hero .hero-scroll {
+        display: none !important;
+    }
+}
