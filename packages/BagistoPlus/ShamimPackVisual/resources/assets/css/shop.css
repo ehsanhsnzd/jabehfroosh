@@ -745,3 +745,13 @@ body,
         display: none !important;
     }
 }
+
+/* Keep catalog drawer controls below the sticky storefront header on mobile. */
+@media (max-width: 767px) {
+    .sh-mobile-catalog-drawer > .fixed.overflow-hidden {
+        top: 72px !important;
+        bottom: 0 !important;
+        height: calc(100dvh - 72px) !important;
+        max-height: calc(100dvh - 72px) !important;
+    }
+}

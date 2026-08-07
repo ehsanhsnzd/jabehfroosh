@@ -17,6 +17,7 @@
     <x-shop::drawer
         position="left"
         width="100%"
+        class="sh-mobile-catalog-drawer"
         ::is-active="isDrawerActive.filter"
     >
         <!-- Drawer Toggler -->
@@ -58,6 +59,7 @@
     <x-shop::drawer
         position="bottom"
         width="100%"
+        class="sh-mobile-catalog-drawer"
         ::is-active="isDrawerActive.toolbar"
     >
         <!-- Drawer Toggler -->
