@@ -646,3 +646,78 @@ img.lazy {
 @media (prefers-reduced-motion: reduce) {
     .reveal, .cat, .hero-bg, .sh-drawer, .search-layer { transition: none !important; animation: none !important; }
 }
+/* Mobile containment and RTL navigation */
+html,
+body,
+#app {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+}
+
+.skip-to-main-content-link {
+    position: fixed !important;
+    top: -100px !important;
+    right: 16px !important;
+    left: auto !important;
+}
+.skip-to-main-content-link:focus { top: 16px !important; }
+
+.sh-product-rail {
+    width: 100%;
+    max-width: 100%;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: inline proximity;
+    touch-action: pan-x;
+}
+.sh-product-rail > * { scroll-snap-align: start; }
+
+@media (max-width: 980px) {
+    .head-main { position: relative; width: calc(100% - 30px); }
+    .mobile-menu-btn,
+    .head-actions,
+    .drawer-close { position: relative; z-index: 2; touch-action: manipulation; }
+
+    .sh-drawer {
+        right: 0;
+        left: auto;
+        transform: translateX(105%);
+        box-shadow: -20px 0 60px #0002;
+    }
+    .sh-drawer.open { transform: translateX(0); }
+
+    .products,
+    .products .sc,
+    .products .container,
+    .products v-products-carousel {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+    .products .container { padding-inline: 16px !important; }
+    .products .sh-title { padding-inline: 15px; }
+    .products .sh-product-rail { margin-top: 18px; gap: 14px; }
+
+    #main img,
+    #main video,
+    #main iframe { max-width: 100%; }
+
+    #main .w-screen { max-width: 100vw; }
+    #main .container { max-width: 100%; }
+}
+
+@media (max-width: 480px) {
+    .hero h1 { font-size: clamp(30px, 9vw, 38px); }
+    .hero p { font-size: 14px; line-height: 1.9; }
+    .copyhero { width: 100%; padding-inline: 4px; }
+    .pack-cats { gap: 10px; }
+    .sh-product-rail > * { min-width: min(78vw, 260px) !important; }
+
+    #main .primary-button,
+    #main .secondary-button { max-width: 100%; }
+}
+
+@supports not (overflow: clip) {
+    html, body, #app { overflow-x: hidden; }
+}
