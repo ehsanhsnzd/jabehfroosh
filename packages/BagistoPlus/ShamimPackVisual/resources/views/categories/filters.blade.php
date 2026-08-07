@@ -11,7 +11,7 @@
 
 <!-- Mobile Filters Navigation -->
 <div v-if="isMobile"
-    class="border-on-background/8 fixed bottom-0 z-10 grid w-full max-w-full grid-cols-[1fr_auto_1fr] items-center justify-items-center border-t bg-background px-5 ltr:left-0 rtl:right-0"
+    class="border-on-background/8 sticky top-[72px] z-[80] mb-5 grid w-full max-w-full grid-cols-[1fr_auto_1fr] items-center justify-items-center rounded-xl border bg-background px-5 shadow-sm"
 >
     <!-- Filter Drawer -->
     <x-shop::drawer

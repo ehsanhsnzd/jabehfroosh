@@ -62,7 +62,7 @@
             id="v-category-template"
         >
             <div class="container px-[60px] max-lg:px-8 max-md:px-4">
-                <div class="flex items-start gap-10 max-lg:gap-5 md:mt-10">
+                <div class="flex items-start gap-10 max-lg:gap-5 max-md:flex-col max-md:gap-0 md:mt-10">
                     <!-- Product Listing Filters -->
                     @include('shop::categories.filters')
 
