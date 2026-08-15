@@ -8,6 +8,7 @@ RSYNC ?= rsync
 
 HOST ?= 127.0.0.1
 PORT ?= 8010
+DB_CONTAINER ?= shamim-mysql
 FILTER ?=
 
 ARTISAN := $(PHP) artisan
@@ -20,7 +21,7 @@ SHOP_DIR := packages/Webkul/Shop
 ADMIN_DIR := packages/Webkul/Admin
 FRONTEND_DIRS := $(THEME_DIR) $(SHAMIM_VISUAL_DIR) $(VELOCITY_DIR) $(SHOP_DIR) $(ADMIN_DIR)
 
-.PHONY: help install build dev clear up npm-install npm-build npm-dev refresh rebuild theme-refresh theme-rebuild theme-fast theme-install theme-dev theme-build theme-sync theme-publish \
+.PHONY: help install build dev clear up db-start db-stop db-status npm-install npm-build npm-dev refresh rebuild theme-refresh theme-rebuild theme-fast theme-install theme-dev theme-build theme-sync theme-publish \
 	frontend-install frontend-build frontend-dev shop-build shop-dev admin-build admin-dev visual-build velocity-build \
 	serve cache-clear cache-build cache-refresh view-clear view-cache config-clear route-clear event-clear \
 	composer-install composer-dump migrate migrate-status seed storage-link queue schedule tinker routes about logs \
@@ -47,7 +48,19 @@ dev: theme-dev ## Alias: start Shamim Pack Vite watch/HMR
 
 clear: cache-clear ## Alias: clear all Laravel caches
 
-up: serve ## Alias: run the Laravel development server
+up: ## Start the Shamim database, then run Laravel on HOST/PORT
+	@$(MAKE) --no-print-directory db-start
+	@$(MAKE) --no-print-directory serve
+
+db-start: ## Start the Shamim MySQL Docker container
+	docker start "$(DB_CONTAINER)"
+
+db-stop: ## Stop the Shamim MySQL Docker container
+	docker stop "$(DB_CONTAINER)"
+
+db-status: ## Show the Shamim MySQL Docker container status
+	docker ps -a --filter "name=$(DB_CONTAINER)" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
 
 npm-install: theme-install ## Alias: install Shamim Pack npm dependencies
 
