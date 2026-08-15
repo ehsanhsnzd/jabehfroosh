@@ -9,6 +9,43 @@
     $customAttributeValues = $productViewHelper->getAdditionalData($product);
 
     $attributeData = collect($customAttributeValues)->filter(fn($item) => !empty($item['value']));
+
+    $colorAttribute = app(\Webkul\Attribute\Repositories\AttributeRepository::class)
+        ->findOneByField('code', 'color');
+
+    $colorAttributeValue = $colorAttribute
+        ? $product->attribute_values->firstWhere('attribute_id', $colorAttribute->id)
+        : null;
+
+    $colorOption = $colorAttributeValue?->integer_value
+        ? app(\Webkul\Attribute\Repositories\AttributeOptionRepository::class)->find($colorAttributeValue->integer_value)
+        : null;
+
+    $colorLabel = $colorOption?->label ?: $colorOption?->admin_name;
+
+    $colorSwatches = [
+        'white' => '#ffffff',
+        'black' => '#111827',
+        'red' => '#dc2626',
+        'green' => '#16a34a',
+        'blue' => '#2563eb',
+        'yellow' => '#facc15',
+        'orange' => '#f97316',
+        'pink' => '#ec4899',
+        'purple' => '#9333ea',
+        'grey' => '#9ca3af',
+        'gray' => '#9ca3af',
+        'brown' => '#92400e',
+    ];
+
+    $colorSwatch = $colorOption?->swatch_value
+        ?: ($colorSwatches[strtolower($colorOption?->admin_name ?? '')] ?? '#e5e7eb');
+
+    $displayProductName = $product->name;
+
+    if ($colorLabel && ! str_contains($displayProductName, $colorLabel)) {
+        $displayProductName .= ' – '.$colorLabel;
+    }
 @endphp
 
 <!-- SEO Meta Content -->
@@ -29,7 +66,7 @@
 
     <meta name="twitter:card" content="summary_large_image" />
 
-    <meta name="twitter:title" content="{{ $product->name }}" />
+    <meta name="twitter:title" content="{{ $displayProductName }}" />
 
     <meta name="twitter:description" content="{!! htmlspecialchars(trim(strip_tags($product->description))) !!}" />
 
@@ -39,7 +76,7 @@
 
     <meta property="og:type" content="og:product" />
 
-    <meta property="og:title" content="{{ $product->name }}" />
+    <meta property="og:title" content="{{ $displayProductName }}" />
 
     <meta property="og:image" content="{{ $productBaseImage['medium_image_url'] }}" />
 
@@ -52,7 +89,7 @@
 <x-shop::layouts>
     <!-- Page Title -->
     <x-slot:title>
-        {{ trim($product->meta_title) != '' ? $product->meta_title : $product->name }}
+        {{ trim($product->meta_title) != '' ? $product->meta_title : $displayProductName }}
     </x-slot>
 
     {!! view_render_event('bagisto.shop.products.view.before', ['product' => $product]) !!}
@@ -269,7 +306,7 @@
 
                                 <div class="flex justify-between gap-4">
                                     <h1 class="break-words text-3xl font-medium max-sm:text-xl">
-                                        {{ $product->name }}
+                                        {{ $displayProductName }}
                                     </h1>
 
                                     @if (core()->getConfigData('customer.settings.wishlist.wishlist_option'))
@@ -286,6 +323,22 @@
                                 </div>
 
                                 {!! view_render_event('bagisto.shop.products.name.after', ['product' => $product]) !!}
+
+                                @if ($colorLabel)
+                                    <div class="mt-3 flex items-center gap-2 text-sm text-on-background/70 max-sm:mt-2">
+                                        <span class="font-medium text-on-background">رنگ:</span>
+
+                                        <span class="inline-flex items-center gap-2 rounded-full border border-on-background/15 bg-white px-3 py-1.5">
+                                            <span
+                                                class="h-4 w-4 rounded-full border border-on-background/25"
+                                                style="background-color: {{ $colorSwatch }}"
+                                                aria-hidden="true"
+                                            ></span>
+
+                                            <span>{{ $colorLabel }}</span>
+                                        </span>
+                                    </div>
+                                @endif
 
                                 <!-- Rating -->
                                 {!! view_render_event('bagisto.shop.products.rating.before', ['product' => $product]) !!}
