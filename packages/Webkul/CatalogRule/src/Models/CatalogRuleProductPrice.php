@@ -3,6 +3,7 @@
 namespace Webkul\CatalogRule\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Webkul\CatalogRule\Contracts\CatalogRuleProductPrice as CatalogRuleProductPriceContract;
 
 class CatalogRuleProductPrice extends Model implements CatalogRuleProductPriceContract
@@ -18,4 +19,12 @@ class CatalogRuleProductPrice extends Model implements CatalogRuleProductPriceCo
         'channel_id',
         'customer_group_id',
     ];
+
+    /**
+     * Get the catalog rule that generated this indexed price.
+     */
+    public function catalog_rule(): BelongsTo
+    {
+        return $this->belongsTo(CatalogRuleProxy::modelClass(), 'catalog_rule_id');
+    }
 }

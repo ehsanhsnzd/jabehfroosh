@@ -2,6 +2,11 @@
 
 return [
 
+    'kavenegar' => [
+        'api_key' => env('KAVENEGAR_API_KEY'),
+        'template' => env('KAVENEGAR_OTP_TEMPLATE', 'login'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Third Party Services

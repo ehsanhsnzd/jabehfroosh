@@ -11,23 +11,32 @@
             class="1180:transtion-all group w-full rounded-md max-md:mx-auto max-md:max-w-[291px] 1180:relative 1180:grid 1180:content-start 1180:overflow-hidden 1180:duration-300 1180:hover:shadow-[0_5px_10px_rgba(0,0,0,0.1)]"
             v-if="mode != 'list'"
         >
-            <div class="relative max-h-[300px] max-w-[291px] overflow-hidden max-md:max-h-60 max-md:max-w-full max-md:rounded-lg max-sm:max-h-[200px] max-sm:max-w-full">
+            <div class="relative max-h-[300px] max-w-[291px] overflow-hidden rounded-[18px] border-2 border-[#0f5132] max-md:max-h-60 max-md:max-w-full max-md:rounded-lg max-sm:max-h-[200px] max-sm:max-w-full">
                 {!! view_render_event('bagisto.shop.components.products.card.image.before') !!}
 
                 <!-- Product Image -->
                 <a
+                    class="relative block"
                     :href="productUrl"
                     :aria-label="product.name + ' '"
                 >
                     <x-shop::media.images.lazy
                         class="after:content-[' '] relative bg-surface transition-all duration-300 after:block after:pb-[calc(100%+9px)] group-hover:scale-105"
-                        ::src="product.base_image.medium_image_url"
+                        ::src="product.base_image.medium_image_url + '?frame-clean=20260829'"
                         ::key="product.id"
                         ::index="product.id"
                         width="291"
                         height="300"
                         ::alt="product.name"
                     />
+
+                    <img
+                        class="pointer-events-none absolute inset-0 z-30 h-full w-full select-none object-fill"
+                        src="{{ bagisto_asset('images/product-overlays/leaves-top-transparent.png') }}"
+                        alt=""
+                        aria-hidden="true"
+                        draggable="false"
+                    >
                 </a>
 
                 {!! view_render_event('bagisto.shop.components.products.card.image.after') !!}
@@ -114,9 +123,10 @@
 
                 {!! view_render_event('bagisto.shop.components.products.card.name.before') !!}
 
-                <p class="break-all text-base font-medium max-md:mb-1.5 max-md:max-w-56 max-md:whitespace-break-spaces max-md:leading-6 max-sm:max-w-[192px] max-sm:text-sm max-sm:leading-4">
-                    @{{ product.name }}
-                </p>
+                <p
+                    class="break-words whitespace-normal text-base font-medium [word-break:normal] max-md:mb-1.5 max-md:max-w-56 max-md:leading-6 max-sm:max-w-[192px] max-sm:text-sm max-sm:leading-5"
+                    v-text="formatProductName(product.name)"
+                ></p>
 
                 {!! view_render_event('bagisto.shop.components.products.card.name.after') !!}
 
@@ -124,8 +134,16 @@
                 {!! view_render_event('bagisto.shop.components.products.card.price.before') !!}
 
                 <div
+                    class="flex items-center gap-2.5 text-lg font-semibold text-primary max-sm:text-sm max-sm:leading-6"
+                    v-if="isCatalogInquiry"
+                >
+                    استعلام قیمت
+                </div>
+
+                <div
                     class="flex items-center gap-2.5 text-lg font-semibold max-sm:text-sm max-sm:leading-6"
                     v-html="product.price_html"
+                    v-else
                 >
                 </div>
 
@@ -136,10 +154,19 @@
                     @if (core()->getConfigData('sales.checkout.shopping_cart.cart_page'))
                         {!! view_render_event('bagisto.shop.components.products.card.add_to_cart.before') !!}
 
+                        <a
+                            class="secondary-button w-full max-w-full p-2.5 text-center text-sm font-medium max-sm:rounded-xl max-sm:p-2"
+                            :href="productUrl"
+                            v-if="isCatalogInquiry"
+                        >
+                            مشاهده و استعلام
+                        </a>
+
                         <button
                             class="secondary-button w-full max-w-full p-2.5 text-sm font-medium max-sm:rounded-xl max-sm:p-2"
                             :disabled="! product.is_saleable || isAddingToCart"
                             @click="addToCart()"
+                            v-else
                         >
                             @lang('shop::app.components.products.card.add-to-cart')
                         </button>
@@ -186,20 +213,31 @@
             class="relative flex max-w-max grid-cols-2 gap-4 overflow-hidden rounded max-sm:flex-wrap"
             v-else
         >
-            <div class="group relative max-h-[258px] max-w-[250px] overflow-hidden">
+            <div class="group relative max-h-[258px] max-w-[250px] overflow-hidden rounded-[18px] border-2 border-[#0f5132]">
 
                 {!! view_render_event('bagisto.shop.components.products.card.image.before') !!}
 
-                <a :href="productUrl">
+                <a
+                    class="relative block"
+                    :href="productUrl"
+                >
                     <x-shop::media.images.lazy
                         class="after:content-[' '] relative min-w-[250px]  transition-all duration-300 after:block after:pb-[calc(100%+9px)] group-hover:scale-105"
-                        ::src="product.base_image.medium_image_url"
+                        ::src="product.base_image.medium_image_url + '?frame-clean=20260829'"
                         ::key="product.id"
                         ::index="product.id"
                         width="291"
                         height="300"
                         ::alt="product.name"
                     />
+
+                    <img
+                        class="pointer-events-none absolute inset-0 z-30 h-full w-full select-none object-fill"
+                        src="{{ bagisto_asset('images/product-overlays/leaves-top-transparent.png') }}"
+                        alt=""
+                        aria-hidden="true"
+                        draggable="false"
+                    >
                 </a>
 
                 {!! view_render_event('bagisto.shop.components.products.card.image.after') !!}
@@ -259,17 +297,26 @@
 
                 {!! view_render_event('bagisto.shop.components.products.card.name.before') !!}
 
-                <p class="text-base">
-                    @{{ product.name }}
-                </p>
+                <p
+                    class="break-words whitespace-normal text-base [word-break:normal]"
+                    v-text="formatProductName(product.name)"
+                ></p>
 
                 {!! view_render_event('bagisto.shop.components.products.card.name.after') !!}
 
                 {!! view_render_event('bagisto.shop.components.products.card.price.before') !!}
 
                 <div
+                    class="flex gap-2.5 text-lg font-semibold text-primary"
+                    v-if="isCatalogInquiry"
+                >
+                    استعلام قیمت
+                </div>
+
+                <div
                     class="flex gap-2.5 text-lg font-semibold"
                     v-html="product.price_html"
+                    v-else
                 >
                 </div>
 
@@ -316,13 +363,23 @@
 
                     {!! view_render_event('bagisto.shop.components.products.card.add_to_cart.before') !!}
 
-                    <x-shop::button
-                        class="primary-button whitespace-nowrap px-8 py-2.5"
-                        :title="trans('shop::app.components.products.card.add-to-cart')"
-                        ::loading="isAddingToCart"
-                        ::disabled="! product.is_saleable || isAddingToCart"
-                        @click="addToCart()"
-                    />
+                    <a
+                        class="primary-button whitespace-nowrap px-8 py-2.5 text-center"
+                        :href="productUrl"
+                        v-if="isCatalogInquiry"
+                    >
+                        مشاهده و استعلام
+                    </a>
+
+                    <template v-else>
+                        <x-shop::button
+                            class="primary-button whitespace-nowrap px-8 py-2.5"
+                            :title="trans('shop::app.components.products.card.add-to-cart')"
+                            ::loading="isAddingToCart"
+                            ::disabled="! product.is_saleable || isAddingToCart"
+                            @click="addToCart()"
+                        />
+                    </template>
 
                     {!! view_render_event('bagisto.shop.components.products.card.add_to_cart.after') !!}
 
@@ -346,6 +403,10 @@
             },
 
             computed: {
+                isCatalogInquiry() {
+                    return Boolean(this.product.is_catalog_inquiry);
+                },
+
                 productUrl() {
                     const url = new URL("{{ route('shop.product_or_category.index', ':slug') }}");
                     url.pathname = this.product.url_key;
@@ -354,6 +415,11 @@
             },
 
             methods: {
+                formatProductName(name) {
+                    return String(name ?? '')
+                        .replace(/([0-9۰-۹٠-٩])\s+(گرم|کیلوگرم|عدد|عددی|تکه|سانتی(?:‌|\s)?متر|میلی(?:‌|\s)?متر|CM)(?=\s|$|[،,.؛)])/giu, '$1\u00a0$2');
+                },
+
                 addToWishlist() {
                     if (this.isCustomer) {
                         this.$axios.post(`{{ route('shop.api.customers.account.wishlist.store') }}`, {

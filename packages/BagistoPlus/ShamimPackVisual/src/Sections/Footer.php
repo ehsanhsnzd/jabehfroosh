@@ -13,7 +13,7 @@ class Footer extends BladeSection
     protected static string $view = 'shop::sections.footer';
     protected static string $wrapper = 'footer#contact.foot';
 
-    protected static string $name = 'فوتر شمیم';
+    protected static string $name = 'فوتر جعبه فروش';
 
     protected static string $description = 'خبرنامه، معرفی برند، ستون لینک‌ها و اطلاعات تماس';
 
@@ -22,17 +22,17 @@ class Footer extends BladeSection
     public static function settings(): array
     {
         return [
-            Text::make('newsletter_label', 'برچسب خبرنامه')->default('خبرنامه شمیم پک'),
+            Text::make('newsletter_label', 'برچسب خبرنامه')->default('خبرنامه جعبه فروش'),
             Text::make('newsletter_title', 'عنوان خبرنامه')->default('قیمت‌های همکاری و محصولات تازه را دریافت کنید'),
             Text::make('newsletter_placeholder', 'متن فیلد ایمیل')->default('آدرس ایمیل شما'),
             Text::make('newsletter_button', 'متن دکمه')->default('عضویت ←'),
-            Text::make('brand_name', 'نام برند')->default('شمیم پک'),
+            Text::make('brand_name', 'نام برند')->default('جعبه فروش'),
             Textarea::make('brand_description', 'توضیح برند')->default('تولید و فروش تخصصی بسته‌بندی غذا؛ از انتخاب جعبه استاندارد تا طراحی و چاپ اختصاصی برند شما.'),
             Text::make('contact_title', 'عنوان تماس')->default('با ما در تماس باشید'),
             Textarea::make('address', 'آدرس و ساعات کاری')->default("تبریز / اول جاده مایان / کوی پدرام / روبروی کوچه دوم\nشنبه تا چهارشنبه، ۹ تا ۱۸"),
             Text::make('phone', 'تلفن')->default('۰۲۱–۸۸۷۷۶۶۵۵'),
-            Text::make('email', 'ایمیل')->default('sales@shamimpack.ir'),
-            Text::make('copyright', 'کپی‌رایت')->default('شمیم پک — تمامی حقوق محفوظ است.'),
+            Text::make('email', 'ایمیل')->default('sales@jabehfroosh.com'),
+            Text::make('copyright', 'کپی‌رایت')->default('جعبه فروش — تمامی حقوق محفوظ است.'),
             Text::make('legal_text', 'متن لینک‌های قانونی')->default('حریم خصوصی · قوانین فروشگاه · پرداخت امن'),
         ];
     }

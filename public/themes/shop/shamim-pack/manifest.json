@@ -1,12 +1,28 @@
 {
   "resources/assets/css/shop.css": {
-    "file": "assets/shop-Dr5KCDsM.css",
+    "file": "assets/shop-DNcbCetc.css",
     "src": "resources/assets/css/shop.css",
     "isEntry": true
+  },
+  "resources/assets/fonts/DMSerifDisplay-Regular.ttf": {
+    "file": "assets/DMSerifDisplay-Regular-CVKzmwbz.ttf",
+    "src": "resources/assets/fonts/DMSerifDisplay-Regular.ttf"
+  },
+  "resources/assets/fonts/Lalezar-Regular.ttf": {
+    "file": "assets/Lalezar-Regular-BxfEshqG.ttf",
+    "src": "resources/assets/fonts/Lalezar-Regular.ttf"
+  },
+  "resources/assets/fonts/Vazirmatn-Variable.woff2": {
+    "file": "assets/Vazirmatn-Variable-BeciDpKm.woff2",
+    "src": "resources/assets/fonts/Vazirmatn-Variable.woff2"
   },
   "resources/assets/fonts/bagisto-shop.woff": {
     "file": "assets/bagisto-shop-BHAKyv0r.woff",
     "src": "resources/assets/fonts/bagisto-shop.woff"
+  },
+  "resources/assets/images/apple-touch-icon.png": {
+    "file": "assets/apple-touch-icon-CS9fXMpz.png",
+    "src": "resources/assets/images/apple-touch-icon.png"
   },
   "resources/assets/images/bold-collection/image1.webp": {
     "file": "assets/image1-8mIwerUk.webp",
@@ -20,6 +36,74 @@
     "file": "assets/cash-on-delivery-Ck2rBtSq.png",
     "src": "resources/assets/images/cash-on-delivery.png"
   },
+  "resources/assets/images/catalog-bucket.webp": {
+    "file": "assets/catalog-bucket-B4Jw4BPE.webp",
+    "src": "resources/assets/images/catalog-bucket.webp"
+  },
+  "resources/assets/images/catalog-burger.webp": {
+    "file": "assets/catalog-burger-CAMCsE6Q.webp",
+    "src": "resources/assets/images/catalog-burger.webp"
+  },
+  "resources/assets/images/catalog-cup.webp": {
+    "file": "assets/catalog-cup-B2bJ_0LG.webp",
+    "src": "resources/assets/images/catalog-cup.webp"
+  },
+  "resources/assets/images/catalog-cutlery.webp": {
+    "file": "assets/catalog-cutlery-CGz4j6_2.webp",
+    "src": "resources/assets/images/catalog-cutlery.webp"
+  },
+  "resources/assets/images/catalog-disposable.webp": {
+    "file": "assets/catalog-disposable-DlOxHx3b.webp",
+    "src": "resources/assets/images/catalog-disposable.webp"
+  },
+  "resources/assets/images/catalog-food.webp": {
+    "file": "assets/catalog-food-DBhPvbjx.webp",
+    "src": "resources/assets/images/catalog-food.webp"
+  },
+  "resources/assets/images/catalog-fried.webp": {
+    "file": "assets/catalog-fried-B3Xdo3YT.webp",
+    "src": "resources/assets/images/catalog-fried.webp"
+  },
+  "resources/assets/images/catalog-fries.webp": {
+    "file": "assets/catalog-fries-Cvjmur6I.webp",
+    "src": "resources/assets/images/catalog-fries.webp"
+  },
+  "resources/assets/images/catalog-icecream.webp": {
+    "file": "assets/catalog-icecream-BRhJFdPc.webp",
+    "src": "resources/assets/images/catalog-icecream.webp"
+  },
+  "resources/assets/images/catalog-nuts.webp": {
+    "file": "assets/catalog-nuts-CzEMQ6eN.webp",
+    "src": "resources/assets/images/catalog-nuts.webp"
+  },
+  "resources/assets/images/catalog-pizza-board.webp": {
+    "file": "assets/catalog-pizza-board-jnkpv28b.webp",
+    "src": "resources/assets/images/catalog-pizza-board.webp"
+  },
+  "resources/assets/images/catalog-pizza.webp": {
+    "file": "assets/catalog-pizza-C3ZZe-rs.webp",
+    "src": "resources/assets/images/catalog-pizza.webp"
+  },
+  "resources/assets/images/catalog-sachet.webp": {
+    "file": "assets/catalog-sachet-CTZ4jdfV.webp",
+    "src": "resources/assets/images/catalog-sachet.webp"
+  },
+  "resources/assets/images/catalog-sandwich-paper.webp": {
+    "file": "assets/catalog-sandwich-paper-UBx3QDJj.webp",
+    "src": "resources/assets/images/catalog-sandwich-paper.webp"
+  },
+  "resources/assets/images/catalog-sandwich.webp": {
+    "file": "assets/catalog-sandwich-7xl4T14F.webp",
+    "src": "resources/assets/images/catalog-sandwich.webp"
+  },
+  "resources/assets/images/catalog-tablecloth.webp": {
+    "file": "assets/catalog-tablecloth-C-Fywq8k.webp",
+    "src": "resources/assets/images/catalog-tablecloth.webp"
+  },
+  "resources/assets/images/catalog-takeaway.webp": {
+    "file": "assets/catalog-takeaway-Cv44OPhP.webp",
+    "src": "resources/assets/images/catalog-takeaway.webp"
+  },
   "resources/assets/images/default-language.svg": {
     "file": "assets/default-language-BxH8WlkY.svg",
     "src": "resources/assets/images/default-language.svg"
@@ -28,8 +112,16 @@
     "file": "assets/empty-dwn-product-DYRIKFWL.png",
     "src": "resources/assets/images/empty-dwn-product.png"
   },
+  "resources/assets/images/favicon-32.png": {
+    "file": "assets/favicon-32-qVQafGt1.png",
+    "src": "resources/assets/images/favicon-32.png"
+  },
+  "resources/assets/images/favicon-master.png": {
+    "file": "assets/favicon-master-D3O8dDwf.png",
+    "src": "resources/assets/images/favicon-master.png"
+  },
   "resources/assets/images/favicon.ico": {
-    "file": "assets/favicon-Df9chQdB.ico",
+    "file": "assets/favicon-LpKRL41l.ico",
     "src": "resources/assets/images/favicon.ico"
   },
   "resources/assets/images/game-collection/1.webp": {
@@ -47,6 +139,10 @@
   "resources/assets/images/hero-image.webp": {
     "file": "assets/hero-image-DwKg3YHc.webp",
     "src": "resources/assets/images/hero-image.webp"
+  },
+  "resources/assets/images/jabehfroosh-logo.svg": {
+    "file": "assets/jabehfroosh-logo-DjBCM-7w.svg",
+    "src": "resources/assets/images/jabehfroosh-logo.svg"
   },
   "resources/assets/images/large-product-placeholder.webp": {
     "file": "assets/large-product-placeholder-B9xoAuKQ.webp",
@@ -81,7 +177,7 @@
     "src": "resources/assets/images/pack-fries.png"
   },
   "resources/assets/images/pack-hero.png": {
-    "file": "assets/pack-hero-DBwjY49o.png",
+    "file": "assets/pack-hero-DhJEPB8i.png",
     "src": "resources/assets/images/pack-hero.png"
   },
   "resources/assets/images/pack-kraft.png": {
@@ -96,6 +192,14 @@
     "file": "assets/paypal-CIu1GKlz.png",
     "src": "resources/assets/images/paypal.png"
   },
+  "resources/assets/images/product-overlays/frame-01-transparent.png": {
+    "file": "assets/frame-01-transparent-C1sxAUPf.png",
+    "src": "resources/assets/images/product-overlays/frame-01-transparent.png"
+  },
+  "resources/assets/images/product-overlays/leaves-top-transparent.png": {
+    "file": "assets/leaves-top-transparent-bAglYYjn.png",
+    "src": "resources/assets/images/product-overlays/leaves-top-transparent.png"
+  },
   "resources/assets/images/review.png": {
     "file": "assets/review-ZWqERyaT.png",
     "src": "resources/assets/images/review.png"
@@ -103,6 +207,10 @@
   "resources/assets/images/shamim-hero.png": {
     "file": "assets/shamim-hero-ltBywT0S.png",
     "src": "resources/assets/images/shamim-hero.png"
+  },
+  "resources/assets/images/shamim-pack-logo.png": {
+    "file": "assets/shamim-pack-logo-D_IFAK4E.png",
+    "src": "resources/assets/images/shamim-pack-logo.png"
   },
   "resources/assets/images/small-product-placeholder.webp": {
     "file": "assets/small-product-placeholder-CMT26fOX.webp",
@@ -117,8 +225,8 @@
     "src": "resources/assets/images/thank-you.png"
   },
   "resources/assets/images/theme-preview.png": {
-    "file": "assets/pack-hero-DBwjY49o.png",
-    "src": "resources/assets/images/pack-hero.png"
+    "file": "assets/theme-preview-DBwjY49o.png",
+    "src": "resources/assets/images/theme-preview.png"
   },
   "resources/assets/images/top-collection/1.webp": {
     "file": "assets/1-CkZBc8y8.webp",

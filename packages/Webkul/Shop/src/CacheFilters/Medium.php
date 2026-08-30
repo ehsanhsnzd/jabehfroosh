@@ -22,13 +22,13 @@ class Medium
         if (Str::contains(url()->current(), '/product')) {
             $width = core()->getConfigData('catalog.products.cache_medium_image.width') != ''
                 ? core()->getConfigData('catalog.products.cache_medium_image.width')
-                : 350;
+                : 700;
 
             $height = core()->getConfigData('catalog.products.cache_medium_image.height') != ''
                 ? core()->getConfigData('catalog.products.cache_medium_image.height')
-                : 360;
+                : 700;
 
-            return $image->cover((int) $width, (int) $height);
+            return $image->contain((int) $width, (int) $height, 'ffffff');
         } elseif (Str::contains(url()->current(), '/category')) {
             return $image->cover(110, 110);
         } elseif (Str::contains(url()->current(), '/attribute_option')) {

@@ -4,7 +4,7 @@
         <div class="pc">
             <span class="kick" {{ $section->liveUpdate()->text('eyebrow') }}>{{ $section->settings->eyebrow }}</span>
             <h2 {{ $section->liveUpdate()->text('heading') }}>{{ $section->settings->heading }}</h2>
-            <p {{ $section->liveUpdate()->text('description') }}>{{ $section->settings->description }}</p>
+            <p {{ $section->liveUpdate()->text('description') }}>{{ str_replace('شمیم پک', 'جعبه فروش', $section->settings->description) }}</p>
             <a class="sh-btn story-button" href="{{ $section->settings->button_url }}" {{ $section->liveUpdate()->text('button_text')->attr('button_url', 'href') }}>{{ $section->settings->button_text }}</a>
             <div class="stats">
                 @foreach ($section->blocks as $block)

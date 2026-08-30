@@ -12,7 +12,7 @@ class FurnitureHero extends BladeSection
 {
     protected static string $view = 'shop::sections.furniture-hero';
     protected static string $wrapper = 'section.hero';
-    protected static string $name = 'هیرو فروشگاه شمیم پک';
+    protected static string $name = 'هیرو فروشگاه جعبه فروش';
     protected static string $description = 'تصویر اصلی، تیتر، دکمه، قیمت و نشانگرهای شناور';
 
     public static function settings(): array

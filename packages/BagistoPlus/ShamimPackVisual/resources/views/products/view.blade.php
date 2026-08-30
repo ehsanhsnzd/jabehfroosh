@@ -46,6 +46,8 @@
     if ($colorLabel && ! str_contains($displayProductName, $colorLabel)) {
         $displayProductName .= ' – '.$colorLabel;
     }
+
+    $isCatalogInquiry = str_starts_with($product->sku, 'SP-') && (float) $product->price <= 0;
 @endphp
 
 <!-- SEO Meta Content -->
@@ -366,16 +368,20 @@
                                 {!! view_render_event('bagisto.shop.products.price.before', ['product' => $product]) !!}
 
                                 <div class="mt-[22px] flex items-center gap-2.5 text-2xl !font-medium max-sm:mt-2 max-sm:gap-x-2.5 max-sm:gap-y-0 max-sm:text-lg">
-                                    {!! $product->getTypeInstance()->getPriceHtml() !!}
+                                    @if ($isCatalogInquiry)
+                                        <span class="text-primary">استعلام قیمت و سفارش عمده</span>
+                                    @else
+                                        {!! $product->getTypeInstance()->getPriceHtml() !!}
+                                    @endif
                                 </div>
 
-                                @if (\Webkul\Tax\Facades\Tax::isInclusiveTaxProductPrices())
+                                @if (! $isCatalogInquiry && \Webkul\Tax\Facades\Tax::isInclusiveTaxProductPrices())
                                     <span class="text-sm font-normal text-on-background/60 max-sm:text-xs">
                                         (@lang('shop::app.products.view.tax-inclusive'))
                                     </span>
                                 @endif
 
-                                @if (count($product->getTypeInstance()->getCustomerGroupPricingOffers()))
+                                @if (! $isCatalogInquiry && count($product->getTypeInstance()->getCustomerGroupPricingOffers()))
                                     <div class="mt-2.5 grid gap-1.5">
                                         @foreach ($product->getTypeInstance()->getCustomerGroupPricingOffers() as $offer)
                                             <p class="text-on-background/60 [&>*]:text-on-background">
@@ -407,6 +413,20 @@
 
                                 @include('shop::products.view.types.booking')
 
+                                @if ($isCatalogInquiry)
+                                    <div class="mt-8 max-w-[470px] max-sm:mt-4">
+                                        <a
+                                            href="tel:09991240501"
+                                            class="primary-button block w-full max-w-full text-center max-md:py-3 max-sm:rounded-lg max-sm:py-2.5"
+                                        >
+                                            تماس برای قیمت و سفارش: ۰۹۹۹۱۲۴۰۵۰۱
+                                        </a>
+
+                                        <p class="mt-3 text-sm text-on-background/60">
+                                            برای دریافت قیمت روز، حداقل تیراژ و شرایط چاپ اختصاصی تماس بگیرید.
+                                        </p>
+                                    </div>
+                                @else
                                 <!-- Product Actions and Quantity Box -->
                                 <div class="mt-8 flex max-w-[470px] gap-4 max-sm:mt-4">
 
@@ -460,6 +480,7 @@
                                     @endif
 
                                     {!! view_render_event('bagisto.shop.products.view.buy_now.after', ['product' => $product]) !!}
+                                @endif
                                 @endif
 
                                 {!! view_render_event('bagisto.shop.products.view.additional_actions.before', ['product' => $product]) !!}

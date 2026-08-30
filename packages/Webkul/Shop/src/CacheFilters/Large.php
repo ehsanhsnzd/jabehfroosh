@@ -22,13 +22,13 @@ class Large
         if (Str::contains(url()->current(), '/product')) {
             $width = core()->getConfigData('catalog.products.cache_large_image.width') != ''
                 ? core()->getConfigData('catalog.products.cache_large_image.width')
-                : 560;
+                : 1200;
 
             $height = core()->getConfigData('catalog.products.cache_large_image.height') != ''
                 ? core()->getConfigData('catalog.products.cache_large_image.height')
-                : 610;
+                : 1200;
 
-            return $image->cover((int) $width, (int) $height);
+            return $image->contain((int) $width, (int) $height, 'ffffff');
         } elseif (Str::contains(url()->current(), '/category')) {
             return $image->cover(165, 165);
         } elseif (Str::contains(url()->current(), '/attribute_option')) {

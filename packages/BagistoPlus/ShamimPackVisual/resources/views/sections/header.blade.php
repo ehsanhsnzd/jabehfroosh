@@ -1,12 +1,29 @@
 @php
-    $parseLinks = static function ($value) {
-        return collect(preg_split('/\r\n|\r|\n/', (string) $value))
-            ->filter()
-            ->map(function ($line) {
-                [$title, $url] = array_pad(explode('|', $line, 2), 2, '/');
-                return ['title' => trim($title), 'url' => trim($url) ?: '/'];
-            });
-    };
+    $productCategoryGroups = [
+        'جعبه‌های غذا' => [
+            ['title' => 'جعبه پیتزا', 'url' => '/pizza-boxes'],
+            ['title' => 'جعبه برگر', 'url' => '/burger-boxes'],
+            ['title' => 'جعبه ساندویچ', 'url' => '/sandwich-boxes'],
+            ['title' => 'جعبه سوخاری', 'url' => '/fried-chicken-boxes'],
+            ['title' => 'جعبه سیب‌زمینی', 'url' => '/french-fries-boxes'],
+            ['title' => 'جعبه غذا', 'url' => '/takeaway-food-boxes'],
+            ['title' => 'سطل سوخاری', 'url' => '/fried-chicken-buckets'],
+        ],
+        'ملزومات سرو و مصرف' => [
+            ['title' => 'ظروف یکبار مصرف', 'url' => '/disposable-food-containers'],
+            ['title' => 'لیوان یکبار مصرف', 'url' => '/disposable-cups'],
+            ['title' => 'پک قاشق و چنگال', 'url' => '/cutlery-packs'],
+            ['title' => 'سفره', 'url' => '/disposable-tablecloths'],
+            ['title' => 'سینگل زیر پیتزا', 'url' => '/pizza-boards'],
+        ],
+        'بسته‌بندی‌های تکمیلی' => [
+            ['title' => 'پاکت بیرون‌بر', 'url' => '/takeaway-bags'],
+            ['title' => 'کاغذ ساندویچ', 'url' => '/sandwich-wrapping-paper'],
+            ['title' => 'بسته‌بندی ساشه', 'url' => '/single-serve-sachets'],
+            ['title' => 'بسته‌بندی آجیل', 'url' => '/nuts-packaging'],
+            ['title' => 'بسته‌بندی بستنی', 'url' => '/ice-cream-packaging'],
+        ],
+    ];
 @endphp
 
 <div class="sc head-main">
@@ -52,6 +69,15 @@
     </div>
 </div>
 
+<a class="mobile-order-tracking" href="{{ auth()->guard('customer')->check() ? route('shop.customers.account.orders.index') : route('shop.customer.session.index', ['redirect_to' => '/customer/account/orders']) }}" aria-label="پیگیری سفارش">
+    <svg aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path d="M3 6h11v10H3zM14 9h4l3 3v4h-7zM7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+    </svg>
+
+    <span>پیگیری سفارش</span>
+    <span aria-hidden="true">←</span>
+</a>
+
 <nav class="main-nav">
     <div class="sc nav-inner">
         <div class="nav-list">
@@ -64,14 +90,14 @@
                     <div class="nav-item">
                         <a href="#categories"><span {{ $block->liveUpdate()->text('title') }}>{{ $block->settings->title }}</span>⌄</a>
                         <div class="mega">
-                            @for ($group = 1; $group <= 3; $group++)
+                            @foreach ($productCategoryGroups as $groupTitle => $groupLinks)
                                 <div>
-                                    <h4 {{ $block->liveUpdate()->text('group_'.$group.'_title') }}>{{ $block->settings->{'group_'.$group.'_title'} }}</h4>
-                                    @foreach ($parseLinks($block->settings->{'group_'.$group.'_links'}) as $link)
+                                    <h4>{{ $groupTitle }}</h4>
+                                    @foreach ($groupLinks as $link)
                                         <a href="{{ $link['url'] }}">{{ $link['title'] }}</a>
                                     @endforeach
                                 </div>
-                            @endfor
+                            @endforeach
                             <a class="mega-promo" href="{{ $block->settings->promo_url }}" {{ $block->liveUpdate()->attr('promo_url', 'href') }}>
                                 <img src="{{ $block->settings->promo_image }}" alt="" {{ $block->liveUpdate()->attr('promo_image', 'src') }}>
                                 <b {{ $block->liveUpdate()->text('promo_text') }}>{{ $block->settings->promo_text }}</b>

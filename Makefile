@@ -4,6 +4,7 @@ SHELL := /bin/bash
 PHP ?= php
 COMPOSER ?= composer
 NPM ?= npm
+NODE ?= node
 RSYNC ?= rsync
 
 HOST ?= 127.0.0.1
@@ -25,7 +26,7 @@ FRONTEND_DIRS := $(THEME_DIR) $(SHAMIM_VISUAL_DIR) $(VELOCITY_DIR) $(SHOP_DIR) $
 	frontend-install frontend-build frontend-dev shop-build shop-dev admin-build admin-dev visual-build velocity-build \
 	serve cache-clear cache-build cache-refresh view-clear view-cache config-clear route-clear event-clear \
 	composer-install composer-dump migrate migrate-status seed storage-link queue schedule tinker routes about logs \
-	test test-shop test-admin pint pint-dirty pint-check translations-check git-status doctor
+	test test-shop test-admin pint pint-dirty pint-check translations-check catalog-images catalog-seed git-status doctor
 
 help: ## Show all available commands
 	@printf "Shamim / Bagisto helper commands\n\n"
@@ -177,6 +178,14 @@ migrate-status: ## Show database migration status
 
 seed: ## Run database seeders
 	$(ARTISAN) db:seed
+
+catalog-images: ## Regenerate the 26 framed Persian dimension images (requires Google Chrome)
+	$(NODE) scripts/render-catalog-images.mjs --force
+
+catalog-seed: ## Import/update catalog products and rebuild product indexes
+	$(ARTISAN) db:seed --class=ShamimPackagingCatalogSeeder
+	$(ARTISAN) indexer:index
+	$(ARTISAN) optimize:clear
 
 storage-link: ## Create Laravel public storage symlink
 	$(ARTISAN) storage:link

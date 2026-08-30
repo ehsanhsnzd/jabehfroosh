@@ -22,13 +22,13 @@ class Small
         if (Str::contains(url()->current(), '/product')) {
             $width = core()->getConfigData('catalog.products.cache_small_image.width')
                 ? core()->getConfigData('catalog.products.cache_small_image.width')
-                : 100;
+                : 240;
 
             $height = core()->getConfigData('catalog.products.cache_small_image.height')
                 ? core()->getConfigData('catalog.products.cache_small_image.height')
-                : 100;
+                : 240;
 
-            return $image->cover((int) $width, (int) $height);
+            return $image->contain((int) $width, (int) $height, 'ffffff');
         } elseif (Str::contains(url()->current(), '/category')) {
             return $image->cover(80, 80);
         } elseif (Str::contains(url()->current(), '/attribute_option')) {

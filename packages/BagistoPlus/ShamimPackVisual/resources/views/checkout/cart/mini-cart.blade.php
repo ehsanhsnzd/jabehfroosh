@@ -338,7 +338,7 @@
                             {!! view_render_event('bagisto.shop.checkout.mini-cart.continue_to_checkout.before') !!}
 
                         <a
-                            href="{{ route('shop.checkout.onepage.index') }}"
+                            href="{{ auth()->guard('customer')->check() ? route('shop.checkout.onepage.index') : route('shop.customer.session.index', ['redirect_to' => '/checkout/onepage']) }}"
                             class="mx-auto block w-full cursor-pointer rounded-2xl bg-primary px-11 py-4 text-center text-base font-medium text-on-primary max-md:rounded-lg max-md:px-5 max-md:py-2"
                         >
                             @lang('shop::app.checkout.cart.mini-cart.continue-to-checkout')
@@ -359,7 +359,7 @@
             </x-shop::drawer>
 
         @else
-            <a href="{{ route('shop.checkout.onepage.index') }}">
+            <a href="{{ auth()->guard('customer')->check() ? route('shop.checkout.onepage.index') : route('shop.customer.session.index', ['redirect_to' => '/checkout/onepage']) }}">
                 {!! view_render_event('bagisto.shop.checkout.mini-cart.drawer.toggle.before') !!}
 
                     <span class="relative">

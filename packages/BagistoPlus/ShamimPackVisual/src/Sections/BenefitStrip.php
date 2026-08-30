@@ -10,7 +10,7 @@ class BenefitStrip extends BladeSection
 {
     protected static string $view = 'shop::sections.benefit-strip';
     protected static string $wrapper = 'section.benefits';
-    protected static string $name = 'مزیت‌های خرید از شمیم پک';
+    protected static string $name = 'مزیت‌های خرید از جعبه فروش';
     protected static int $maxBlocks = 8;
 
     public static function blocks(): array

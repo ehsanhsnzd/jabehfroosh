@@ -12,14 +12,14 @@ class EditorialStories extends BladeSection
 {
     protected static string $view = 'shop::sections.editorial-stories';
     protected static string $wrapper = 'section.sh-section.reveal';
-    protected static string $name = 'راهنمای بسته‌بندی شمیم پک';
+    protected static string $name = 'راهنمای بسته‌بندی جعبه فروش';
     protected static string $description = 'کارت‌های تصویری آموزش انتخاب بسته‌بندی و چاپ';
 
     public static function settings(): array
     {
         return [
             Text::make('eyebrow', 'برچسب')->default('انتخاب آگاهانه'),
-            Text::make('heading', 'عنوان')->default('راهنمای بسته‌بندی شمیم پک'),
+            Text::make('heading', 'عنوان')->default('راهنمای بسته‌بندی جعبه فروش'),
         ];
     }
 

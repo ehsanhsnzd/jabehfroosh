@@ -58,8 +58,8 @@
                     handler(newImages, oldImages) {
                         let selectedImage = newImages?.[this.activeIndex];
 
-                        if (JSON.stringify(newImages) !== JSON.stringify(oldImages) && selectedImage?.large_image_url) {
-                            this.baseFile.path = selectedImage.large_image_url;
+                        if (JSON.stringify(newImages) !== JSON.stringify(oldImages) && selectedImage?.original_image_url) {
+                            this.baseFile.path = selectedImage.original_image_url;
                         }
                     },
                 },
@@ -70,7 +70,7 @@
 
                     this.baseFile.type = 'image';
 
-                    this.baseFile.path = this.media.images[0].large_image_url;
+                    this.baseFile.path = this.media.images[0].original_image_url;
                 } else if (this.media.videos.length) {
 
                     this.baseFile.type = 'video';
@@ -116,7 +116,7 @@
                     } else {
                         this.baseFile.type = 'image';
 
-                        this.baseFile.path = media.large_image_url;
+                        this.baseFile.path = media.original_image_url;
                     }
 
                     if (index > this.activeIndex) {

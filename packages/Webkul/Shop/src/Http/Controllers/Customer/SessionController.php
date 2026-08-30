@@ -20,10 +20,12 @@ class SessionController extends Controller
     public function index()
     {
         if (auth()->guard('customer')->check()) {
-            return redirect()->route('shop.home.index');
+            return redirect()->route('shop.customers.account.index');
         }
 
-        return view('shop::customers.sign-in');
+        return view('shop::customers.sign-in', [
+            'redirectTo' => $this->safeRedirect(request('redirect_to')),
+        ]);
     }
 
     /**
@@ -68,11 +70,24 @@ class SessionController extends Controller
          */
         Event::dispatch('customer.after.login', auth()->guard()->user());
 
+        if ($redirectTo = $this->safeRedirect($loginRequest->input('redirect_to'))) {
+            return redirect()->to($redirectTo);
+        }
+
         if (core()->getConfigData('customer.settings.login_options.redirected_to_page') == 'account') {
             return redirect()->route('shop.customers.account.profile.index');
         }
 
         return redirect()->route('shop.home.index');
+    }
+
+    private function safeRedirect(?string $redirect): ?string
+    {
+        if ($redirect && str_starts_with($redirect, '/') && ! str_starts_with($redirect, '//')) {
+            return $redirect;
+        }
+
+        return null;
     }
 
     /**

@@ -16,26 +16,28 @@ sections:
   categories:
     type: shamim-pack::furniture-categories
     settings:
-      eyebrow: انتخاب سریع محصول
-      heading: محصولات بسته‌بندی شمیم پک
-      description: برای هر غذای محبوب، بسته‌بندی مناسب و حرفه‌ای
+      eyebrow: دسترسی سریع
+      heading: دسته‌بندی محصولات جعبه فروش
+      description: دسته موردنظر را انتخاب کنید و مستقیم محصولات مرتبط را ببینید
     blocks:
-      burger:
-        type: category
-        settings: { image: "/themes/shop/shamim-pack/images/pack-burger.png", title: جعبه برگر, count: مدل کرافت و ایندربرد, url: "/search?query=جعبه برگر" }
-      sandwich:
-        type: category
-        settings: { image: "/themes/shop/shamim-pack/images/pack-sandwich.png", title: جعبه ساندویچ, count: ساده و چاپ اختصاصی, url: "/search?query=جعبه ساندویچ" }
-      chicken:
-        type: category
-        settings: { image: "/themes/shop/shamim-pack/images/pack-chicken.png", title: جعبه سوخاری, count: مقاوم در برابر چربی, url: "/search?query=جعبه سوخاری" }
-      fries:
-        type: category
-        settings: { image: "/themes/shop/shamim-pack/images/pack-fries.png", title: جعبه سیب زمینی, count: سایزبندی متنوع, url: "/search?query=جعبه سیب زمینی" }
-      kraft:
-        type: category
-        settings: { image: "/themes/shop/shamim-pack/images/pack-kraft.png", title: کاغذ کرافت, count: رولی و شیت غذایی, url: "/search?query=کاغذ کرافت" }
-    blocks_order: [burger, sandwich, chicken, fries, kraft]
+      cups: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-cup.webp", title: لیوان یکبار مصرف, count: کاغذی و شفاف, url: "/disposable-cups" } }
+      nuts: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-nuts.webp", title: بسته‌بندی آجیل, count: پاکت کرافت پنجره‌دار, url: "/nuts-packaging" } }
+      icecream: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-icecream.webp", title: بسته‌بندی بستنی, count: کاپ بستنی و دسر, url: "/ice-cream-packaging" } }
+      sachet: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-sachet.webp", title: بسته‌بندی ساشه, count: تک‌نفره و استیک‌پک, url: "/single-serve-sachets" } }
+      takeaway: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-takeaway.webp", title: پاکت بیرون‌بر, count: کرافت دسته‌دار, url: "/takeaway-bags" } }
+      cutlery: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-cutlery.webp", title: پک قاشق و چنگال, count: پک کامل بهداشتی, url: "/cutlery-packs" } }
+      burger: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-burger.webp", title: جعبه برگر, count: کرافت فودگرید, url: "/burger-boxes" } }
+      pizza: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-pizza.webp", title: جعبه پیتزا, count: همه سایزها, url: "/pizza-boxes" } }
+      sandwich: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-sandwich.webp", title: جعبه ساندویچ, count: کرافت بیرون‌بر, url: "/sandwich-boxes" } }
+      fried: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-fried.webp", title: جعبه سوخاری, count: سفید، مشکی و کرافت, url: "/fried-chicken-boxes" } }
+      fries: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-fries.webp", title: جعبه سیب‌زمینی, count: قایقی، هرمی و صندوقی, url: "/french-fries-boxes" } }
+      food: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-food.webp", title: جعبه غذا, count: گرم و بیرون‌بر, url: "/takeaway-food-boxes" } }
+      bucket: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-bucket.webp", title: سطل سوخاری, count: تک‌نفره و خانواده, url: "/fried-chicken-buckets" } }
+      tablecloth: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-tablecloth.webp", title: سفره, count: سرو بهداشتی غذا, url: "/disposable-tablecloths" } }
+      pizza_board: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-pizza-board.webp", title: سینگل زیر پیتزا, count: مقوای دایره‌ای مقاوم, url: "/pizza-boards" } }
+      disposable: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-disposable.webp", title: ظروف یکبار مصرف, count: درب‌دار و سرو غذا, url: "/disposable-food-containers" } }
+      sandwich_paper: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-sandwich-paper.webp", title: کاغذ ساندویچ, count: کرافت مخصوص غذا, url: "/sandwich-wrapping-paper" } }
+    blocks_order: [cups, nuts, icecream, sachet, takeaway, cutlery, burger, pizza, sandwich, fried, fries, food, bucket, tablecloth, pizza_board, disposable, sandwich_paper]
   products:
     type: shamim-pack::furniture-products
     settings:
@@ -48,7 +50,7 @@ sections:
       image: /themes/shop/shamim-pack/images/pack-kraft.png
       eyebrow: هویت برند شما روی بسته‌بندی
       heading: چاپ اختصاصی، از ایده تا تحویل
-      description: تیم شمیم پک برای انتخاب جنس، ابعاد، ساختار و چاپ کنار شماست؛ تا بسته‌بندی نهایی هم از غذا محافظت کند و هم برندتان را حرفه‌ای‌تر نشان دهد.
+      description: تیم جعبه فروش برای انتخاب جنس، ابعاد، ساختار و چاپ کنار شماست؛ تا بسته‌بندی نهایی هم از غذا محافظت کند و هم برندتان را حرفه‌ای‌تر نشان دهد.
       button_text: دریافت مشاوره چاپ ←
       button_url: /contact-us
     blocks:
@@ -69,7 +71,7 @@ sections:
           category: راهنمای انتخاب
           title: برای غذای گرم چه جعبه‌ای مناسب‌تر است؟
           link_text: مطالعه راهنما ←
-          url: /search
+          url: /blog/entekhab-jabe-ghazaye-garm
       printing:
         type: story
         settings:
@@ -77,13 +79,13 @@ sections:
           category: چاپ و برندینگ
           title: بسته‌بندی چگونه فروش دوباره را بیشتر می‌کند؟
           link_text: مشاهده مطلب ←
-          url: /search
+          url: /blog/bastebandi-foroush-dobare
     blocks_order: [material, printing]
   quote:
     type: shamim-pack::quote-banner
     settings:
       quote: مشتری قبل از چشیدن غذا، کیفیت برند شما را از بسته‌بندی آن قضاوت می‌کند.
-      cite: — شمیم پک، همراه برندهای خوش‌طعم
+      cite: — جعبه فروش، همراه برندهای خوش‌طعم
   marquee:
     type: shamim-pack::furniture-marquee
     blocks:

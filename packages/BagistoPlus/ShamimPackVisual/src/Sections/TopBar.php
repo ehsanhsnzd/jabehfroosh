@@ -11,7 +11,7 @@ class TopBar extends BladeSection
     protected static string $view = 'shop::sections.top-bar';
     protected static string $wrapper = 'div.sh-announce';
 
-    protected static string $name = 'نوار اعلان شمیم';
+    protected static string $name = 'نوار اعلان جعبه فروش';
 
     protected static string $description = 'پیام‌های چرخشی و لینک‌های بالای سایت';
 

@@ -1193,6 +1193,7 @@ return [
 
             'summary' => [
                 'cart-summary' => 'خلاصه سبد خرید',
+                'price_&_qty' => 'قیمت و تعداد',
                 'delivery-charges' => 'هزینه ارسال',
                 'delivery-charges-excl-tax' => 'هزینه ارسال (بدون مالیات)',
                 'delivery-charges-incl-tax' => 'هزینه ارسال (شامل مالیات)',

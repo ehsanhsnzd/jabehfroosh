@@ -134,6 +134,11 @@ class CatalogRuleProductPrice
                 $price = $price * (1 - $rule->discount_amount / 100);
 
                 break;
+
+            case 'by_percent_increase':
+                $price = $price * (1 + $rule->discount_amount / 100);
+
+                break;
         }
 
         return $price;

@@ -80,11 +80,6 @@
 
             <template v-else>
                 <div class="grid grid-cols-[1fr_auto] gap-8 max-lg:grid-cols-[1fr] max-md:gap-5">
-                    <!-- Included Checkout Summary Blade File For Mobile view -->
-                    <div class="hidden max-md:block">
-                        @include('shop::checkout.onepage.summary')
-                    </div>
-
                     <div
                         class="overflow-y-auto max-md:grid max-md:gap-4"
                         id="steps-container"
@@ -94,26 +89,24 @@
                             @include('shop::checkout.onepage.address')
                         </template>
 
-                        <!-- Included Shipping Methods Blade File -->
+                    </div>
+
+                    <!-- Order summary followed by shipping, payment and final action. -->
+                    <div class="block h-max w-[442px] max-w-full max-lg:w-full max-lg:max-w-none ltr:pl-8 max-lg:ltr:pl-0 rtl:pr-8 max-lg:rtl:pr-0">
+                        <div>
+                            @include('shop::checkout.onepage.summary')
+                        </div>
+
                         <template v-if="cart.have_stockable_items && ['shipping', 'payment', 'review'].includes(currentStep)">
                             @include('shop::checkout.onepage.shipping')
                         </template>
 
-                        <!-- Included Payment Methods Blade File -->
                         <template v-if="['payment', 'review'].includes(currentStep)">
                             @include('shop::checkout.onepage.payment')
                         </template>
-                    </div>
-
-                    <!-- Included Checkout Summary Blade File For Desktop view -->
-                    <div class="sticky top-8 block h-max w-[442px] max-w-full max-lg:w-auto max-lg:max-w-[442px] ltr:pl-8 max-lg:ltr:pl-0 rtl:pr-8 max-lg:rtl:pr-0">
-                        <div class="block max-md:hidden">
-                            @include('shop::checkout.onepage.summary')
-                        </div>
 
                         <div
-                            class="flex justify-end"
-                            v-if="canPlaceOrder"
+                            class="mt-6 flex justify-end"
                         >
                             <template v-if="cart.payment_method == 'paypal_smart_button'">
                                 {!! view_render_event('bagisto.shop.checkout.onepage.summary.paypal_smart_button.before') !!}
@@ -129,7 +122,7 @@
                                     type="button"
                                     class="primary-button w-max rounded-2xl bg-navyBlue px-11 py-3 max-md:mb-4 max-md:w-full max-md:max-w-full max-md:rounded-lg max-sm:py-1.5"
                                     :title="trans('shop::app.checkout.onepage.summary.place-order')"
-                                    ::disabled="isPlacingOrder"
+                                    ::disabled="! canPlaceOrder || isPlacingOrder"
                                     ::loading="isPlacingOrder"
                                     @click="placeOrder"
                                 />
@@ -164,6 +157,8 @@
 
                         paymentMethods: null,
 
+                        selectedPaymentMethod: null,
+
                         canPlaceOrder: false,
                     }
                 },
@@ -194,11 +189,6 @@
 
                         this.canPlaceOrder = false;
 
-                        if (this.currentStep == 'shipping') {
-                            this.shippingMethods = null;
-                        } else if (this.currentStep == 'payment') {
-                            this.paymentMethods = null;
-                        }
                     },
 
                     stepProcessed(data) {
@@ -224,7 +214,15 @@
                         });
                     },
 
+                    setSelectedPaymentMethod(method) {
+                        this.selectedPaymentMethod = method;
+                    },
+
                     placeOrder() {
+                        if (!this.canPlaceOrder) {
+                            return;
+                        }
+
                         this.isPlacingOrder = true;
 
                         this.$axios.post('{{ route('shop.checkout.onepage.orders.store') }}')

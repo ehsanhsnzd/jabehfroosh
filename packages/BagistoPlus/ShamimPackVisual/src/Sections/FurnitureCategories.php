@@ -12,15 +12,15 @@ class FurnitureCategories extends BladeSection
 {
     protected static string $view = 'shop::sections.furniture-categories';
     protected static string $wrapper = 'section#categories.sh-section.reveal';
-    protected static string $name = 'دسته‌بندی محصولات شمیم پک';
+    protected static string $name = 'دسته‌بندی محصولات جعبه فروش';
     protected static string $description = 'کارت‌های تصویری قابل افزودن و مرتب‌سازی محصولات بسته‌بندی';
-    protected static int $maxBlocks = 12;
+    protected static int $maxBlocks = 30;
 
     public static function settings(): array
     {
         return [
             Text::make('eyebrow', 'برچسب')->default('انتخاب سریع محصول'),
-            Text::make('heading', 'عنوان')->default('محصولات بسته‌بندی شمیم پک'),
+            Text::make('heading', 'عنوان')->default('محصولات بسته‌بندی جعبه فروش'),
             Text::make('description', 'توضیح')->default('برای هر غذای محبوب، بسته‌بندی مناسب و حرفه‌ای'),
         ];
     }

@@ -90,11 +90,13 @@ abstract class AbstractType
      */
     public function getIndices()
     {
+        $isPriceIncrease = $this->isPriceIncreaseRule();
+
         return [
             'min_price' => ($minPrice = $this->getMinimalPrice()) ?? 0,
-            'regular_min_price' => $this->product->price ?? 0,
+            'regular_min_price' => $isPriceIncrease ? $minPrice : ($this->product->price ?? 0),
             'max_price' => $minPrice ?? 0,
-            'regular_max_price' => $this->product->price ?? 0,
+            'regular_max_price' => $isPriceIncrease ? $minPrice : ($this->product->price ?? 0),
             'product_id' => $this->product->id,
             'channel_id' => $this->channel->id,
             'customer_group_id' => $this->customerGroup->id,
@@ -112,6 +114,10 @@ abstract class AbstractType
         $customerGroupPrice = $this->getCustomerGroupPrice($qty ?? 1);
 
         $rulePrice = $this->getCatalogRulePrice();
+
+        if ($this->isPriceIncreaseRule($rulePrice)) {
+            return $rulePrice->price;
+        }
 
         if (
             empty($this->product->special_price)
@@ -219,5 +225,15 @@ abstract class AbstractType
             ->where('channel_id', $this->channel->id)
             ->where('rule_date', Carbon::now()->format('Y-m-d'))
             ->first();
+    }
+
+    /**
+     * Determine whether the active catalog rule is a percentage price increase.
+     */
+    protected function isPriceIncreaseRule($rulePrice = null): bool
+    {
+        $rulePrice ??= $this->getCatalogRulePrice();
+
+        return $rulePrice?->catalog_rule?->action_type === 'by_percent_increase';
     }
 }

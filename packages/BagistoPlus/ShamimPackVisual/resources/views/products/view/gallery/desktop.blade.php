@@ -52,18 +52,18 @@
     </div>
 
     <!-- Product Base Image and Video with Shimmer-->
-    <div v-show="isMediaLoading" class="max-h-[610px] max-w-[560px]">
-        <div class="shimmer min-h-[607px] min-w-[560px] rounded-xl bg-surface-alt"></div>
+    <div v-show="isMediaLoading" class="h-[560px] w-[560px]">
+        <div class="shimmer h-[560px] w-[560px] rounded-xl bg-surface-alt"></div>
     </div>
 
-    <div v-show="! isMediaLoading" class="max-h-[610px] max-w-[560px]">
+    <div v-show="! isMediaLoading" class="h-[560px] w-[560px]">
         <img
             v-if="baseFile.type == 'image'"
-            class="min-w-[450px] cursor-pointer rounded-xl"
+            class="h-[560px] w-[560px] cursor-pointer rounded-xl object-contain"
             :src="baseFile.path"
             alt="{{ $product->name }}"
             width="560"
-            height="610"
+            height="560"
             tabindex="0"
             @load="onMediaLoad()"
             fetchpriority="high"

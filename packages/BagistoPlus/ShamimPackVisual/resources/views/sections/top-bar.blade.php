@@ -10,7 +10,8 @@
     <div class="announce-links">
         @for ($i = 1; $i <= 3; $i++)
             <a
-                href="{{ $section->settings->{'link_'.$i.'_url'} }}"
+                href="{{ $i === 2 ? (auth()->guard('customer')->check() ? route('shop.customers.account.orders.index') : route('shop.customer.session.index', ['redirect_to' => '/customer/account/orders'])) : $section->settings->{'link_'.$i.'_url'} }}"
+                @class(['announce-link', 'announce-link--tracking' => $i === 2])
                 {{ $section->liveUpdate()->text('link_'.$i.'_text')->attr('link_'.$i.'_url', 'href') }}
             >{{ $section->settings->{'link_'.$i.'_text'} }}</a>
         @endfor

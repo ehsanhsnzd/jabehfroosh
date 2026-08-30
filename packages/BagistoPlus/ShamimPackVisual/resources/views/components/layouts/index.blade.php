@@ -85,7 +85,10 @@
             {!! view_render_event('bagisto.shop.layout.content.before') !!}
 
             <!-- Page Content Blade Component -->
-            <main id="main">
+            <main
+                id="main"
+                @class(['shamim-main-with-footer' => $hasFooter])
+            >
                 <x-visual::layout-content>
                     {{ $slot }}
                 </x-visual::layout-content>
@@ -101,6 +104,12 @@
             @if ($hasFooter)
                 <visual:section name="shamim-pack::footer" />
             @endif
+
+            @if ($hasHeader)
+                @include('shop::components.layouts.mobile-bottom-nav')
+            @endif
+
+            @include('shop::components.layouts.support-widget')
 
             <!-- Flash Message Blade Component -->
             <x-shop::flash-group />

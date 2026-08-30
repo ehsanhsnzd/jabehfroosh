@@ -3,6 +3,7 @@
 namespace Webkul\Admin\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CatalogRuleRequest extends FormRequest
 {
@@ -29,11 +30,11 @@ class CatalogRuleRequest extends FormRequest
             'customer_groups' => 'required|array|min:1',
             'starts_from' => 'nullable|date',
             'ends_till' => 'nullable|date|after_or_equal:starts_from',
-            'action_type' => 'required',
+            'action_type' => ['required', Rule::in(['by_percent', 'by_fixed', 'by_percent_increase'])],
             'discount_amount' => 'required|numeric',
         ];
 
-        if (request()->has('action_type') && request()->action_type == 'by_percent') {
+        if (in_array(request()->input('action_type'), ['by_percent', 'by_percent_increase'])) {
             $rules = array_merge($rules, [
                 'discount_amount' => 'required|numeric|min:0|max:100',
             ]);

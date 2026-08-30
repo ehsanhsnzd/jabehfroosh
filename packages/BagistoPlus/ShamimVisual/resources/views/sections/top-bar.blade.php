@@ -11,6 +11,7 @@
         @for ($i = 1; $i <= 3; $i++)
             <a
                 href="{{ $section->settings->{'link_'.$i.'_url'} }}"
+                @class(['announce-link', 'announce-link--tracking' => $i === 2])
                 {{ $section->liveUpdate()->text('link_'.$i.'_text')->attr('link_'.$i.'_url', 'href') }}
             >{{ $section->settings->{'link_'.$i.'_text'} }}</a>
         @endfor

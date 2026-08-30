@@ -10,7 +10,7 @@ class FurnitureProducts extends BladeSection
 {
     protected static string $view = 'shop::sections.furniture-products';
     protected static string $wrapper = 'section#bestsellers.products.reveal';
-    protected static string $name = 'محصولات منتخب شمیم پک';
+    protected static string $name = 'محصولات منتخب جعبه فروش';
     protected static string $description = 'کاروسل محصولات واقعی فروشگاه';
 
     public static function settings(): array

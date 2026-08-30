@@ -201,6 +201,13 @@
                                             >
                                                 @lang('admin::app.marketing.promotions.catalog-rules.edit.fixed-amount')
                                             </option>
+
+                                            <option
+                                                value="by_percent_increase"
+                                                {{ $selectedOption == 'by_percent_increase' ? 'selected' : '' }}
+                                            >
+                                                @lang('admin::app.marketing.promotions.catalog-rules.edit.increase-percentage-product-price')
+                                            </option>
                                         </x-admin::form.control-group.control>
 
                                         <x-admin::form.control-group.error control-name="action_type" />
