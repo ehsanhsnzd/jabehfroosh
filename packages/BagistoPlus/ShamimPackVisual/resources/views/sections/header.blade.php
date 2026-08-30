@@ -20,7 +20,7 @@
         aria-label="جعبه فروش - صفحه اصلی"
         style="display: flex; height: 82px; align-items: center; gap: 8px"
     >
-        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 120" style="width: 58px; height: 58px; flex: none">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 120" style="width: 54px; height: 54px; flex: none">
             <g fill="none" stroke="#081448" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 43 66 19l48 24-48 25z"/>
                 <path d="M18 43v43l48 24 48-24V43M66 68v42"/>
@@ -31,11 +31,11 @@
         </svg>
 
         <img
-            src="{{ asset('themes/shop/shamim-pack/images/jabehfroosh-wordmark.svg') }}"
+            src="{{ asset('themes/shop/shamim-pack/images/jabehfroosh-wordmark-v2.png') }}"
             alt="جعبه فروش"
-            width="160"
-            height="50"
-            style="width: 160px; height: 50px; object-fit: contain"
+            width="168"
+            height="72"
+            style="width: 168px; height: 72px; object-fit: contain"
         >
     </a>
 
