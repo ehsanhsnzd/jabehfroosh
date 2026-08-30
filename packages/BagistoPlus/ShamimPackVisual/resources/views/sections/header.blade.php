@@ -14,11 +14,13 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
 
-    <a class="logo logo--image" href="{{ route('shop.home.index') }}" aria-label="جعبه فروش - صفحه اصلی">
-        <svg class="logo-image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" role="img" aria-labelledby="header-logo-title header-logo-desc">
-            <title id="header-logo-title">جعبه فروش</title>
-            <desc id="header-logo-desc">فروش تخصصی جعبه و بسته‌بندی</desc>
-
+    <a
+        class="logo logo--image"
+        href="{{ route('shop.home.index') }}"
+        aria-label="جعبه فروش - صفحه اصلی"
+        style="display: flex; height: 82px; align-items: center; gap: 8px"
+    >
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 120" style="width: 58px; height: 58px; flex: none">
             <g fill="none" stroke="#081448" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 43 66 19l48 24-48 25z"/>
                 <path d="M18 43v43l48 24 48-24V43M66 68v42"/>
@@ -26,9 +28,15 @@
 
             <path d="M72 29c9-18 26-24 42-25-2 17-10 34-33 39-5 1-9-2-9-7 0-3 0-5 0-7Z" fill="#11a957"/>
             <path d="M76 38c10-11 21-20 34-29" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-            <text x="138" y="66" fill="#081448" font-family="Lalezar, Vazirmatn, Tahoma, Arial, sans-serif" font-size="52" style="font-family: 'Lalezar', 'Vazirmatn', Tahoma, Arial, sans-serif !important">جعبه فروش</text>
-            <text x="140" y="91" fill="#546057" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="600" letter-spacing="1.1">jabehfroosh.com</text>
         </svg>
+
+        <img
+            src="{{ asset('themes/shop/shamim-pack/images/jabehfroosh-wordmark.svg') }}"
+            alt="جعبه فروش"
+            width="160"
+            height="50"
+            style="width: 160px; height: 50px; object-fit: contain"
+        >
     </a>
 
     <form class="head-search" action="{{ route('shop.search.index') }}">
