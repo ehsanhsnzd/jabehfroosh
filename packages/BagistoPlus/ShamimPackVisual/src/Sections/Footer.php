@@ -29,7 +29,7 @@ class Footer extends BladeSection
             Text::make('brand_name', 'نام برند')->default('شمیم پک'),
             Textarea::make('brand_description', 'توضیح برند')->default('تولید و فروش تخصصی بسته‌بندی غذا؛ از انتخاب جعبه استاندارد تا طراحی و چاپ اختصاصی برند شما.'),
             Text::make('contact_title', 'عنوان تماس')->default('با ما در تماس باشید'),
-            Textarea::make('address', 'آدرس و ساعات کاری')->default("تبریز / اول جاده مایان / کوی بهرام / روبروی کوچه دوم\nشنبه تا چهارشنبه، ۹ تا ۱۸"),
+            Textarea::make('address', 'آدرس و ساعات کاری')->default("تبریز / اول جاده مایان / کوی پدرام / روبروی کوچه دوم\nشنبه تا چهارشنبه، ۹ تا ۱۸"),
             Text::make('phone', 'تلفن')->default('۰۲۱–۸۸۷۷۶۶۵۵'),
             Text::make('email', 'ایمیل')->default('sales@shamimpack.ir'),
             Text::make('copyright', 'کپی‌رایت')->default('شمیم پک — تمامی حقوق محفوظ است.'),
