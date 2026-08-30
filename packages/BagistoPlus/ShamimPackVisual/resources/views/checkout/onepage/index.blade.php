@@ -27,10 +27,11 @@
                     aria-label="@lang('shop::checkout.onepage.index.bagisto')"
                 >
                     <img
-                        src="{{ core()->getCurrentChannel()->logo_url ?? bagisto_asset('images/logo.svg') }}"
-                        alt="{{ config('app.name') }}"
-                        width="131"
-                        height="29"
+                        src="{{ asset('themes/shop/shamim-pack/images/jabehfroosh-logo-professional-v2.png') }}"
+                        alt="جعبه فروش"
+                        width="230"
+                        height="82"
+                        class="h-[82px] w-[230px] object-contain"
                     >
                 </a>
             </div>
