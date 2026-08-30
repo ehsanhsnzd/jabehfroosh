@@ -41,7 +41,12 @@
             </div>
 
             @guest('customer')
-                @include('shop::checkout.login')
+                <a
+                    href="{{ route('shop.customer.session.index') }}"
+                    class="font-semibold text-blue-600 hover:text-blue-800"
+                >
+                    @lang('shop::app.checkout.login.title')
+                </a>
             @endguest
         </div>
     </div>
