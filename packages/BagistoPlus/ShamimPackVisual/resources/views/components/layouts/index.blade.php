@@ -27,21 +27,26 @@
 
         <link
             rel="icon"
-            sizes="16x16"
+            sizes="any"
             href="{{ core()->getCurrentChannel()->favicon_url ?? bagisto_asset('images/favicon.ico') }}"
+        />
+
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="{{ bagisto_asset('images/favicon-32.png') }}"
+        />
+
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="{{ bagisto_asset('images/apple-touch-icon.png') }}"
         />
 
         @includeIf('shop::partials.tokens')
 
         @bagistoVite(['resources/assets/css/shop.css', 'resources/assets/js/shop.js'])
-
-        @if ($theme->settings->default_font)
-            {{ $theme->settings->default_font->toHtml() }}
-        @endif
-
-        @if ($theme->settings->heading_font)
-            {{ $theme->settings->heading_font->toHtml() }}
-        @endif
 
         @stack('styles')
 
