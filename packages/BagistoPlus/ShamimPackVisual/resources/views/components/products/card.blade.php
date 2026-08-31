@@ -22,7 +22,7 @@
                 >
                     <x-shop::media.images.lazy
                         class="after:content-[' '] relative bg-surface transition-all duration-300 after:block after:pb-[calc(100%+9px)] group-hover:scale-105"
-                        ::src="product.base_image.medium_image_url + '?frame-clean=20260829'"
+                        ::src="product.base_image.medium_image_url + '?frame-clean=20260831'"
                         ::key="product.id"
                         ::index="product.id"
                         width="291"
@@ -223,7 +223,7 @@
                 >
                     <x-shop::media.images.lazy
                         class="after:content-[' '] relative min-w-[250px]  transition-all duration-300 after:block after:pb-[calc(100%+9px)] group-hover:scale-105"
-                        ::src="product.base_image.medium_image_url + '?frame-clean=20260829'"
+                        ::src="product.base_image.medium_image_url + '?frame-clean=20260831'"
                         ::key="product.id"
                         ::index="product.id"
                         width="291"
