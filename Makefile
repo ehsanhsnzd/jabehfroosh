@@ -28,6 +28,10 @@ FRONTEND_DIRS := $(THEME_DIR) $(SHAMIM_VISUAL_DIR) $(VELOCITY_DIR) $(SHOP_DIR) $
 	composer-install composer-dump migrate migrate-status seed storage-link queue schedule tinker routes about logs \
 	test test-shop test-admin pint pint-dirty pint-check translations-check catalog-images catalog-seed git-status doctor
 
+up: ## Start the Shamim database, then run Laravel on HOST/PORT
+	@$(MAKE) --no-print-directory db-start
+	@$(MAKE) --no-print-directory serve
+
 help: ## Show all available commands
 	@printf "Shamim / Bagisto helper commands\n\n"
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z0-9_.-]+:.*## / {printf "  %-22s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -48,10 +52,6 @@ build: theme-refresh ## Build and publish the active Shamim Pack theme
 dev: theme-dev ## Alias: start Shamim Pack Vite watch/HMR
 
 clear: cache-clear ## Alias: clear all Laravel caches
-
-up: ## Start the Shamim database, then run Laravel on HOST/PORT
-	@$(MAKE) --no-print-directory db-start
-	@$(MAKE) --no-print-directory serve
 
 db-start: ## Start the Shamim MySQL Docker container
 	docker start "$(DB_CONTAINER)"
