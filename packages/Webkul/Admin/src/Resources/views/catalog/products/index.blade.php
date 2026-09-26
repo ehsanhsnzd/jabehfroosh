@@ -446,6 +446,43 @@
                                 <div v-show="! attributes.length">
                                     {!! view_render_event('bagisto.admin.catalog.products.create_form.general.controls.before') !!}
 
+                                    @if (config('packaging.enabled'))
+                                        <input type="hidden" name="packaging_product" value="1">
+
+                                        <x-admin::form.control-group>
+                                            <x-admin::form.control-group.label class="required">
+                                                نام محصول
+                                            </x-admin::form.control-group.label>
+
+                                            <x-admin::form.control-group.control
+                                                type="text"
+                                                name="name"
+                                                rules="required"
+                                                label="نام محصول"
+                                            />
+
+                                            <x-admin::form.control-group.error control-name="name" />
+                                        </x-admin::form.control-group>
+
+                                        <x-admin::form.control-group>
+                                            <x-admin::form.control-group.label class="required">
+                                                قیمت هر عدد
+                                            </x-admin::form.control-group.label>
+
+                                            <x-admin::form.control-group.control
+                                                type="text"
+                                                name="price"
+                                                rules="required|numeric|min_value:0|max_value:99999"
+                                                label="قیمت هر عدد"
+                                            />
+
+                                            <x-admin::form.control-group.error control-name="price" />
+                                        </x-admin::form.control-group>
+
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                            گزینه‌های تعداد هنگام خرید به‌صورت سراسری نمایش داده می‌شوند و Variant جداگانه ساخته نمی‌شود.
+                                        </p>
+                                    @else
                                     <!-- Product Type -->
                                     <x-admin::form.control-group>
                                         <x-admin::form.control-group.label class="required">
@@ -508,6 +545,7 @@
 
                                         <x-admin::form.control-group.error control-name="sku" />
                                     </x-admin::form.control-group>
+                                    @endif
 
                                     {!! view_render_event('bagisto.admin.catalog.products.create_form.general.controls.after') !!}
                                 </div>

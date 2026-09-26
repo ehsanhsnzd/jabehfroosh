@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\ProductTypes\PackagingSimple;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\ParallelTesting;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
+use Webkul\Product\Type\Simple;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,6 +17,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(Simple::class, PackagingSimple::class);
+
         $allowedIPs = array_map('trim', explode(',', config('app.debug_allowed_ips', '')));
 
         $allowedIPs = array_filter($allowedIPs);
