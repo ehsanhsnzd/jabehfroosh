@@ -447,20 +447,6 @@
                                     {!! view_render_event('bagisto.admin.catalog.products.create_form.general.controls.before') !!}
 
                                     <!-- Product Type -->
-                                    @if (config('packaging.enabled'))
-                                        <x-admin::form.control-group.control type="hidden" name="packaging_product" value="1" />
-                                        <x-admin::form.control-group>
-                                            <x-admin::form.control-group.label class="required">نام محصول</x-admin::form.control-group.label>
-                                            <x-admin::form.control-group.control type="text" name="name" rules="required" label="نام محصول" />
-                                            <x-admin::form.control-group.error control-name="name" />
-                                        </x-admin::form.control-group>
-                                        <x-admin::form.control-group>
-                                            <x-admin::form.control-group.label class="required">قیمت هر عدد ({{ core()->getBaseCurrency()->code }})</x-admin::form.control-group.label>
-                                            <x-admin::form.control-group.control type="text" name="pack_unit_price" rules="required|decimal|min_value:0|max_value:99999" label="قیمت هر عدد" />
-                                            <x-admin::form.control-group.error control-name="pack_unit_price" />
-                                        </x-admin::form.control-group>
-                                        <p class="text-sm">بسته‌های ۱۰۰، ۲۰۰، ۳۰۰، ۴۰۰، ۵۰۰ و ۱۰۰۰ عددی و تعداد دلخواه خودکار ساخته می‌شوند. عکس و توضیحات را در مرحله بعد تکمیل کنید.</p>
-                                    @else
                                     <x-admin::form.control-group>
                                         <x-admin::form.control-group.label class="required">
                                             @lang('admin::app.catalog.products.index.create.type')
@@ -524,7 +510,6 @@
                                     </x-admin::form.control-group>
 
                                     {!! view_render_event('bagisto.admin.catalog.products.create_form.general.controls.after') !!}
-                                    @endif
                                 </div>
 
                                 <div v-show="attributes.length">

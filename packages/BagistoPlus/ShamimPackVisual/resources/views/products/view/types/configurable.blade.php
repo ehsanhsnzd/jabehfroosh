@@ -1,6 +1,4 @@
-@if (app(\App\Services\PackagingProducts::class)->isPackaging($product))
-    @include('shop::products.view.types.packaging')
-@elseif (Webkul\Product\Helpers\ProductType::hasVariants($product->type))
+@if (Webkul\Product\Helpers\ProductType::hasVariants($product->type))
     {!! view_render_event('bagisto.shop.products.view.configurable-options.before', ['product' => $product]) !!}
 
     <v-product-configurable-options :errors="errors"></v-product-configurable-options>

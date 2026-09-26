@@ -4,17 +4,7 @@
 
 {!! view_render_event('bagisto.admin.catalog.product.edit.form.types.configurable.before', ['product' => $product]) !!}
 
-@if (app(\App\Services\PackagingProducts::class)->isPackaging($product))
-    <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
-        <p class="text-base font-semibold">بسته‌های خودکار</p>
-        <p class="my-3">قیمت هر عدد را در بخش بسته‌بندی تغییر دهید؛ قیمت همه گزینه‌ها هنگام ذخیره محاسبه می‌شود. کنترل موجودی این گزینه‌ها غیرفعال است.</p>
-        @foreach ($product->variants as $variant)
-            <p class="my-2">{{ $variant->name }} — {{ core()->formatBasePrice($variant->price ?? 0) }}</p>
-        @endforeach
-    </div>
-@else
-    <v-product-variations :errors="errors"></v-product-variations>
-@endif
+<v-product-variations :errors="errors"></v-product-variations>
 
 {!! view_render_event('bagisto.admin.catalog.product.edit.form.types.configurable.after', ['product' => $product]) !!}
 
