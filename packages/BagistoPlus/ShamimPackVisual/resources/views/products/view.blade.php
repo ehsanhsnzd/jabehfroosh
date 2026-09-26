@@ -48,6 +48,7 @@
     }
 
     $isCatalogInquiry = str_starts_with($product->sku, 'SP-') && (float) $product->price <= 0;
+    $isPackagingProduct = app(\App\Services\PackagingProducts::class)->isPackaging($product);
 @endphp
 
 <!-- SEO Meta Content -->
@@ -370,6 +371,8 @@
                                 <div class="mt-[22px] flex items-center gap-2.5 text-2xl !font-medium max-sm:mt-2 max-sm:gap-x-2.5 max-sm:gap-y-0 max-sm:text-lg">
                                     @if ($isCatalogInquiry)
                                         <span class="text-primary">استعلام قیمت و سفارش عمده</span>
+                                    @elseif ($isPackagingProduct)
+                                        <span>{{ core()->currency($product->pack_unit_price ?? 0) }} / هر عدد</span>
                                     @else
                                         {!! $product->getTypeInstance()->getPriceHtml() !!}
                                     @endif
@@ -432,7 +435,7 @@
 
                                     {!! view_render_event('bagisto.shop.products.view.quantity.before', ['product' => $product]) !!}
 
-                                    @if ($product->getTypeInstance()->showQuantityBox())
+                                    @if ($product->getTypeInstance()->showQuantityBox() && ! $isPackagingProduct)
                                         <x-shop::quantity-changer
                                             name="quantity"
                                             value="1"

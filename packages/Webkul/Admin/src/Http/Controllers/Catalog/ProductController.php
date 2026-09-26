@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Webkul\Admin\DataGrids\Catalog\ProductDataGrid;
 use Webkul\Admin\Http\Controllers\Controller;
@@ -89,7 +90,17 @@ class ProductController extends Controller
      */
     public function store()
     {
+        if (config('packaging.enabled') && request()->input('packaging_product')) {
+            request()->merge([
+                'type' => 'simple',
+                'sku' => 'pack-'.Str::lower((string) Str::ulid()),
+                'attribute_family_id' => $this->attributeFamilyRepository->first()->id,
+            ]);
+        }
+
         $this->validate(request(), [
+            'name' => 'required_if:packaging_product,1|string|max:255',
+            'pack_unit_price' => 'required_if:packaging_product,1|numeric|min:0|max:99999',
             'type' => 'required',
             'attribute_family_id' => 'required',
             'sku' => ['required', 'unique:products,sku', new Slug],
@@ -119,6 +130,8 @@ class ProductController extends Controller
             'sku',
             'super_attributes',
             'family',
+            'name',
+            'pack_unit_price',
         ]));
 
         Event::dispatch('catalog.product.create.after', $product);
