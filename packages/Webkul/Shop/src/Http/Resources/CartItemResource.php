@@ -17,6 +17,8 @@ class CartItemResource extends JsonResource
      */
     public function toArray($request)
     {
+        $packagingSize = (int) ($this->resource->additional['packaging_size'] ?? 0);
+
         return [
             'id' => $this->id,
             'quantity' => $this->quantity,
@@ -36,6 +38,12 @@ class CartItemResource extends JsonResource
             'product_url_key' => $this->product->url_key,
             'options' => $this->formatAdditionalAttributes(),
             'can_change_qty' => $this->product ? $this->product->getTypeInstance()->showQuantityBox() : false,
+            'packaging_size' => $packagingSize ?: null,
+            'packaging_count' => $packagingSize ? intdiv((int) $this->quantity, $packagingSize) : null,
+            'packaging_price' => $packagingSize ? (float) $this->price * $packagingSize : null,
+            'formatted_packaging_price' => $packagingSize ? core()->formatPrice($this->price * $packagingSize) : null,
+            'packaging_price_incl_tax' => $packagingSize ? (float) $this->price_incl_tax * $packagingSize : null,
+            'formatted_packaging_price_incl_tax' => $packagingSize ? core()->formatPrice($this->price_incl_tax * $packagingSize) : null,
         ];
     }
 

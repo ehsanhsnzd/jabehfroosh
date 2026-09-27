@@ -40,21 +40,12 @@
                         ></span>
                         @endif
 
-                        @if (core()->getConfigData('sales.checkout.my_cart.summary') == 'display_item_quantity')
-                            <span
-                                class="absolute -top-4 rounded-[44px] bg-primary px-2 py-1.5 text-xs font-semibold leading-[9px] text-on-primary ltr:left-5 rtl:right-5 max-md:ltr:left-4 max-md:rtl:right-4"
-                                v-if="cart?.items_qty"
-                            >
-                                @{{ cart.items_qty }}
-                            </span>
-                        @else
-                            <span
-                                class="absolute -top-4 rounded-[44px] bg-primary px-2 py-1.5 text-xs font-semibold leading-[9px] text-on-primary ltr:left-5 rtl:right-5 max-md:px-2 max-md:py-1.5 max-md:ltr:left-4 max-md:rtl:right-4"
-                                v-if="cart?.items_count"
-                            >
-                                @{{ cart.items_count }}
-                            </span>
-                        @endif
+                        <span
+                            class="absolute -top-4 rounded-[44px] bg-primary px-2 py-1.5 text-xs font-semibold leading-[9px] text-on-primary ltr:left-5 rtl:right-5 max-md:px-2 max-md:py-1.5 max-md:ltr:left-4 max-md:rtl:right-4"
+                            v-if="cart?.items_count"
+                        >
+                            @{{ cart.items_count }}
+                        </span>
                     </span>
 
                     {!! view_render_event('bagisto.shop.checkout.mini-cart.drawer.toggle.after') !!}
@@ -214,7 +205,7 @@
                                 <x-shop::quantity-changer
                                     class="max-h-9 max-w-[150px] gap-x-2.5 rounded-[54px] px-3.5 py-1.5 max-md:gap-x-2 max-md:px-1 max-md:py-0.5"
                                     name="quantity"
-                                    ::value="item?.quantity"
+                                    ::value="item?.packaging_count ?? item?.quantity"
                                     @change="updateItem($event, item)"
                                 />
 
@@ -372,9 +363,9 @@
 
                         <span
                             class="absolute -top-4 rounded-[44px] bg-primary px-2 py-1.5 text-xs font-semibold leading-[9px] text-on-primary ltr:left-5 rtl:right-5 max-md:px-2 max-md:py-1.5 max-md:ltr:left-4 max-md:rtl:right-4"
-                            v-if="cart?.items_qty"
+                            v-if="cart?.items_count"
                         >
-                            @{{ cart.items_qty }}
+                            @{{ cart.items_count }}
                         </span>
                     </span>
 
@@ -429,7 +420,9 @@
 
                     let qty = {};
 
-                    qty[item.id] = quantity;
+                    qty[item.id] = item.packaging_size
+                        ? quantity * item.packaging_size
+                        : quantity;
 
                     this.$axios.put('{{ route('shop.api.checkout.cart.update') }}', {
                             qty

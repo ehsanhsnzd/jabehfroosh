@@ -62,7 +62,7 @@
             methods: {
                 updateCart(cart) {
                     const currentCart = cart?.data ?? cart;
-                    this.itemsQty = Number(currentCart?.items_qty ?? 0);
+                    this.itemsQty = Number(currentCart?.items_count ?? 0);
                 },
 
                 getCart() {

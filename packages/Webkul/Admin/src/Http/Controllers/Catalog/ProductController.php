@@ -131,6 +131,7 @@ class ProductController extends Controller
             'family',
             'name',
             'price',
+            'packaging_product',
         ]));
 
         Event::dispatch('catalog.product.create.after', $product);

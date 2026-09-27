@@ -156,7 +156,7 @@
         >
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 4h2l2.2 10h10.7l2-7H6"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/></svg>
 
-            <span v-if="cart?.items_qty" class="action-badge">@{{ cart.items_qty }}</span>
+            <span v-if="cart?.items_count" class="action-badge">@{{ cart.items_count }}</span>
         </button>
 
         <aside class="sh-drawer" id="cartDrawer" aria-hidden="true">
@@ -194,7 +194,13 @@
                             </a>
 
                             <p class="mt-2 text-xs text-on-background/60">
-                                تعداد: @{{ item.quantity }}
+                                <template v-if="item.packaging_size">
+                                    @{{ item.packaging_count }} بسته × @{{ item.packaging_size }} عدد
+                                </template>
+
+                                <template v-else>
+                                    تعداد: @{{ item.quantity }}
+                                </template>
                             </p>
 
                             <p class="mt-1 text-sm font-bold text-primary">

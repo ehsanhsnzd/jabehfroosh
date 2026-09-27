@@ -27,13 +27,17 @@
 
             {!! view_render_event('bagisto.shop.checkout.onepage.summary.item_name.after') !!}
 
+            <p v-if="item.packaging_size" class="mt-1 text-sm font-semibold text-primary">
+                @{{ item.packaging_count }} بسته × @{{ item.packaging_size }} عدد = @{{ item.quantity }} عدد کل
+            </p>
+
             <p class="mt-2.5 flex flex-col text-lg font-medium max-md:mt-1 max-md:text-base max-md:font-normal max-sm:text-sm">
                 <template v-if="displayTax.prices == 'including_tax'">
-                    @lang('shop::app.checkout.onepage.summary.price_&_qty', ['price' => '@{{ item.formatted_price_incl_tax }}', 'qty' => '@{{ item.quantity }}'])
+                    @lang('shop::app.checkout.onepage.summary.price_&_qty', ['price' => '@{{ item.formatted_packaging_price_incl_tax ?? item.formatted_price_incl_tax }}', 'qty' => '@{{ item.packaging_count ?? item.quantity }}'])
                 </template>
 
                 <template v-else-if="displayTax.prices == 'both'">
-                    @lang('shop::app.checkout.onepage.summary.price_&_qty', ['price' => '@{{ item.formatted_price_incl_tax }}', 'qty' => '@{{ item.quantity }}'])
+                    @lang('shop::app.checkout.onepage.summary.price_&_qty', ['price' => '@{{ item.formatted_packaging_price_incl_tax ?? item.formatted_price_incl_tax }}', 'qty' => '@{{ item.packaging_count ?? item.quantity }}'])
 
                     <span class="text-xs font-normal">
                         @lang('shop::app.checkout.onepage.summary.excl-tax')
@@ -43,7 +47,7 @@
                 </template>
 
                 <template v-else>
-                    @lang('shop::app.checkout.onepage.summary.price_&_qty', ['price' => '@{{ item.formatted_price }}', 'qty' => '@{{ item.quantity }}'])
+                    @lang('shop::app.checkout.onepage.summary.price_&_qty', ['price' => '@{{ item.formatted_packaging_price ?? item.formatted_price }}', 'qty' => '@{{ item.packaging_count ?? item.quantity }}'])
                 </template>
             </p>
         </div>

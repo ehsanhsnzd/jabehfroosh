@@ -191,7 +191,10 @@
                                             @if (isset($item->additional['attributes']))
                                                 @foreach ($item->additional['attributes'] as $attribute)
                                                     <p
-                                                        class="text-gray-600 dark:text-gray-300"
+                                                        @class([
+                                                            'text-gray-600 dark:text-gray-300',
+                                                            '!text-base !font-bold !text-orange-600 dark:!text-orange-400' => ($attribute['attribute_name'] ?? '') === 'بسته‌بندی تولید',
+                                                        ])
                                                         v-pre
                                                     >
                                                         @if (

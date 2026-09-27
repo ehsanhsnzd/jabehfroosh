@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\ProductTypes\PackagingSimple;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\ParallelTesting;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
@@ -39,6 +40,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::listen('checkout.cart.update.before', function ($item) {
+            $type = $item->getTypeInstance();
+
+            if ($type instanceof PackagingSimple) {
+                $type->preparePackagingUpdate($item);
+            }
+        });
+
         ParallelTesting::setUpTestDatabase(function (string $database, int $token) {
             Artisan::call('db:seed');
         });
