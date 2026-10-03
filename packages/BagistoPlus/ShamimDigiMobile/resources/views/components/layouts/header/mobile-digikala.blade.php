@@ -8,6 +8,147 @@
     $isHome = request()->routeIs('shop.home.index');
 @endphp
 
+@pushOnce('styles')
+    <style>
+        .sh-digi-mobile-header {
+            display: none;
+        }
+
+        @media (max-width: 1023px) {
+            .shamim-digi-mobile-layout .sh-header-desktop--digi-mobile {
+                display: none;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-mobile-header {
+                position: sticky;
+                top: 0;
+                z-index: 40;
+                display: block;
+                overflow: hidden;
+                background: #f2f3f5;
+                border-bottom: 1px solid #e3e5e8;
+                box-shadow: 0 1px 4px rgb(0 0 0 / 5%);
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-tabs-wrap {
+                overflow-x: auto;
+                overscroll-behavior-inline: contain;
+                scrollbar-width: none;
+                direction: rtl;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-tabs-wrap::-webkit-scrollbar {
+                display: none;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-tabs {
+                display: flex;
+                gap: 8px;
+                width: max-content;
+                min-width: 100%;
+                padding: 10px 12px 8px;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-tab {
+                display: flex;
+                flex: 0 0 78px;
+                min-height: 82px;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                overflow: hidden;
+                padding: 5px;
+                color: #242424;
+                border: 1px solid #dedfe0;
+                border-radius: 14px;
+                background: #fff;
+                text-decoration: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-tab--active {
+                color: #fff;
+                border-color: #e40046;
+                background: #e40046;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-tab__icon {
+                display: flex;
+                width: 34px;
+                height: 34px;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                border-radius: 10px;
+                background: #f5f5f5;
+                font-size: 17px;
+                font-weight: 700;
+                line-height: 1;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-tab--active .sh-digi-tab__icon {
+                background: rgb(255 255 255 / 18%);
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-tab__icon img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-tab__label {
+                display: -webkit-box;
+                overflow: hidden;
+                max-width: 100%;
+                font-size: 11px;
+                font-weight: 700;
+                line-height: 1.35;
+                text-align: center;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-mobile-header__toolbar {
+                padding: 4px 16px 12px;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-search {
+                min-height: 46px;
+                padding: 0 13px;
+                border: 1px solid #d8dade;
+                border-radius: 999px;
+                background: #fff;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-search__icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #9b9fa6;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-search__input {
+                height: 44px;
+                padding: 0 8px;
+                color: #242424;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-search__input::placeholder {
+                color: #81858b;
+                opacity: 1;
+            }
+
+            .shamim-digi-mobile-layout .sh-digi-notify {
+                width: 46px;
+                height: 46px;
+                border-color: #d8dade;
+                box-shadow: 0 1px 2px rgb(0 0 0 / 3%);
+            }
+        }
+    </style>
+@endPushOnce
+
 <div class="sh-digi-mobile-header">
     <v-sh-digi-catalog-tabs
         home-url="{{ route('shop.home.index') }}"
@@ -114,7 +255,8 @@
                     :aria-selected="isCategoryActive(category.url) ? 'true' : 'false'"
                 >
                     <span class="sh-digi-tab__icon sh-digi-tab__icon--letter" aria-hidden="true">
-                        @{{ categoryInitial(category.name) }}
+                        <img v-if="category.image_url || category.logo_url" :src="category.image_url || category.logo_url" alt="">
+                        <template v-else>@{{ categoryInitial(category.name) }}</template>
                     </span>
                     <span class="sh-digi-tab__label">@{{ category.name }}</span>
                 </a>
