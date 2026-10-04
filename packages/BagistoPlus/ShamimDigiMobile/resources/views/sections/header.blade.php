@@ -26,10 +26,14 @@
     ];
 
     $useDigikalaMobileHeader = (bool) ($shamimDigikalaMobileLayout ?? false);
+    $mobileCatalogItems = collect($productCategoryGroups)->collapse()->values()->all();
 @endphp
 
 @if ($useDigikalaMobileHeader)
-    @include('shop::components.layouts.header.mobile-digikala', ['section' => $section])
+    @include('shop::components.layouts.header.mobile-digikala', [
+        'section' => $section,
+        'catalogItems' => $mobileCatalogItems,
+    ])
 @endif
 
 <div @class(['sh-header-desktop', 'sh-header-desktop--digi-mobile' => $useDigikalaMobileHeader])>

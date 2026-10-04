@@ -52,6 +52,8 @@
 
         @bagistoVite(['resources/assets/css/shop.css', 'resources/assets/js/shop.js'])
 
+        @include('shop::components.layouts.header.mobile-digikala-styles')
+
         @stack('styles')
 
         <style>
