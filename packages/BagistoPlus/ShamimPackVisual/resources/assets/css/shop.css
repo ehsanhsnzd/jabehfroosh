@@ -1176,5 +1176,7 @@ body button,
 body input,
 body select,
 body textarea {
+    --default-font-family: 'IBM Plex Sans Arabic', Vazirmatn, sans-serif;
+    --heading-font-family: 'IBM Plex Sans Arabic', Vazirmatn, sans-serif;
     font-family: 'IBM Plex Sans Arabic', Vazirmatn, sans-serif !important;
 }
