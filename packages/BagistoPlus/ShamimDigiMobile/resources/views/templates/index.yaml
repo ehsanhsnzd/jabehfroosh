@@ -1,6 +1,6 @@
 sections:
   hero:
-    type: shamim-pack::furniture-hero
+    type: shamim-digi-mobile::furniture-hero
     settings:
       image: /themes/shop/shamim-pack/images/pack-hero.png
       eyebrow: تولید و فروش تخصصی بسته‌بندی غذا
@@ -14,7 +14,7 @@ sections:
       badge_2_title: چاپ اختصاصی برند
       badge_2_text: از طراحی تا تولید
   categories:
-    type: shamim-pack::furniture-categories
+    type: shamim-digi-mobile::furniture-categories
     settings:
       eyebrow: دسترسی سریع
       heading: دسته‌بندی محصولات جعبه فروش
@@ -39,13 +39,13 @@ sections:
       sandwich_paper: { type: category, settings: { image: "/themes/shop/shamim-pack/images/catalog-sandwich-paper.webp", title: کاغذ ساندویچ, count: کرافت مخصوص غذا, url: "/sandwich-wrapping-paper" } }
     blocks_order: [cups, nuts, icecream, sachet, takeaway, cutlery, burger, pizza, sandwich, fried, fries, food, bucket, tablecloth, pizza_board, disposable, sandwich_paper]
   products:
-    type: shamim-pack::furniture-products
+    type: shamim-digi-mobile::furniture-products
     settings:
       eyebrow: انتخاب حرفه‌ای‌ها
       heading: پرفروش‌ترین بسته‌بندی‌ها
       limit: 10
   story:
-    type: shamim-pack::furniture-story
+    type: shamim-digi-mobile::furniture-story
     settings:
       image: /themes/shop/shamim-pack/images/pack-kraft.png
       eyebrow: هویت برند شما روی بسته‌بندی
@@ -59,7 +59,7 @@ sections:
       customers: { type: stat, settings: { value: ۹۸٪, label: رضایت مشتریان عمده } }
     blocks_order: [experience, designs, customers]
   editorial:
-    type: shamim-pack::editorial-stories
+    type: shamim-digi-mobile::editorial-stories
     settings:
       eyebrow: انتخاب آگاهانه
       heading: راهنمای بسته‌بندی حرفه‌ای
@@ -82,12 +82,12 @@ sections:
           url: /blog/bastebandi-foroush-dobare
     blocks_order: [material, printing]
   quote:
-    type: shamim-pack::quote-banner
+    type: shamim-digi-mobile::quote-banner
     settings:
       quote: مشتری قبل از چشیدن غذا، کیفیت برند شما را از بسته‌بندی آن قضاوت می‌کند.
       cite: — جعبه فروش، همراه برندهای خوش‌طعم
   marquee:
-    type: shamim-pack::furniture-marquee
+    type: shamim-digi-mobile::furniture-marquee
     blocks:
       foodgrade: { type: item, settings: { text: مواد اولیه Food Grade } }
       custom: { type: item, settings: { text: چاپ اختصاصی برند } }
@@ -96,7 +96,7 @@ sections:
       shipping: { type: item, settings: { text: ارسال به سراسر ایران } }
     blocks_order: [foodgrade, custom, wholesale, sustainable, shipping]
   brands:
-    type: shamim-pack::brand-strip
+    type: shamim-digi-mobile::brand-strip
     settings:
       eyebrow: برای کسب‌وکار شما
       heading: بسته‌بندی مناسب هر مدل فروش غذا
@@ -108,7 +108,7 @@ sections:
       bakery: { type: brand, settings: { name: قنادی } }
     blocks_order: [restaurant, fastfood, cafe, catering, bakery]
   benefits:
-    type: shamim-pack::benefit-strip
+    type: shamim-digi-mobile::benefit-strip
     blocks:
       quality: { type: benefit, settings: { icon: "✓", title: کیفیت غذایی, description: مواد اولیه استاندارد } }
       wholesale: { type: benefit, settings: { icon: "٪", title: قیمت عمده, description: مناسب خرید سازمانی } }
