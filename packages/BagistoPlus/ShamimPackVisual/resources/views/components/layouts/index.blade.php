@@ -48,6 +48,8 @@
 
         @bagistoVite(['resources/assets/css/shop.css', 'resources/assets/js/shop.js'])
 
+        @include('shamim-pack::partials.ibm-plex-arabic-font')
+
         @stack('styles')
 
         <style>
