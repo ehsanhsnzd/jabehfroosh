@@ -3,8 +3,7 @@
 
     @media (max-width: 767px) {
         .shamim-digi-mobile-layout > .sc,
-        .shamim-digi-mobile-layout .sh-header-desktop--digi-mobile,
-        .shamim-digi-mobile-layout .sh-mobile-bottom-nav {
+        .shamim-digi-mobile-layout .sh-header-desktop--digi-mobile {
             display: none !important;
         }
 

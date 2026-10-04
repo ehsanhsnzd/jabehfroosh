@@ -19,8 +19,6 @@
         "ext-tokenizer": "*",
         "astrotomic/laravel-translatable": "^11.16",
         "bagistoplus/shamim-digi-mobile": "@dev",
-        "bagistoplus/shamim-pack": "@dev",
-        "bagistoplus/shamim-visual": "@dev",
         "bagistoplus/visual": "^1.1",
         "bagistoplus/visual-velocity": "@dev",
         "barryvdh/laravel-dompdf": "^2.0.0|^3.0",

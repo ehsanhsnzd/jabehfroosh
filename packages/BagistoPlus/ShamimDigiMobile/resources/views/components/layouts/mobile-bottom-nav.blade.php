@@ -13,12 +13,12 @@
             </a>
 
             <a
-                href="{{ route('shop.home.contact_us') }}"
-                class="sh-mobile-bottom-nav__item {{ request()->routeIs('shop.home.contact_us') ? 'is-active' : '' }}"
-                aria-label="پشتیبانی"
+                href="{{ route('shop.search.index') }}"
+                class="sh-mobile-bottom-nav__item {{ request()->routeIs('shop.search.index', 'shop.product_or_category.index') ? 'is-active' : '' }}"
+                aria-label="دسته بندی ها"
             >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-8 8 8.8 8.8 0 0 1-3.4-.7L4 20l1.2-4A8 8 0 1 1 20 11.5Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01" stroke-linecap="round"/></svg>
-                <span>پشتیبانی</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                <span>دسته بندی ها</span>
             </a>
 
             <a
@@ -32,12 +32,21 @@
             </a>
 
             <a
-                href="{{ route('shop.search.index') }}"
-                class="sh-mobile-bottom-nav__item {{ request()->routeIs('shop.search.index', 'shop.product_or_category.index') ? 'is-active' : '' }}"
-                aria-label="محصولات"
+                href="{{ route('shop.home.contact_us') }}"
+                class="sh-mobile-bottom-nav__item {{ request()->routeIs('shop.home.contact_us') ? 'is-active' : '' }}"
+                aria-label="پشتیبانی"
             >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 10v10h16V10M3 4h18l-1 6a3 3 0 0 1-5 1 3 3 0 0 1-6 0 3 3 0 0 1-5-1zM9 20v-5h6v5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span>محصولات</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-8 8 8.8 8.8 0 0 1-3.4-.7L4 20l1.2-4A8 8 0 1 1 20 11.5Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01" stroke-linecap="round"/></svg>
+                <span>پشتیبانی</span>
+            </a>
+
+            <a
+                href="{{ auth()->guard('customer')->check() ? route('shop.customers.account.index') : route('shop.customer.session.create') }}"
+                class="sh-mobile-bottom-nav__item {{ request()->routeIs('shop.customers.account.*', 'shop.customer.session.*') ? 'is-active' : '' }}"
+                aria-label="جعبه فروش من"
+            >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0" stroke-linecap="round"/></svg>
+                <span>جعبه فروش من</span>
             </a>
         </nav>
     </script>

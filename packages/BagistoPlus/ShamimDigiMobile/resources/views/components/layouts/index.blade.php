@@ -52,7 +52,7 @@
 
         @bagistoVite(['resources/assets/css/shop.css', 'resources/assets/js/shop.js'])
 
-        @include('shop::components.layouts.header.mobile-digikala-styles')
+        @include('shamim-digi-mobile::components.layouts.header.mobile-digikala-styles')
 
         @stack('styles')
 
@@ -72,7 +72,7 @@
 
     </head>
 
-    <body class="bg-background text-on-background shamim-pack-theme shamim-digi-mobile-layout">
+    <body class="bg-background text-on-background shamim-digi-mobile-theme shamim-digi-mobile-layout">
         {!! view_render_event('bagisto.shop.layout.body.before') !!}
 
         <a href="#main" class="skip-to-main-content-link">
@@ -110,7 +110,7 @@
             @endif
 
             @if ($hasHeader)
-                @include('shop::components.layouts.mobile-bottom-nav')
+                @include('shamim-digi-mobile::components.layouts.mobile-bottom-nav')
             @endif
 
             @include('shop::components.layouts.support-widget')
