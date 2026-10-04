@@ -56,6 +56,8 @@
 
         @stack('styles')
 
+        @include('shamim-digi-mobile::partials.canva-font')
+
         <style>
             {!! core()->getConfigData('general.content.custom_scripts.custom_css') !!}
         </style>
