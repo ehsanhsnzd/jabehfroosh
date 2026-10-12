@@ -13,9 +13,9 @@ DB_CONTAINER ?= shamim-mysql
 FILTER ?=
 
 ARTISAN := $(PHP) artisan
-THEME_DIR := packages/BagistoPlus/ShamimPackVisual
-THEME_BUILD_DIR := $(THEME_DIR)/public/themes/shop/shamim-pack
-THEME_PUBLIC_DIR := public/themes/shop/shamim-pack
+THEME_DIR := packages/BagistoPlus/ShamimDigiMobile
+THEME_BUILD_DIR := $(THEME_DIR)/public/themes/shop/shamim-digi-mobile
+THEME_PUBLIC_DIR := public/themes/shop/shamim-digi-mobile
 SHAMIM_VISUAL_DIR := packages/BagistoPlus/ShamimVisual
 VELOCITY_DIR := packages/BagistoPlus/VisualVelocity
 SHOP_DIR := packages/Webkul/Shop

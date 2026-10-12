@@ -1,6 +1,6 @@
 {
   "resources/assets/css/shop.css": {
-    "file": "assets/shop-DNcbCetc.css",
+    "file": "assets/shop-BOOZDjZa.css",
     "src": "resources/assets/css/shop.css",
     "isEntry": true
   },
@@ -140,9 +140,25 @@
     "file": "assets/hero-image-DwKg3YHc.webp",
     "src": "resources/assets/images/hero-image.webp"
   },
+  "resources/assets/images/jabehfroosh-logo-professional-v1.png": {
+    "file": "assets/jabehfroosh-logo-professional-v1-DdW_zA8b.png",
+    "src": "resources/assets/images/jabehfroosh-logo-professional-v1.png"
+  },
+  "resources/assets/images/jabehfroosh-logo-professional-v2.png": {
+    "file": "assets/jabehfroosh-logo-professional-v2-CdMukvNy.png",
+    "src": "resources/assets/images/jabehfroosh-logo-professional-v2.png"
+  },
   "resources/assets/images/jabehfroosh-logo.svg": {
     "file": "assets/jabehfroosh-logo-DjBCM-7w.svg",
     "src": "resources/assets/images/jabehfroosh-logo.svg"
+  },
+  "resources/assets/images/jabehfroosh-wordmark-v2.png": {
+    "file": "assets/jabehfroosh-wordmark-v2-C6aWa_hw.png",
+    "src": "resources/assets/images/jabehfroosh-wordmark-v2.png"
+  },
+  "resources/assets/images/jabehfroosh-wordmark.svg": {
+    "file": "assets/jabehfroosh-wordmark-3yXK_cyc.svg",
+    "src": "resources/assets/images/jabehfroosh-wordmark.svg"
   },
   "resources/assets/images/large-product-placeholder.webp": {
     "file": "assets/large-product-placeholder-B9xoAuKQ.webp",
@@ -165,15 +181,15 @@
     "src": "resources/assets/images/no-address.png"
   },
   "resources/assets/images/pack-burger.png": {
-    "file": "assets/pack-burger-CGCedwWf.png",
+    "file": "assets/pack-burger-Bf6yk4MR.png",
     "src": "resources/assets/images/pack-burger.png"
   },
   "resources/assets/images/pack-chicken.png": {
-    "file": "assets/pack-chicken-DkoeaFYH.png",
+    "file": "assets/pack-chicken-CVFcUEPm.png",
     "src": "resources/assets/images/pack-chicken.png"
   },
   "resources/assets/images/pack-fries.png": {
-    "file": "assets/pack-fries-BNTy2vwP.png",
+    "file": "assets/pack-fries-Wi1gtbaJ.png",
     "src": "resources/assets/images/pack-fries.png"
   },
   "resources/assets/images/pack-hero.png": {
@@ -185,7 +201,7 @@
     "src": "resources/assets/images/pack-kraft.png"
   },
   "resources/assets/images/pack-sandwich.png": {
-    "file": "assets/pack-sandwich-BS8HdU-3.png",
+    "file": "assets/pack-sandwich-DDX_JaUW.png",
     "src": "resources/assets/images/pack-sandwich.png"
   },
   "resources/assets/images/paypal.png": {

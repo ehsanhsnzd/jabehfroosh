@@ -69,8 +69,8 @@
         <div id="app">
             <!-- Page Header Blade Component -->
             @if ($hasHeader)
-                <visual:section name="shamim-pack::top-bar" />
-                <visual:section name="shamim-pack::header" />
+                <visual:section name="shamim-digi-mobile::top-bar" />
+                <visual:section name="shamim-digi-mobile::header" />
             @endif
 
             @if (core()->getConfigData('general.gdpr.settings.enabled') && core()->getConfigData('general.gdpr.cookie.enabled'))
@@ -94,7 +94,7 @@
 
             <!-- Page Footer Blade Component -->
             @if ($hasFooter)
-                <visual:section name="shamim-pack::footer" />
+                <visual:section name="shamim-digi-mobile::footer" />
             @endif
 
             @if ($hasHeader)
