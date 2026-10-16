@@ -96,7 +96,7 @@
 
     <div class="footer-trust__badges" aria-label="مجوزها و ضمانت‌های فروشگاه">
         <article class="trust-badge trust-badge--payment">
-            <span><svg aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h3"/></svg></span>
+            <span><a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=8016603&Code=LGmRXZjpn3QOuP20llPbTjlqJnIH5FME'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=8016603&Code=LGmRXZjpn3QOuP20llPbTjlqJnIH5FME' alt='' style='cursor:pointer' code='LGmRXZjpn3QOuP20llPbTjlqJnIH5FME'></a></span>
             <strong>پرداخت امن</strong>
             <small>درگاه بانکی</small>
         </article>

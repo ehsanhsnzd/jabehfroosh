@@ -1,38 +1,114 @@
 @php
-    $productCategoryGroups = [
-        'جعبه‌های غذا' => [
-            ['title' => 'جعبه پیتزا', 'url' => '/pizza-boxes'],
-            ['title' => 'جعبه برگر', 'url' => '/burger-boxes'],
-            ['title' => 'جعبه ساندویچ', 'url' => '/sandwich-boxes'],
-            ['title' => 'جعبه سوخاری', 'url' => '/fried-chicken-boxes'],
-            ['title' => 'جعبه سیب‌زمینی', 'url' => '/french-fries-boxes'],
-            ['title' => 'جعبه غذا', 'url' => '/takeaway-food-boxes'],
-            ['title' => 'سطل سوخاری', 'url' => '/fried-chicken-buckets'],
-        ],
-        'ملزومات سرو و مصرف' => [
-            ['title' => 'ظروف یکبار مصرف', 'url' => '/disposable-food-containers'],
-            ['title' => 'لیوان یکبار مصرف', 'url' => '/disposable-cups'],
-            ['title' => 'پک قاشق و چنگال', 'url' => '/cutlery-packs'],
-            ['title' => 'سفره', 'url' => '/disposable-tablecloths'],
-            ['title' => 'سینگل زیر پیتزا', 'url' => '/pizza-boards'],
-        ],
-        'بسته‌بندی‌های تکمیلی' => [
-            ['title' => 'پاکت بیرون‌بر', 'url' => '/takeaway-bags'],
-            ['title' => 'کاغذ ساندویچ', 'url' => '/sandwich-wrapping-paper'],
-            ['title' => 'بسته‌بندی ساشه', 'url' => '/single-serve-sachets'],
-            ['title' => 'بسته‌بندی آجیل', 'url' => '/nuts-packaging'],
-            ['title' => 'بسته‌بندی بستنی', 'url' => '/ice-cream-packaging'],
-        ],
+    $catalogIcons = [
+        '/pizza-boxes' => '🍕',
+        '/burger-boxes' => '🍔',
+        '/sandwich-boxes' => '🥪',
+        '/fried-chicken-boxes' => '🍗',
+        '/french-fries-boxes' => '🍟',
+        '/takeaway-food-boxes' => '🍱',
+        '/fried-chicken-buckets' => '🪣',
+        '/disposable-food-containers' => '🥡',
+        '/disposable-cups' => '🥤',
+        '/cutlery-packs' => '🍴',
+        '/disposable-tablecloths' => '🧻',
+        '/pizza-boards' => '⭕',
+        '/takeaway-bags' => '🛍️',
+        '/sandwich-wrapping-paper' => '📜',
+        '/single-serve-sachets' => '🧴',
+        '/nuts-packaging' => '🥜',
+        '/ice-cream-packaging' => '🍨',
     ];
 
+    $parseLinkLines = function (?string $rawText) use ($catalogIcons) {
+        if (empty($rawText)) {
+            return [];
+        }
+        $lines = preg_split('/\r\n|\r|\n/', trim($rawText));
+        $items = [];
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '') continue;
+            $parts = array_map('trim', explode('|', $line));
+            $title = $parts[0] ?? '';
+            $url   = $parts[1] ?? '#';
+            $iconOrImage = $parts[2] ?? null;
+
+            $image = null;
+            $icon  = null;
+
+            if ($iconOrImage) {
+                if (
+                    str_starts_with($iconOrImage, 'http://') ||
+                    str_starts_with($iconOrImage, 'https://') ||
+                    str_starts_with($iconOrImage, '/') ||
+                    str_starts_with($iconOrImage, 'bagisto-visual/') ||
+                    preg_match('/\.(png|jpe?g|webp|svg|gif|avif)$/i', $iconOrImage)
+                ) {
+                    $image = $iconOrImage;
+                } else {
+                    $icon = $iconOrImage;
+                }
+            }
+
+            if (! $image && ! $icon) {
+                $icon = $catalogIcons[$url] ?? '▦';
+            }
+
+            $items[] = [
+                'title' => $title,
+                'url'   => $url,
+                'image' => $image,
+                'icon'  => $icon,
+            ];
+        }
+        return $items;
+    };
+
+    $megaMenuBlock = collect($section->blocks)->firstWhere('type', 'mega_menu');
+
+    $productCategoryGroups = [];
+    if ($megaMenuBlock) {
+        $ms = $megaMenuBlock->settings;
+        $g1Title = $ms->get('group_1_title') ?: 'جعبه‌های غذا';
+        $g1Links = $parseLinkLines($ms->get('group_1_links') ?: "جعبه پیتزا|/pizza-boxes|🍕\nجعبه برگر|/burger-boxes|🍔\nجعبه ساندویچ|/sandwich-boxes|🥪\nجعبه سوخاری|/fried-chicken-boxes|🍗\nجعبه سیب‌زمینی|/french-fries-boxes|🍟\nجعبه غذا|/takeaway-food-boxes|🍱\nسطل سوخاری|/fried-chicken-buckets|🪣");
+
+        $g2Title = $ms->get('group_2_title') ?: 'ملزومات سرو و مصرف';
+        $g2Links = $parseLinkLines($ms->get('group_2_links') ?: "ظروف یکبار مصرف|/disposable-food-containers|🥡\nلیوان یکبار مصرف|/disposable-cups|🥤\nپک قاشق و چنگال|/cutlery-packs|🍴\nسفره|/disposable-tablecloths|🧻\nسینگل زیر پیتزا|/pizza-boards|⭕");
+
+        $g3Title = $ms->get('group_3_title') ?: 'بسته‌بندی‌های تکمیلی';
+        $g3Links = $parseLinkLines($ms->get('group_3_links') ?: "پاکت بیرون‌بر|/takeaway-bags|🛍️\nکاغذ ساندویچ|/sandwich-wrapping-paper|📜\nبسته‌بندی ساشه|/single-serve-sachets|🧴\nبسته‌بندی آجیل|/nuts-packaging|🥜\nبسته‌بندی بستنی|/ice-cream-packaging|🍨");
+
+        if (!empty($g1Links)) $productCategoryGroups[$g1Title] = $g1Links;
+        if (!empty($g2Links)) $productCategoryGroups[$g2Title] = $g2Links;
+        if (!empty($g3Links)) $productCategoryGroups[$g3Title] = $g3Links;
+    }
+
+    // Header tabs for mobile (from dedicated blocks, mobile_tabs override, or mega_menu columns)
+    $headerTabBlocks = collect($section->blocks)->where('type', 'header_tab')->values();
+    if ($headerTabBlocks->isNotEmpty()) {
+        $mobileCatalogItems = $headerTabBlocks->map(function ($b) use ($catalogIcons) {
+            $u = $b->settings->get('url') ?: $b->settings->url;
+            return [
+                'title' => $b->settings->get('title') ?: $b->settings->title,
+                'url'   => $u,
+                'image' => $b->settings->get('image') ?: null,
+                'icon'  => $b->settings->get('icon') ?: ($catalogIcons[$u] ?? '▦'),
+            ];
+        })->all();
+    } elseif ($megaMenuBlock && ($customTabs = $megaMenuBlock->settings->get('mobile_tabs'))) {
+        $mobileCatalogItems = $parseLinkLines($customTabs);
+    } else {
+        $mobileCatalogItems = collect($productCategoryGroups)->collapse()->values()->all();
+    }
+
     $useDigikalaMobileHeader = (bool) ($shamimDigikalaMobileLayout ?? false);
-    $mobileCatalogItems = collect($productCategoryGroups)->collapse()->values()->all();
 @endphp
 
 @if ($useDigikalaMobileHeader)
     @include('shop::components.layouts.header.mobile-digikala', [
         'section' => $section,
         'catalogItems' => $mobileCatalogItems,
+        'megaMenuBlock' => $megaMenuBlock,
     ])
 @endif
 

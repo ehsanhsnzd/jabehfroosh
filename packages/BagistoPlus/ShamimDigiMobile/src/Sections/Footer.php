@@ -31,7 +31,7 @@ class Footer extends BladeSection
             Textarea::make('brand_description', 'توضیح برند')->default('تولید و فروش تخصصی بسته‌بندی غذا؛ از انتخاب جعبه استاندارد تا طراحی و چاپ اختصاصی برند شما.'),
             Text::make('contact_title', 'عنوان تماس')->default('با ما در تماس باشید'),
             Textarea::make('address', 'آدرس و ساعات کاری')->default("تبریز / اول جاده مایان / کوی پدرام / روبروی کوچه دوم\nشنبه تا چهارشنبه، ۹ تا ۱۸"),
-            Text::make('phone', 'تلفن')->default('۰۲۱–۸۸۷۷۶۶۵۵'),
+            Text::make('phone', 'تلفن')->default('۹۱۶۹۷۲۱۷-۰۲۱'),
             Text::make('email', 'ایمیل')->default('sales@jabehfroosh.com'),
             Text::make('copyright', 'کپی‌رایت')->default('جعبه فروش — تمامی حقوق محفوظ است.'),
             Text::make('legal_text', 'متن لینک‌های قانونی')->default('حریم خصوصی · قوانین فروشگاه · پرداخت امن'),
