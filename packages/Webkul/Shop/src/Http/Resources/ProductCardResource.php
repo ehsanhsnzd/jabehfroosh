@@ -43,6 +43,14 @@ class ProductCardResource extends JsonResource
     public function toArray($request)
     {
         $productTypeInstance = $this->getTypeInstance();
+        $prices = $productTypeInstance->getProductPrices();
+
+        $regularPrice = data_get($prices, 'regular.price', data_get($prices, 'from.regular.price'));
+        $finalPrice = data_get($prices, 'final.price', data_get($prices, 'from.final.price'));
+
+        $discountPercent = $regularPrice && $finalPrice && $finalPrice < $regularPrice
+            ? (int) round((($regularPrice - $finalPrice) / $regularPrice) * 100)
+            : 0;
 
         return [
             'id' => $this->id,
@@ -56,6 +64,7 @@ class ProductCardResource extends JsonResource
             'is_saleable' => (bool) $productTypeInstance->isSaleable(),
             'is_catalog_inquiry' => str_starts_with($this->sku, 'SP-')
                 && (float) $productTypeInstance->getMinimalPrice() <= 0,
+            'discount_percent' => $discountPercent,
             'is_wishlist' => (bool) auth()->guard()->user()?->wishlist_items
                 ->where('channel_id', core()->getCurrentChannel()->id)
                 ->where('product_id', $this->id)->count(),

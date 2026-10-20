@@ -63,6 +63,121 @@ img.lazy {
   visibility: hidden;
 }
 
+/* Compact catalog card used by the home carousels and search results. */
+.sh-digi-product-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #dedfe3;
+  border-radius: 16px;
+  background: #fff;
+  color: #3f414d;
+}
+
+.sh-digi-product-card__image {
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-bottom: 1px solid #f0f0f1;
+  background: #fff;
+}
+
+.sh-digi-product-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform .2s ease;
+}
+
+.sh-digi-product-card:hover .sh-digi-product-card__image img { transform: scale(1.025); }
+
+.sh-digi-product-card__body {
+  position: relative;
+  display: grid;
+  min-height: 122px;
+  padding: 12px;
+  gap: 9px;
+  align-content: start;
+}
+
+.sh-digi-product-card__name {
+  display: -webkit-box;
+  overflow: hidden;
+  min-height: 48px;
+  color: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.6;
+  text-decoration: none;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.sh-digi-product-card__price {
+  display: flex;
+  min-height: 26px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  padding-inline-start: 48px;
+  color: #25284f;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.sh-digi-product-card__price .final-price {
+  order: 2;
+  color: #25284f;
+  font: inherit;
+  text-decoration: none;
+}
+
+.sh-digi-product-card__price .final-price.line-through,
+.sh-digi-product-card__price .regular-price {
+  order: 1;
+  color: #a1a3a8;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: line-through;
+}
+
+.sh-digi-product-card__price .price-label { display: none; }
+
+.sh-digi-product-card__discount {
+  position: absolute;
+  bottom: 14px;
+  right: 12px;
+  min-width: 38px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #e43f4e;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.sh-digi-product-card__inquiry {
+  align-self: end;
+  color: #25284f;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+@media (max-width: 524px) {
+  .sh-digi-product-card { border-radius: 14px; }
+  .sh-digi-product-card__body { min-height: 108px; padding: 9px; gap: 6px; }
+  .sh-digi-product-card__name { min-height: 42px; font-size: 13px; line-height: 1.6; }
+  .sh-digi-product-card__price { min-height: 22px; gap: 5px; padding-inline-start: 42px; font-size: 16px; }
+  .sh-digi-product-card__price .final-price.line-through,
+  .sh-digi-product-card__price .regular-price { font-size: 10px; }
+  .sh-digi-product-card__discount { right: 9px; bottom: 10px; min-width: 33px; padding: 3px 5px; font-size: 11px; }
+}
+
 @layer components {
   :selection {
     background-color: rgba(6, 12, 59, 0.2);
