@@ -48,6 +48,16 @@
     }
 
     $isCatalogInquiry = str_starts_with($product->sku, 'SP-') && (float) $product->price <= 0;
+
+    $productPrices = $product->getTypeInstance()->getProductPrices();
+
+    $regularPrice = data_get($productPrices, 'regular.price', data_get($productPrices, 'from.regular.price'));
+
+    $finalPrice = data_get($productPrices, 'final.price', data_get($productPrices, 'from.final.price'));
+
+    $discountPercent = $regularPrice && $finalPrice && $finalPrice < $regularPrice
+        ? (int) round((($regularPrice - $finalPrice) / $regularPrice) * 100)
+        : 0;
 @endphp
 
 <!-- SEO Meta Content -->
@@ -282,6 +292,7 @@
                 as="div"
             >
                 <form
+                    id="shamim-product-form"
                     ref="formData"
                     @submit="handleSubmit($event, addToCart)"
                 >
@@ -740,4 +751,33 @@
             });
         </script>
     @endPushOnce
+
+    @if (! $isCatalogInquiry && core()->getConfigData('sales.checkout.shopping_cart.cart_page'))
+        <aside class="sh-digi-product-bottom-bar" aria-label="افزودن محصول به سبد خرید">
+            <div class="sh-digi-product-bottom-bar__price">
+                @if ($discountPercent)
+                    <span class="sh-digi-product-bottom-bar__discount">{{ $discountPercent }}٪</span>
+                @endif
+
+                <div class="sh-digi-product-bottom-bar__price-html">
+                    {!! $product->getTypeInstance()->getPriceHtml() !!}
+                </div>
+            </div>
+
+            <button
+                type="submit"
+                form="shamim-product-form"
+                class="sh-digi-product-bottom-bar__submit"
+                @disabled(! $product->isSaleable(1))
+            >
+                افزودن به سبد خرید
+            </button>
+        </aside>
+
+        @pushOnce('scripts')
+            <script>
+                document.body.classList.add('shamim-product-page');
+            </script>
+        @endPushOnce
+    @endif
 </x-shop::layouts>
