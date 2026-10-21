@@ -20,11 +20,33 @@
             </a>
 
             <div class="sh-digi-product-card__body">
+                <div class="sh-digi-product-card__facts">
+                    <div class="sh-digi-product-card__rating" aria-label="امتیاز محصول">
+                        <span>@{{ product.ratings.average }}</span>
+                        <span class="icon-star-fill" aria-hidden="true"></span>
+                    </div>
+
+                    <div class="sh-digi-product-card__colors" v-if="product.print_colors.length" aria-label="رنگ‌های چاپ">
+                        <span
+                            v-for="(color, index) in product.print_colors"
+                            :key="index"
+                            class="sh-digi-product-card__color"
+                            :style="{ backgroundColor: color }"
+                        ></span>
+                    </div>
+                </div>
+
+                <p class="sh-digi-product-card__paper" v-if="product.paper_type" v-text="product.paper_type"></p>
+
                 <a class="sh-digi-product-card__name" :href="productUrl" v-text="formatProductName(product.name)"></a>
 
                 <p class="sh-digi-product-card__inquiry" v-if="isCatalogInquiry">استعلام قیمت</p>
 
-                <div class="sh-digi-product-card__price" v-html="product.price_html" v-else></div>
+                <template v-else>
+                    <p class="sh-digi-product-card__unit-price">قیمت هر @{{ product.sale_unit }}</p>
+
+                    <div class="sh-digi-product-card__price" v-html="product.price_html"></div>
+                </template>
 
                 <span class="sh-digi-product-card__discount" v-if="product.discount_percent">@{{ product.discount_percent }}٪</span>
             </div>

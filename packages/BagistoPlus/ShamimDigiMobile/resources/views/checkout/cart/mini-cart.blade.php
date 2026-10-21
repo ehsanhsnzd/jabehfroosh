@@ -110,6 +110,10 @@
                                         </p>
                                     </a>
 
+                                    <p class="text-xs font-bold text-[#7e3fa1]">
+                                        @{{ item.unit_price_label }}
+                                    </p>
+
                                     {!! view_render_event('bagisto.shop.checkout.mini-cart.drawer.content.name.after') !!}
 
                                     {!! view_render_event('bagisto.shop.checkout.mini-cart.drawer.content.price.before') !!}

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Webkul\Attribute\Repositories\AttributeOptionRepository;
 
 class CartItemResource extends JsonResource
 {
@@ -18,6 +19,7 @@ class CartItemResource extends JsonResource
     public function toArray($request)
     {
         $packagingSize = (int) ($this->resource->additional['packaging_size'] ?? 0);
+        $saleUnit = $this->getSaleUnit();
 
         return [
             'id' => $this->id,
@@ -44,7 +46,25 @@ class CartItemResource extends JsonResource
             'formatted_packaging_price' => $packagingSize ? core()->formatPrice($this->price * $packagingSize) : null,
             'packaging_price_incl_tax' => $packagingSize ? (float) $this->price_incl_tax * $packagingSize : null,
             'formatted_packaging_price_incl_tax' => $packagingSize ? core()->formatPrice($this->price_incl_tax * $packagingSize) : null,
+            'sale_unit' => $saleUnit,
+            'unit_price_label' => 'قیمت هر '.$saleUnit,
         ];
+    }
+
+    /**
+     * Resolve the product's manually selected sale unit for cart presentation.
+     */
+    protected function getSaleUnit(): string
+    {
+        $saleUnitOptionId = $this->resource->product?->sale_unit;
+
+        if (! $saleUnitOptionId) {
+            return 'عدد';
+        }
+
+        $option = app(AttributeOptionRepository::class)->find($saleUnitOptionId);
+
+        return $option?->label ?: $option?->admin_name ?: 'عدد';
     }
 
     /**

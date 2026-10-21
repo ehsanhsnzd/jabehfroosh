@@ -4,6 +4,8 @@ namespace Webkul\Shop\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Webkul\Attribute\Repositories\AttributeOptionRepository;
+use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Product\Helpers\Review;
 
 class ProductCardResource extends JsonResource
@@ -52,6 +54,10 @@ class ProductCardResource extends JsonResource
             ? (int) round((($regularPrice - $finalPrice) / $regularPrice) * 100)
             : 0;
 
+        $presentation = $this->getPresentationAttributes();
+
+        $ratingAverage = $this->reviewHelper->getAverageRating($this);
+
         return [
             'id' => $this->id,
             'sku' => $this->sku,
@@ -65,18 +71,55 @@ class ProductCardResource extends JsonResource
             'is_catalog_inquiry' => str_starts_with($this->sku, 'SP-')
                 && (float) $productTypeInstance->getMinimalPrice() <= 0,
             'discount_percent' => $discountPercent,
+            'paper_type' => $presentation['paper_type'],
+            'sale_unit' => $presentation['sale_unit'],
+            'print_colors' => $presentation['print_colors'],
             'is_wishlist' => (bool) auth()->guard()->user()?->wishlist_items
                 ->where('channel_id', core()->getCurrentChannel()->id)
                 ->where('product_id', $this->id)->count(),
             'min_price' => core()->formatPrice($productTypeInstance->getMinimalPrice()),
             'price_html' => $productTypeInstance->getPriceHtml(),
             'ratings' => [
-                'average' => $this->reviewHelper->getAverageRating($this),
+                'average' => (float) $ratingAverage > 0 ? $ratingAverage : 2.8,
                 'total' => $this->reviewHelper->getTotalRating($this),
             ],
             'reviews' => [
                 'total' => $this->reviewHelper->getTotalReviews($this),
             ],
+        ];
+    }
+
+    /**
+     * Prepare manually maintained packaging details for the compact catalogue card.
+     */
+    protected function getPresentationAttributes(): array
+    {
+        $attributeRepository = app(AttributeRepository::class);
+        $optionRepository = app(AttributeOptionRepository::class);
+
+        $attributes = collect([
+            'paper_type',
+            'sale_unit',
+            'print_color_primary',
+            'print_color_secondary',
+        ])->mapWithKeys(fn (string $code) => [$code => $attributeRepository->findOneByField('code', $code)]);
+
+        $saleUnitAttribute = $attributes['sale_unit'];
+        $saleUnitValue = $this->getCustomAttributeValue($saleUnitAttribute);
+        $saleUnit = $saleUnitValue ? $optionRepository->find($saleUnitValue) : null;
+
+        $printColors = collect(['print_color_primary', 'print_color_secondary'])
+            ->map(fn (string $code) => $this->getCustomAttributeValue($attributes[$code]))
+            ->filter()
+            ->map(fn ($optionId) => $optionRepository->find($optionId)?->swatch_value)
+            ->filter()
+            ->values()
+            ->all();
+
+        return [
+            'paper_type' => $this->getCustomAttributeValue($attributes['paper_type']),
+            'sale_unit' => $saleUnit?->label ?: $saleUnit?->admin_name ?: 'عدد',
+            'print_colors' => $printColors,
         ];
     }
 }

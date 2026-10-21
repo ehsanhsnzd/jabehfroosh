@@ -223,6 +223,10 @@
                                                 </p>
                                             </a>
 
+                                            <p class="text-sm font-bold text-[#7e3fa1] max-sm:text-xs">
+                                                @{{ item.unit_price_label }}
+                                            </p>
+
                                             {!! view_render_event('bagisto.shop.checkout.cart.item_name.after') !!}
 
                                             {!! view_render_event('bagisto.shop.checkout.cart.item_details.before') !!}

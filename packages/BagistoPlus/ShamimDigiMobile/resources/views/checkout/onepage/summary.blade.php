@@ -25,6 +25,10 @@
                 @{{ item.name }}
             </p>
 
+            <p class="mt-1 text-sm font-bold text-[#7e3fa1] max-md:text-xs">
+                @{{ item.unit_price_label }}
+            </p>
+
             {!! view_render_event('bagisto.shop.checkout.onepage.summary.item_name.after') !!}
 
             <p v-if="item.packaging_size" class="mt-1 text-sm font-semibold text-primary">
