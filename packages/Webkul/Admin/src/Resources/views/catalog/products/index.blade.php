@@ -518,7 +518,7 @@
                                             :label="trans('admin::app.catalog.products.index.create.family')"
                                         >
                                             @foreach($families as $family)
-                                                <option 
+                                                <option
                                                     value="{{ $family->id }}"
                                                     v-pre
                                                 >
@@ -627,6 +627,7 @@
 
                 methods: {
                     create(params, { resetForm, resetField, setErrors }) {
+
                         this.isLoading = true;
 
                         this.attributes.forEach(attribute => {

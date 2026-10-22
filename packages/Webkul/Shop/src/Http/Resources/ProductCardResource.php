@@ -109,6 +109,10 @@ class ProductCardResource extends JsonResource
 
         $colorAttribute = $attributes['color'];
 
+        if($this->id == 1008)
+        {
+            dd($this->variants()->get());
+        }
         $colorOptionIds = $this->type === 'configurable'
             ? $this->variants()->get()->map(fn ($variant) => $variant->getCustomAttributeValue($colorAttribute))
             : collect([$this->getCustomAttributeValue($colorAttribute)]);
