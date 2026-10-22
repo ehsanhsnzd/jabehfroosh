@@ -25,20 +25,6 @@ return new class extends Migration
                     ['admin_name' => 'کیلوگرم'],
                 ],
             ],
-            [
-                'code' => 'print_color_primary',
-                'admin_name' => 'رنگ چاپ اول',
-                'type' => 'select',
-                'swatch_type' => 'color',
-                'options' => $this->colorOptions(),
-            ],
-            [
-                'code' => 'print_color_secondary',
-                'admin_name' => 'رنگ چاپ دوم',
-                'type' => 'select',
-                'swatch_type' => 'color',
-                'options' => $this->colorOptions(),
-            ],
         ];
 
         $attributeIds = [];
@@ -130,25 +116,11 @@ return new class extends Migration
             ->whereIn('code', [
                 'paper_type',
                 'sale_unit',
-                'print_color_primary',
-                'print_color_secondary',
             ])
             ->delete();
 
         DB::table('attribute_groups')
             ->where('code', 'sales-presentation')
             ->delete();
-    }
-
-    private function colorOptions(): array
-    {
-        return [
-            ['admin_name' => 'کرافت', 'swatch_value' => '#8a5a36'],
-            ['admin_name' => 'مشکی', 'swatch_value' => '#242424'],
-            ['admin_name' => 'سفید', 'swatch_value' => '#ffffff'],
-            ['admin_name' => 'قرمز', 'swatch_value' => '#e43d30'],
-            ['admin_name' => 'آبی', 'swatch_value' => '#2563eb'],
-            ['admin_name' => 'زرد', 'swatch_value' => '#f4c542'],
-        ];
     }
 };

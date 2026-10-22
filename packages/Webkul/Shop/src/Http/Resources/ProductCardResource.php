@@ -100,19 +100,24 @@ class ProductCardResource extends JsonResource
         $attributes = collect([
             'paper_type',
             'sale_unit',
-            'print_color_primary',
-            'print_color_secondary',
+            'color',
         ])->mapWithKeys(fn (string $code) => [$code => $attributeRepository->findOneByField('code', $code)]);
 
         $saleUnitAttribute = $attributes['sale_unit'];
         $saleUnitValue = $this->getCustomAttributeValue($saleUnitAttribute);
         $saleUnit = $saleUnitValue ? $optionRepository->find($saleUnitValue) : null;
 
-        $printColors = collect(['print_color_primary', 'print_color_secondary'])
-            ->map(fn (string $code) => $this->getCustomAttributeValue($attributes[$code]))
+        $colorAttribute = $attributes['color'];
+
+        $colorOptionIds = $this->type === 'configurable'
+            ? $this->variants()->get()->map(fn ($variant) => $variant->getCustomAttributeValue($colorAttribute))
+            : collect([$this->getCustomAttributeValue($colorAttribute)]);
+
+        $printColors = $colorOptionIds
             ->filter()
             ->map(fn ($optionId) => $optionRepository->find($optionId)?->swatch_value)
             ->filter()
+            ->unique()
             ->values()
             ->all();
 
