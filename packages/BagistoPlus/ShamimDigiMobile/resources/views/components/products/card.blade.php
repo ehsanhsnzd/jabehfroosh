@@ -43,12 +43,12 @@
                 <p class="sh-digi-product-card__inquiry" v-if="isCatalogInquiry">استعلام قیمت</p>
 
                 <template v-else>
-                    <p class="sh-digi-product-card__unit-price">قیمت هر @{{ product.sale_unit }}</p>
+                    <p class="sh-digi-product-card__unit-price">قیمت هر @{{ product.sale_unit }} @{{ product.unit_price }}</p>
 
                     <div class="sh-digi-product-card__price" v-html="product.price_html"></div>
                 </template>
 
-                <span class="sh-digi-product-card__discount" v-if="product.discount_percent">@{{ product.discount_percent }}٪</span>
+                <span class="sh-digi-product-card__discount" v-if="product.discount_percent">@{{ persianNumber(product.discount_percent) }}٪</span>
             </div>
         </article>
 
@@ -394,6 +394,11 @@
 
                             this.isAddingToCart = false;
                         });
+                },
+                persianNumber(number) {
+                    return String(number ?? '').replace(/[0-9]/g, digit =>
+                        '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]
+                    );
                 },
             },
         });

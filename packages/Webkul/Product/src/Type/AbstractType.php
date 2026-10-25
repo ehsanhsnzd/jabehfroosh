@@ -643,6 +643,14 @@ abstract class AbstractType
         return $priceIndex->regular_min_price;
     }
 
+    public function getUnitPrice()
+    {
+        $unitPriceProduct = $this->parent_id ? $this->parent : $this;
+
+
+        return core()->formatPrice($unitPriceProduct->price);
+    }
+
     /**
      * Get product maximum price.
      *

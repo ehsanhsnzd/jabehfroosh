@@ -45,6 +45,7 @@ class ProductCardResource extends JsonResource
     public function toArray($request)
     {
         $productTypeInstance = $this->getTypeInstance();
+        $unitPriceProduct = $this->parent_id ? $this->parent : $this;
         $prices = $productTypeInstance->getProductPrices();
 
         $regularPrice = data_get($prices, 'regular.price', data_get($prices, 'from.regular.price'));
@@ -77,6 +78,7 @@ class ProductCardResource extends JsonResource
             'is_wishlist' => (bool) auth()->guard()->user()?->wishlist_items
                 ->where('channel_id', core()->getCurrentChannel()->id)
                 ->where('product_id', $this->id)->count(),
+            'unit_price' => core()->formatPrice($unitPriceProduct->price),
             'min_price' => core()->formatPrice($productTypeInstance->getMinimalPrice()),
             'price_html' => $productTypeInstance->getPriceHtml(),
             'ratings' => [
@@ -109,10 +111,6 @@ class ProductCardResource extends JsonResource
 
         $colorAttribute = $attributes['color'];
 
-        if($this->id == 1008)
-        {
-            dd($this->variants()->get());
-        }
         $colorOptionIds = $this->type === 'configurable'
             ? $this->variants()->get()->map(fn ($variant) => $variant->getCustomAttributeValue($colorAttribute))
             : collect([$this->getCustomAttributeValue($colorAttribute)]);

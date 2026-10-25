@@ -7,6 +7,7 @@ use Illuminate\View\View;
 use Webkul\Category\Repositories\CategoryRepository;
 use Webkul\Marketing\Repositories\URLRewriteRepository;
 use Webkul\Product\Repositories\ProductRepository;
+use Webkul\Shop\Http\Resources\ProductCardResource;
 use Webkul\Theme\Repositories\ThemeCustomizationRepository;
 
 class ProductsCategoriesProxyController extends Controller
@@ -73,6 +74,19 @@ class ProductsCategoriesProxyController extends Controller
             ->findBySlug($slugOrURLKey);
 
         if ($product) {
+            $product->load([
+                'attribute_family',
+                'attribute_values',
+                'price_indices',
+                'inventory_indices',
+                'reviews',
+                'variants',
+                'variants.attribute_family',
+                'variants.attribute_values',
+                'variants.price_indices',
+                'variants.inventory_indices',
+            ]);
+
             if (
                 ! $product->url_key
                 || ! $product->visible_individually
@@ -91,7 +105,10 @@ class ProductsCategoriesProxyController extends Controller
                 return redirect()->to($productURLRewrite->target_path, $productURLRewrite->redirect_type);
             }
 
-            return view('shop::products.view', compact('product'));
+            $productResource = new ProductCardResource($product);
+            $productResource = $productResource->resolve();
+
+            return view('shop::products.view', compact('product', 'productResource'));
         }
 
         /**

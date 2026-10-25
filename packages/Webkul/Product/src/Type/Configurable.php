@@ -26,7 +26,6 @@ class Configurable extends AbstractType
      * @var array
      */
     protected $skipAttributes = [
-        'price',
         'cost',
         'special_price',
         'special_price_from',

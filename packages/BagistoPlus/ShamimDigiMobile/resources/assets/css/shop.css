@@ -246,7 +246,21 @@ img.lazy {
   .sh-digi-product-card__price .regular-price { font-size: 10px; }
   .sh-digi-product-card__discount { right: 9px; bottom: 10px; min-width: 33px; padding: 3px 5px; font-size: 11px; }
 }
+/* Desktop */
+@media (min-width: 768px) {
+    .sh-product-rail > .sh-digi-product-card {
+        flex: 0 0 291px !important;
+        width: 291px;
+        min-width: 291px;
+    }
+}
 
+/* Mobile: keep the original Tailwind behavior */
+@media (max-width: 767px) {
+    .sh-product-rail > .sh-digi-product-card {
+        flex: revert;
+    }
+}
 @layer components {
   :selection {
     background-color: rgba(6, 12, 59, 0.2);

@@ -62,7 +62,8 @@ it('should return the edit page of configurable product', function () {
         ->assertSeeText($product->url_key)
         ->assertSeeText($product->name)
         ->assertSeeText($product->short_description)
-        ->assertSeeText($product->description);
+        ->assertSeeText($product->description)
+        ->assertSee('name="price"', false);
 });
 
 it('should fail the validation with errors when certain inputs are not provided when update in configurable product', function () {

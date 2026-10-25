@@ -378,6 +378,14 @@
                                 <!-- Pricing -->
                                 {!! view_render_event('bagisto.shop.products.price.before', ['product' => $product]) !!}
 
+                                <br>
+                                @if ($product->type === 'simple' && ! str_starts_with($product->sku, 'SP-'))
+                                    <p class="sh-digi-product-card__unit-price">
+                                        قیمت هر {!! $productResource['sale_unit'] !!}
+                                        {!! core()->formatPrice($product->parent?->price ?? $product->price) !!}
+                                    </p>
+                                @endif
+
                                 <div class="mt-[22px] flex items-center gap-2.5 text-2xl !font-medium max-sm:mt-2 max-sm:gap-x-2.5 max-sm:gap-y-0 max-sm:text-lg">
                                     @if ($isCatalogInquiry)
                                         <span class="text-primary">استعلام قیمت و سفارش عمده</span>
@@ -756,7 +764,8 @@
         <aside class="sh-digi-product-bottom-bar" aria-label="افزودن محصول به سبد خرید">
             <div class="sh-digi-product-bottom-bar__price">
                 @if ($discountPercent)
-                    <span class="sh-digi-product-bottom-bar__discount">{{ $discountPercent }}٪</span>
+                    <span class="sh-digi-product-bottom-bar__discount">        {{ persian_number($discountPercent) }}٪
+</span>
                 @endif
 
                 <div class="sh-digi-product-bottom-bar__price-html">
