@@ -238,3 +238,8 @@ doctor: ## Show tool versions and Laravel environment details
 	@$(NPM) --version
 	@$(MAKE) --version | head -1
 	@$(ARTISAN) about
+
+mysqldump:
+	docker exec shamim-mysql mysqldump \
+      -u shamim -pshamim-local \
+      --no-tablespaces shamim > shamim.sql

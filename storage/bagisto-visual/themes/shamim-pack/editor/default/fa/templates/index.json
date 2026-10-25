@@ -1,0 +1,574 @@
+{
+    "order": [
+        "hero",
+        "categories",
+        "products",
+        "story",
+        "editorial",
+        "quote",
+        "marquee",
+        "brands",
+        "benefits"
+    ],
+    "sections": {
+        "hero": {
+            "id": "hero",
+            "type": "shamim-pack::furniture-hero",
+            "name": "هیرو فروشگاه شمیم پک",
+            "disabled": false,
+            "settings": {
+                "image": "/themes/shop/shamim-pack/images/pack-hero.png",
+                "eyebrow": "تولید و فروش تخصصی بسته‌بندی غذا",
+                "heading": "بسته‌بندی حرفه‌ای برای طعم‌های ماندگار",
+                "description": "جعبه و کاغذ استاندارد غذایی با طراحی کاربردی، قیمت همکاری و امکان چاپ اختصاصی برای رستوران، فست‌فود و کافه.",
+                "button_text": "مشاهده محصولات ←",
+                "button_url": "/search",
+                "price": "قیمت ویژه سفارش عمده",
+                "badge_1_title": "بسته‌بندی Food Grade",
+                "badge_1_text": "ایمن و مناسب تماس با غذا",
+                "badge_2_title": "چاپ اختصاصی برند",
+                "badge_2_text": "از طراحی تا تولید"
+            },
+            "blocks": [],
+            "blocks_order": []
+        },
+        "categories": {
+            "id": "categories",
+            "type": "shamim-pack::furniture-categories",
+            "name": "دسته‌بندی محصولات شمیم پک",
+            "disabled": false,
+            "settings": {
+                "eyebrow": "دسترسی سریع",
+                "heading": "دسته‌بندی محصولات شمیم پک",
+                "description": "دسته موردنظر را انتخاب کنید و مستقیم محصولات مرتبط را ببینید"
+            },
+            "blocks": {
+                "cups": {
+                    "id": "cups",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-cup.webp",
+                        "title": "لیوان یکبار مصرف",
+                        "count": "کاغذی و شفاف",
+                        "url": "/disposable-cups"
+                    }
+                },
+                "nuts": {
+                    "id": "nuts",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-nuts.webp",
+                        "title": "بسته‌بندی آجیل",
+                        "count": "پاکت کرافت پنجره‌دار",
+                        "url": "/nuts-packaging"
+                    }
+                },
+                "icecream": {
+                    "id": "icecream",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-icecream.webp",
+                        "title": "بسته‌بندی بستنی",
+                        "count": "کاپ بستنی و دسر",
+                        "url": "/ice-cream-packaging"
+                    }
+                },
+                "sachet": {
+                    "id": "sachet",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-sachet.webp",
+                        "title": "بسته‌بندی ساشه",
+                        "count": "تک‌نفره و استیک‌پک",
+                        "url": "/single-serve-sachets"
+                    }
+                },
+                "takeaway": {
+                    "id": "takeaway",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-takeaway.webp",
+                        "title": "پاکت بیرون‌بر",
+                        "count": "کرافت دسته‌دار",
+                        "url": "/takeaway-bags"
+                    }
+                },
+                "cutlery": {
+                    "id": "cutlery",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-cutlery.webp",
+                        "title": "پک قاشق و چنگال",
+                        "count": "پک کامل بهداشتی",
+                        "url": "/cutlery-packs"
+                    }
+                },
+                "burger": {
+                    "id": "burger",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-burger.webp",
+                        "title": "جعبه برگر",
+                        "count": "کرافت فودگرید",
+                        "url": "/burger-boxes"
+                    }
+                },
+                "pizza": {
+                    "id": "pizza",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-pizza.webp",
+                        "title": "جعبه پیتزا",
+                        "count": "همه سایزها",
+                        "url": "/pizza-boxes"
+                    }
+                },
+                "sandwich": {
+                    "id": "sandwich",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-sandwich.webp",
+                        "title": "جعبه ساندویچ",
+                        "count": "کرافت بیرون‌بر",
+                        "url": "/sandwich-boxes"
+                    }
+                },
+                "fried": {
+                    "id": "fried",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-fried.webp",
+                        "title": "جعبه سوخاری",
+                        "count": "سفید، مشکی و کرافت",
+                        "url": "/fried-chicken-boxes"
+                    }
+                },
+                "fries": {
+                    "id": "fries",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-fries.webp",
+                        "title": "جعبه سیب‌زمینی",
+                        "count": "قایقی، هرمی و صندوقی",
+                        "url": "/french-fries-boxes"
+                    }
+                },
+                "food": {
+                    "id": "food",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-food.webp",
+                        "title": "جعبه غذا",
+                        "count": "گرم و بیرون‌بر",
+                        "url": "/takeaway-food-boxes"
+                    }
+                },
+                "bucket": {
+                    "id": "bucket",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-bucket.webp",
+                        "title": "سطل سوخاری",
+                        "count": "تک‌نفره و خانواده",
+                        "url": "/fried-chicken-buckets"
+                    }
+                },
+                "tablecloth": {
+                    "id": "tablecloth",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-tablecloth.webp",
+                        "title": "سفره",
+                        "count": "سرو بهداشتی غذا",
+                        "url": "/disposable-tablecloths"
+                    }
+                },
+                "pizza_board": {
+                    "id": "pizza_board",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-pizza-board.webp",
+                        "title": "سینگل زیر پیتزا",
+                        "count": "مقوای دایره‌ای مقاوم",
+                        "url": "/pizza-boards"
+                    }
+                },
+                "disposable": {
+                    "id": "disposable",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-disposable.webp",
+                        "title": "ظروف یکبار مصرف",
+                        "count": "درب‌دار و سرو غذا",
+                        "url": "/disposable-food-containers"
+                    }
+                },
+                "sandwich_paper": {
+                    "id": "sandwich_paper",
+                    "type": "category",
+                    "name": "دسته محصول",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/catalog-sandwich-paper.webp",
+                        "title": "کاغذ ساندویچ",
+                        "count": "کرافت مخصوص غذا",
+                        "url": "/sandwich-wrapping-paper"
+                    }
+                }
+            },
+            "blocks_order": [
+                "cups",
+                "nuts",
+                "icecream",
+                "sachet",
+                "takeaway",
+                "cutlery",
+                "burger",
+                "pizza",
+                "sandwich",
+                "fried",
+                "fries",
+                "food",
+                "bucket",
+                "tablecloth",
+                "pizza_board",
+                "disposable",
+                "sandwich_paper"
+            ]
+        },
+        "products": {
+            "id": "products",
+            "type": "shamim-pack::furniture-products",
+            "name": "محصولات منتخب شمیم پک",
+            "disabled": false,
+            "settings": {
+                "eyebrow": "انتخاب حرفه‌ای‌ها",
+                "heading": "پرفروش‌ترین بسته‌بندی‌ها",
+                "limit": 10
+            },
+            "blocks": [],
+            "blocks_order": []
+        },
+        "story": {
+            "id": "story",
+            "type": "shamim-pack::furniture-story",
+            "name": "چاپ اختصاصی شمیم پک",
+            "disabled": false,
+            "settings": {
+                "image": "/themes/shop/shamim-pack/images/pack-kraft.png",
+                "eyebrow": "هویت برند شما روی بسته‌بندی",
+                "heading": "چاپ اختصاصی، از ایده تا تحویل",
+                "description": "تیم شمیم پک برای انتخاب جنس، ابعاد، ساختار و چاپ کنار شماست؛ تا بسته‌بندی نهایی هم از غذا محافظت کند و هم برندتان را حرفه‌ای‌تر نشان دهد.",
+                "button_text": "دریافت مشاوره چاپ ←",
+                "button_url": "/contact-us"
+            },
+            "blocks": {
+                "experience": {
+                    "id": "experience",
+                    "type": "stat",
+                    "name": "آمار",
+                    "disabled": false,
+                    "settings": {
+                        "value": "۱۰+",
+                        "label": "سال تجربه تولید"
+                    }
+                },
+                "designs": {
+                    "id": "designs",
+                    "type": "stat",
+                    "name": "آمار",
+                    "disabled": false,
+                    "settings": {
+                        "value": "۲۵۰+",
+                        "label": "قالب و سایز آماده"
+                    }
+                },
+                "customers": {
+                    "id": "customers",
+                    "type": "stat",
+                    "name": "آمار",
+                    "disabled": false,
+                    "settings": {
+                        "value": "۹۸٪",
+                        "label": "رضایت مشتریان عمده"
+                    }
+                }
+            },
+            "blocks_order": [
+                "experience",
+                "designs",
+                "customers"
+            ]
+        },
+        "editorial": {
+            "id": "editorial",
+            "type": "shamim-pack::editorial-stories",
+            "name": "راهنمای بسته‌بندی شمیم پک",
+            "disabled": false,
+            "settings": {
+                "eyebrow": "انتخاب آگاهانه",
+                "heading": "راهنمای بسته‌بندی حرفه‌ای"
+            },
+            "blocks": {
+                "material": {
+                    "id": "material",
+                    "type": "story",
+                    "name": "داستان",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/pack-burger.png",
+                        "category": "راهنمای انتخاب",
+                        "title": "برای غذای گرم چه جعبه‌ای مناسب‌تر است؟",
+                        "link_text": "مطالعه راهنما ←",
+                        "url": "/blog/entekhab-jabe-ghazaye-garm"
+                    }
+                },
+                "printing": {
+                    "id": "printing",
+                    "type": "story",
+                    "name": "داستان",
+                    "disabled": false,
+                    "settings": {
+                        "image": "/themes/shop/shamim-pack/images/pack-kraft.png",
+                        "category": "چاپ و برندینگ",
+                        "title": "بسته‌بندی چگونه فروش دوباره را بیشتر می‌کند؟",
+                        "link_text": "مشاهده مطلب ←",
+                        "url": "/blog/bastebandi-foroush-dobare"
+                    }
+                }
+            },
+            "blocks_order": [
+                "material",
+                "printing"
+            ]
+        },
+        "quote": {
+            "id": "quote",
+            "type": "shamim-pack::quote-banner",
+            "name": "نقل‌قول شمیم",
+            "disabled": false,
+            "settings": {
+                "quote": "مشتری قبل از چشیدن غذا، کیفیت برند شما را از بسته‌بندی آن قضاوت می‌کند.",
+                "cite": "— شمیم پک، همراه برندهای خوش‌طعم"
+            },
+            "blocks": [],
+            "blocks_order": []
+        },
+        "marquee": {
+            "id": "marquee",
+            "type": "shamim-pack::furniture-marquee",
+            "name": "نوار متحرک ویژگی‌ها",
+            "disabled": false,
+            "settings": [],
+            "blocks": {
+                "foodgrade": {
+                    "id": "foodgrade",
+                    "type": "item",
+                    "name": "عبارت",
+                    "disabled": false,
+                    "settings": {
+                        "text": "مواد اولیه Food Grade"
+                    }
+                },
+                "custom": {
+                    "id": "custom",
+                    "type": "item",
+                    "name": "عبارت",
+                    "disabled": false,
+                    "settings": {
+                        "text": "چاپ اختصاصی برند"
+                    }
+                },
+                "wholesale": {
+                    "id": "wholesale",
+                    "type": "item",
+                    "name": "عبارت",
+                    "disabled": false,
+                    "settings": {
+                        "text": "قیمت همکاری و عمده"
+                    }
+                },
+                "sustainable": {
+                    "id": "sustainable",
+                    "type": "item",
+                    "name": "عبارت",
+                    "disabled": false,
+                    "settings": {
+                        "text": "محصولات کرافت پایدار"
+                    }
+                },
+                "shipping": {
+                    "id": "shipping",
+                    "type": "item",
+                    "name": "عبارت",
+                    "disabled": false,
+                    "settings": {
+                        "text": "ارسال به سراسر ایران"
+                    }
+                }
+            },
+            "blocks_order": [
+                "foodgrade",
+                "custom",
+                "wholesale",
+                "sustainable",
+                "shipping"
+            ]
+        },
+        "brands": {
+            "id": "brands",
+            "type": "shamim-pack::brand-strip",
+            "name": "کاربردهای شمیم پک",
+            "disabled": false,
+            "settings": {
+                "eyebrow": "برای کسب‌وکار شما",
+                "heading": "بسته‌بندی مناسب هر مدل فروش غذا"
+            },
+            "blocks": {
+                "restaurant": {
+                    "id": "restaurant",
+                    "type": "brand",
+                    "name": "برند",
+                    "disabled": false,
+                    "settings": {
+                        "name": "رستوران"
+                    }
+                },
+                "fastfood": {
+                    "id": "fastfood",
+                    "type": "brand",
+                    "name": "برند",
+                    "disabled": false,
+                    "settings": {
+                        "name": "فست‌فود"
+                    }
+                },
+                "cafe": {
+                    "id": "cafe",
+                    "type": "brand",
+                    "name": "برند",
+                    "disabled": false,
+                    "settings": {
+                        "name": "کافه"
+                    }
+                },
+                "catering": {
+                    "id": "catering",
+                    "type": "brand",
+                    "name": "برند",
+                    "disabled": false,
+                    "settings": {
+                        "name": "کترینگ"
+                    }
+                },
+                "bakery": {
+                    "id": "bakery",
+                    "type": "brand",
+                    "name": "برند",
+                    "disabled": false,
+                    "settings": {
+                        "name": "قنادی"
+                    }
+                }
+            },
+            "blocks_order": [
+                "restaurant",
+                "fastfood",
+                "cafe",
+                "catering",
+                "bakery"
+            ]
+        },
+        "benefits": {
+            "id": "benefits",
+            "type": "shamim-pack::benefit-strip",
+            "name": "مزیت‌های خرید از شمیم پک",
+            "disabled": false,
+            "settings": [],
+            "blocks": {
+                "quality": {
+                    "id": "quality",
+                    "type": "benefit",
+                    "name": "مزیت",
+                    "disabled": false,
+                    "settings": {
+                        "icon": "✓",
+                        "title": "کیفیت غذایی",
+                        "description": "مواد اولیه استاندارد"
+                    }
+                },
+                "wholesale": {
+                    "id": "wholesale",
+                    "type": "benefit",
+                    "name": "مزیت",
+                    "disabled": false,
+                    "settings": {
+                        "icon": "٪",
+                        "title": "قیمت عمده",
+                        "description": "مناسب خرید سازمانی"
+                    }
+                },
+                "shipping": {
+                    "id": "shipping",
+                    "type": "benefit",
+                    "name": "مزیت",
+                    "disabled": false,
+                    "settings": {
+                        "icon": "🚚",
+                        "title": "ارسال سراسری",
+                        "description": "بسته‌بندی امن بار"
+                    }
+                },
+                "support": {
+                    "id": "support",
+                    "type": "benefit",
+                    "name": "مزیت",
+                    "disabled": false,
+                    "settings": {
+                        "icon": "☎",
+                        "title": "مشاوره تخصصی",
+                        "description": "انتخاب جنس و ابعاد"
+                    }
+                }
+            },
+            "blocks_order": [
+                "quality",
+                "wholesale",
+                "shipping",
+                "support"
+            ]
+        }
+    }
+}

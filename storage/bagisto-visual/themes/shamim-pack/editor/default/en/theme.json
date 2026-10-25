@@ -1,0 +1,275 @@
+{
+  "settings": {
+    "default_scheme": "mocha",
+    "color_schemes": {
+      "default": {
+        "background": "#fffaf3",
+        "on-background": "#18251d",
+        "surface": "#f4eadb",
+        "on-surface": "#18251d",
+        "surface-alt": "#ead8bd",
+        "on-surface-alt": "#18251d",
+        "primary": "#2f4a38",
+        "on-primary": "#fffaf3",
+        "secondary": "#efe4d3",
+        "on-secondary": "#18181b",
+        "accent": "#c56f3d",
+        "on-accent": "#fffbeb",
+        "neutral": "#383D41",
+        "on-neutral": "#E2E3E5",
+        "info": "#0090b5",
+        "on-info": "#fffaf3",
+        "success": "#155721",
+        "on-success": "#D4EDDA",
+        "warning": "#856404",
+        "on-warning": "#FFF3CD",
+        "danger": "#721C24",
+        "on-danger": "#F8D7DA"
+      },
+      "mocha": {
+        "background": "#f8f8f8",
+        "on-background": "#272322",
+        "surface": "#f5f5f4",
+        "on-surface": "#272322",
+        "surface-alt": "#e6e4e3",
+        "on-surface-alt": "#272322",
+        "primary": "#92400e",
+        "on-primary": "#fffaf3",
+        "secondary": "#44403c",
+        "on-secondary": "#fffaf3",
+        "accent": "#4ade80",
+        "on-accent": "#000000",
+        "neutral": "#6b7280",
+        "on-neutral": "#fffaf3",
+        "info": "#2563eb",
+        "on-info": "#fffaf3",
+        "success": "#059669",
+        "on-success": "#fffaf3",
+        "warning": "#d97706",
+        "on-warning": "#fffaf3",
+        "danger": "#dc2626",
+        "on-danger": "#fffaf3"
+      },
+      "dark": {
+        "background": "#1d232a",
+        "on-background": "#ecf9ff",
+        "surface": "#191e24",
+        "on-surface": "#ecf9ff",
+        "surface-alt": "#15191e",
+        "on-surface-alt": "#ecf9ff",
+        "primary": "#605dff",
+        "on-primary": "#edf1fe",
+        "secondary": "#f43098",
+        "on-secondary": "#f9e4f0",
+        "accent": "#00d3bb",
+        "on-accent": "#084d49",
+        "neutral": "#18251d",
+        "on-neutral": "#ead8bd",
+        "info": "#00bafe",
+        "on-info": "#042e49",
+        "success": "#00d390",
+        "on-success": "#004c39",
+        "warning": "#fcb700",
+        "on-warning": "#793205",
+        "danger": "#ff637d",
+        "on-danger": "#4d0218"
+      }
+    },
+    "default_font": "vazirmatn",
+    "heading_font": "dm-serif-display"
+  },
+  "sections": {
+    "shamim-pack-top-bar": {
+      "id": "shamim-pack-top-bar",
+      "type": "shamim-pack::top-bar",
+      "name": "نوار اعلان شمیم",
+      "disabled": false,
+      "settings": {
+        "message_1": "ارسال مطمئن سفارش‌های عمده به سراسر ایران",
+        "message_2": "مواد اولیه استاندارد و مناسب تماس با غذا",
+        "message_3": "مشاوره رایگان انتخاب ابعاد، جنس و چاپ",
+        "link_1_text": "درخواست نمونه",
+        "link_1_url": "/",
+        "link_2_text": "پیگیری سفارش",
+        "link_2_url": "/",
+        "link_3_text": "سؤالات متداول",
+        "link_3_url": "/"
+      },
+      "blocks": [],
+      "blocks_order": []
+    },
+    "shamim-pack-header": {
+      "id": "shamim-pack-header",
+      "type": "shamim-pack::header",
+      "name": "هدر و منوی شمیم",
+      "disabled": false,
+      "settings": {
+        "logo_text": "شمیم پک",
+        "logo_subtitle": "SHAMIM PACK",
+        "logo_mark": "ش",
+        "search_placeholder": "جستجو در محصولات بسته‌بندی...",
+        "sale_text": "● قیمت همکاری برای سفارش‌های عمده",
+        "drawer_title": "منوی فروشگاه",
+        "cart_title": "سبد خرید شما",
+        "support_phone": "۰۲۱–۸۸۷۷۶۶۵۵"
+      },
+      "blocks": {
+        "e77fbc5c-2a37-4e87-b9be-b416b45fc29e": {
+          "id": "e77fbc5c-2a37-4e87-b9be-b416b45fc29e",
+          "type": "menu_link",
+          "name": "لینک منو",
+          "disabled": false,
+          "settings": {
+            "title": "خانه",
+            "url": "/"
+          }
+        },
+        "8230508a-ebc4-4d59-9d35-8541e69a8b20": {
+          "id": "8230508a-ebc4-4d59-9d35-8541e69a8b20",
+          "type": "mega_menu",
+          "name": "مگامنو",
+          "disabled": false,
+          "settings": {
+            "title": "محصولات",
+            "group_1_title": "جعبه فست‌فود",
+            "group_1_links": "جعبه برگر|/search?query=جعبه برگر\nجعبه ساندویچ|/search?query=جعبه ساندویچ\nجعبه سوخاری|/search?query=جعبه سوخاری\nجعبه سیب زمینی|/search?query=جعبه سیب زمینی",
+            "group_2_title": "کاغذ و ملزومات",
+            "group_2_links": "کاغذ کرافت|/search?query=کاغذ کرافت\nکاغذ روغنی|/search\nپاکت بیرون‌بر|/search\nظروف جانبی|/search",
+            "group_3_title": "کاربرد کسب‌وکار",
+            "group_3_links": "رستوران|/search\nفست‌فود|/search\nکافه|/search\nکترینگ|/search",
+            "promo_image": "http://127.0.0.1:8010/themes/shop/shamim-pack/images/pack-hero.png",
+            "promo_text": "چاپ اختصاصی بسته‌بندی ←",
+            "promo_url": "/search"
+          }
+        },
+        "88d68d47-0fb1-40d0-bbea-cd25700580df": {
+          "id": "88d68d47-0fb1-40d0-bbea-cd25700580df",
+          "type": "menu_link",
+          "name": "لینک منو",
+          "disabled": false,
+          "settings": {
+            "title": "پرفروش‌ترین‌ها",
+            "url": "#bestsellers"
+          }
+        },
+        "6e6adbf7-88cb-4ca3-bb69-d8d6f6f98359": {
+          "id": "6e6adbf7-88cb-4ca3-bb69-d8d6f6f98359",
+          "type": "menu_link",
+          "name": "لینک منو",
+          "disabled": false,
+          "settings": {
+            "title": "چاپ اختصاصی",
+            "url": "#collections"
+          }
+        },
+        "d17633c6-77da-43b7-b5c1-42a78e0b8244": {
+          "id": "d17633c6-77da-43b7-b5c1-42a78e0b8244",
+          "type": "menu_link",
+          "name": "لینک منو",
+          "disabled": false,
+          "settings": {
+            "title": "مجله کاربرد کسب‌وکار",
+          "url": "/blog"
+          }
+        },
+        "66dd6197-29ab-4cfa-b397-d34681d2fb63": {
+          "id": "66dd6197-29ab-4cfa-b397-d34681d2fb63",
+          "type": "menu_link",
+          "name": "لینک منو",
+          "disabled": false,
+          "settings": {
+            "title": "تماس با ما",
+            "url": "#contact"
+          }
+        }
+      },
+      "blocks_order": [
+        "e77fbc5c-2a37-4e87-b9be-b416b45fc29e",
+        "88d68d47-0fb1-40d0-bbea-cd25700580df",
+        "8230508a-ebc4-4d59-9d35-8541e69a8b20",
+        "6e6adbf7-88cb-4ca3-bb69-d8d6f6f98359",
+        "d17633c6-77da-43b7-b5c1-42a78e0b8244",
+        "66dd6197-29ab-4cfa-b397-d34681d2fb63"
+      ]
+    },
+    "shamim-pack-footer": {
+      "id": "shamim-pack-footer",
+      "type": "shamim-pack::footer",
+      "name": "فوتر شمیم",
+      "disabled": false,
+      "settings": {
+        "newsletter_label": "خبرنامه شمیم پک",
+        "newsletter_title": "قیمت‌های همکاری و محصولات تازه را دریافت کنید",
+        "newsletter_placeholder": "آدرس ایمیل شما",
+        "newsletter_button": "عضویت ←",
+        "brand_name": "شمیم پک",
+        "brand_description": "تولید و فروش تخصصی بسته‌بندی غذا؛ از انتخاب جعبه استاندارد تا طراحی و چاپ اختصاصی برند شما.",
+        "contact_title": "با ما در تماس باشید",
+        "address": "تهران، خیابان ولیعصر\nشنبه تا چهارشنبه، ۹ تا ۱۸",
+        "phone": "۰۲۱–۸۸۷۷۶۶۵۵",
+        "email": "sales@shamimpack.ir",
+        "copyright": "شمیم پک — تمامی حقوق محفوظ است.",
+        "legal_text": "حریم خصوصی · قوانین فروشگاه · پرداخت امن"
+      },
+      "blocks": {
+        "83818fa0-3704-4d4c-8db4-af069aab8fe4": {
+          "id": "83818fa0-3704-4d4c-8db4-af069aab8fe4",
+          "type": "link_group",
+          "name": "ستون لینک‌ها",
+          "disabled": false,
+          "settings": {
+            "title": "فروشگاه",
+            "links": "همه محصولات|/search\nجعبه‌های غذا|#categories\nکاغذ کرافت|#categories\nچاپ اختصاصی|#collections\nپرفروش‌ها|#bestsellers"
+          }
+        },
+        "c04a2df2-2318-49ef-afd0-155d9200c305": {
+          "id": "c04a2df2-2318-49ef-afd0-155d9200c305",
+          "type": "link_group",
+          "name": "ستون لینک‌ها",
+          "disabled": false,
+          "settings": {
+            "title": "راهنمای مشتریان",
+            "links": "ارسال و تحویل|/\nشرایط بازگشت|/\nشرایط سفارش عمده|/\nراهنمای انتخاب بسته‌بندی|/\nسؤالات متداول|/"
+          }
+        },
+        "dce7265f-5350-4921-897d-ef3e41709969": {
+          "id": "dce7265f-5350-4921-897d-ef3e41709969",
+          "type": "social_link",
+          "name": "شبکه اجتماعی",
+          "disabled": false,
+          "settings": {
+            "label": "in",
+            "url": "/"
+          }
+        },
+        "20d842ea-a9e7-4ad6-baa2-c6af1d7be377": {
+          "id": "20d842ea-a9e7-4ad6-baa2-c6af1d7be377",
+          "type": "social_link",
+          "name": "شبکه اجتماعی",
+          "disabled": false,
+          "settings": {
+            "label": "●",
+            "url": "/"
+          }
+        },
+        "8a0080f9-f880-4e3e-8b46-6ea08370ef61": {
+          "id": "8a0080f9-f880-4e3e-8b46-6ea08370ef61",
+          "type": "social_link",
+          "name": "شبکه اجتماعی",
+          "disabled": false,
+          "settings": {
+            "label": "▶",
+            "url": "/"
+          }
+        }
+      },
+      "blocks_order": [
+        "83818fa0-3704-4d4c-8db4-af069aab8fe4",
+        "c04a2df2-2318-49ef-afd0-155d9200c305",
+        "dce7265f-5350-4921-897d-ef3e41709969",
+        "20d842ea-a9e7-4ad6-baa2-c6af1d7be377",
+        "8a0080f9-f880-4e3e-8b46-6ea08370ef61"
+      ]
+    }
+  }
+}
