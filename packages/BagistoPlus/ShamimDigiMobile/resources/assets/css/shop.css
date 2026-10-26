@@ -975,7 +975,7 @@ body,
     .hero p { font-size: 14px; line-height: 1.9; }
     .copyhero { width: 100%; padding-inline: 4px; }
     .pack-cats { gap: 10px; }
-    .sh-product-rail > * { min-width: min(78vw, 260px) !important; }
+    .sh-product-rail > * { min-width: min(78vw, 145px) !important; }
 
     #main .primary-button,
     #main .secondary-button { max-width: 100%; }
