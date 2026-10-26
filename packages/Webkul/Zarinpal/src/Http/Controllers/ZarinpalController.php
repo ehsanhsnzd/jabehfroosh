@@ -169,7 +169,7 @@ class ZarinpalController extends Controller
 
         try {
             $response = $this->client->post($this->requestUrl, $sendDataForGetAuthorityCode);
-            dd($response->json());
+            $response->json();
             $result = $response->json();
         } catch (\Exception $e) {
             Log::error('Zarinpal API connection failed', [
