@@ -11,6 +11,7 @@ use Webkul\Product\Contracts\Product;
 use Webkul\Product\DataTypes\CartItemValidationResult;
 use Webkul\Product\Exceptions\InsufficientProductInventoryException;
 use Webkul\Product\Helpers\Indexers\Price\Simple as SimpleIndexer;
+use Webkul\Product\Helpers\VariantPrice;
 use Webkul\Product\Repositories\ProductAttributeValueRepository;
 use Webkul\Product\Repositories\ProductBundleOptionProductRepository;
 use Webkul\Product\Repositories\ProductCustomerGroupPriceRepository;
@@ -71,6 +72,16 @@ class Simple extends AbstractType
      */
     public function update(array $data, $id, $attributes = [])
     {
+        $variant = $this->productRepository->find($id);
+
+        if ($variant->parent_id && $variant->parent->type === 'configurable') {
+            $data = app(VariantPrice::class)->prepare($data, $variant->parent, $variant->price_multiplier ?? 1);
+
+            if (! empty($attributes)) {
+                $attributes = array_unique(array_merge($attributes, ['price', 'special_price', 'special_price_from', 'special_price_to']));
+            }
+        }
+
         $product = parent::update($data, $id, $attributes);
 
         if (! empty($attributes)) {
@@ -80,6 +91,17 @@ class Simple extends AbstractType
         $this->productCustomizableOptionRepository->saveCustomizableOptions($data, $product);
 
         return $product;
+    }
+
+    public function getEditableAttributes($group = null, $skipSuperAttribute = true)
+    {
+        if ($this->product->parent_id) {
+            $this->skipAttributes = array_merge($this->skipAttributes, [
+                'price', 'cost', 'special_price', 'special_price_from', 'special_price_to',
+            ]);
+        }
+
+        return parent::getEditableAttributes($group, $skipSuperAttribute);
     }
 
     /**
@@ -352,6 +374,10 @@ class Simple extends AbstractType
      */
     public function getTypeValidationRules()
     {
+        if ($this->product->parent_id) {
+            return ['price_multiplier' => 'required|integer|min:1|max:1000000'];
+        }
+
         return [
             'customizable_options' => [
                 'array',

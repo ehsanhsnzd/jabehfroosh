@@ -34,6 +34,8 @@ class Product extends Model implements ProductContract
         'attribute_family_id',
         'sku',
         'parent_id',
+        'price_multiplier',
+        'variant_discount_percent',
     ];
 
     /**
@@ -41,6 +43,8 @@ class Product extends Model implements ProductContract
      */
     protected $casts = [
         'additional' => 'array',
+        'price_multiplier' => 'integer',
+        'variant_discount_percent' => 'decimal:2',
     ];
 
     /**

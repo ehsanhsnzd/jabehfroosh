@@ -1,7 +1,7 @@
 <style>
     .sh-digi-mobile-header { display: none; }
 
-    @media (max-width: 767px) {
+    @media (max-width: 2400px) {
         .shamim-digi-mobile-layout > .sc,
         .shamim-digi-mobile-layout .sh-header-desktop--digi-mobile {
             display: none !important;
@@ -58,8 +58,8 @@
         .shamim-digi-mobile-layout .sh-digi-tab:focus-visible,
         .shamim-digi-mobile-layout .sh-digi-tab--active {
             color: #fff;
-            border-color: #ef4056;
-            background: #ef4056;
+            border-color: #e2e2e2;
+            background: #9f17f4;
             outline: 0;
         }
 
@@ -72,7 +72,7 @@
             place-items: center;
             overflow: hidden;
             border-radius: 11px;
-            background: #f4f5f7;
+            /*background: #f4f5f7;*/
             color: #5f6470;
             font-size: 18px;
             font-weight: 800;
@@ -81,7 +81,9 @@
 
         .shamim-digi-mobile-layout .sh-digi-tab--active .sh-digi-tab__icon,
         .shamim-digi-mobile-layout .sh-digi-tab:hover .sh-digi-tab__icon,
-        .shamim-digi-mobile-layout .sh-digi-tab:focus-visible .sh-digi-tab__icon { background: rgb(255 255 255 / 17%); color: #fff; }
+        .shamim-digi-mobile-layout .sh-digi-tab:focus-visible .sh-digi-tab__icon {
+            /*background: rgb(255 255 255 / 17%);*/
+            color: #fff; }
 
         .shamim-digi-mobile-layout .sh-digi-tab__icon img { width: 100%; height: 100%; object-fit: contain; }
 

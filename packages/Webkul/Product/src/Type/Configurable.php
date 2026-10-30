@@ -3,6 +3,7 @@
 namespace Webkul\Product\Type;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Webkul\Admin\Validations\ConfigurableUniqueSku;
 use Webkul\Checkout\Contracts\CartItem;
@@ -13,6 +14,7 @@ use Webkul\Product\DataTypes\CartItemValidationResult;
 use Webkul\Product\Exceptions\InsufficientProductInventoryException;
 use Webkul\Product\Facades\ProductImage;
 use Webkul\Product\Helpers\Indexers\Price\Configurable as ConfigurableIndexer;
+use Webkul\Product\Helpers\VariantPrice;
 use Webkul\Sales\Contracts\InvoiceItem;
 use Webkul\Sales\Contracts\OrderItem;
 use Webkul\Sales\Contracts\ShipmentItem;
@@ -49,6 +51,9 @@ class Configurable extends AbstractType
         'short_description',
         'description',
         'price',
+        'special_price',
+        'special_price_from',
+        'special_price_to',
         'weight',
         'status',
         'tax_category_id',
@@ -138,7 +143,17 @@ class Configurable extends AbstractType
      */
     public function update(array $data, $id, $attributes = [])
     {
+        return DB::transaction(fn () => $this->updateWithVariantPrices($data, $id, $attributes));
+    }
+
+    protected function updateWithVariantPrices(array $data, $id, $attributes = [])
+    {
+        if (array_key_exists('variant_discount_percent', $data)) {
+            $data['variant_discount_percent'] ??= 0;
+        }
+
         $product = parent::update($data, $id, $attributes);
+        $product->refresh();
 
         if (! empty($attributes)) {
             return $product;
@@ -195,6 +210,7 @@ class Configurable extends AbstractType
      */
     public function createVariant($product, $superAttributes, $data = [])
     {
+        $data = app(VariantPrice::class)->prepare($data, $product);
         $sku = $product->sku.'-variant-'.implode('-', $superAttributes);
 
         $data = array_merge([
@@ -215,6 +231,7 @@ class Configurable extends AbstractType
             'sku' => $sku,
             'attribute_family_id' => $product->attribute_family_id,
             'parent_id' => $product->id,
+            'price_multiplier' => $data['price_multiplier'],
         ]);
 
         foreach ($superAttributes as $attributeCode => $optionId) {
@@ -240,7 +257,12 @@ class Configurable extends AbstractType
     {
         $variant = $this->productRepository->find($id);
 
-        $variant->update(['sku' => $data['sku']]);
+        $data = app(VariantPrice::class)->prepare($data, $variant->parent, $variant->price_multiplier ?? 1);
+
+        $variant->update([
+            'sku' => $data['sku'],
+            'price_multiplier' => $data['price_multiplier'],
+        ]);
 
         $this->attributeValueRepository->saveValues($data, $variant, $this->fillableVariantAttributes);
 
@@ -319,7 +341,8 @@ class Configurable extends AbstractType
                 'required',
                 new ConfigurableUniqueSku($this->getChildrenIds()),
             ],
-            'variants.*.price' => 'required',
+            'variant_discount_percent' => 'nullable|numeric|min:0|max:99.99',
+            'variants.*.price_multiplier' => 'required|integer|min:1|max:1000000',
             'variants.*.weight' => 'required',
         ];
     }

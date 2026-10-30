@@ -153,6 +153,10 @@
                 {!! view_render_event("bagisto.admin.catalog.product.edit.form.column_{$column}.before", ['product' => $product]) !!}
 
                 <div class="flex flex-col gap-2 {{ $column == 1 ? 'flex-1 max-xl:flex-auto' : 'w-[360px] max-w-full max-sm:w-full' }}">
+                    @if ($column != 1 || $isSingleColumn)
+                        @include('admin::catalog.products.edit.variant-pricing')
+                    @endif
+
                     @foreach ($groups as $group)
                         @php $customAttributes = $product->getEditableAttributes($group); @endphp
 
@@ -233,7 +237,7 @@
                                     {!! view_render_event("bagisto.admin.catalog.product.edit.form.{$group->code}.controls.after", ['product' => $product]) !!}
                                 @endforeach
 
-                                @includeWhen($group->code == 'price', 'admin::catalog.products.edit.price.group')
+                                @includeWhen($group->code == 'price' && ! $product->parent_id && $product->type !== 'configurable', 'admin::catalog.products.edit.price.group')
 
                                 @includeWhen($group->code === 'inventories', 'admin::catalog.products.edit.inventories')                                
                             </div>

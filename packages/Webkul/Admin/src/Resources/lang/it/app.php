@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'variant-pricing' => [
+        'title' => 'Variant pricing',
+        'multiplier' => 'Units per pack (price multiplier)',
+        'discount' => 'Discount for all variants (%)',
+        'info' => 'Variant price = parent unit price × units per pack. The parent discount determines the special price.',
+    ],
+
     'users' => [
         'sessions' => [
             'email' => 'Indirizzo Email',

@@ -224,10 +224,10 @@ class ThemeCustomizationTableSeeder extends Seeder
                                     </div>
 
                                     <div class="inline-col-content-wrapper">
-                                        <h2 class="inline-col-title"> '.trans('installer::app.seeders.shop.theme-customizations.bold-collections.content.title', [], $locale).' </h2> 
-                                        
+                                        <h2 class="inline-col-title"> '.trans('installer::app.seeders.shop.theme-customizations.bold-collections.content.title', [], $locale).' </h2>
+
                                         <p class="inline-col-description">'.trans('installer::app.seeders.shop.theme-customizations.bold-collections.content.description', [], $locale).'</p>
-                                        
+
                                         <a href="#wellness">
                                             <button class="primary-button max-md:rounded-lg max-md:px-4 max-md:py-2.5 max-md:text-sm">'.trans('installer::app.seeders.shop.theme-customizations.bold-collections.content.btn-title', [], $locale).'</button>
                                         </a>
@@ -245,7 +245,7 @@ class ThemeCustomizationTableSeeder extends Seeder
                         'options' => json_encode([
                             'html' => '<div class="section-game">
                                 <div class="section-title">
-                                    <h2>'.trans('installer::app.seeders.shop.theme-customizations.game-container.content.title', [], $locale).'</h2> 
+                                    <h2>'.trans('installer::app.seeders.shop.theme-customizations.game-container.content.title', [], $locale).'</h2>
                                 </div>
 
                                 <div class="section-gap container">
@@ -253,16 +253,16 @@ class ThemeCustomizationTableSeeder extends Seeder
                                         <div class="single-collection-card">
                                             <a href="#active-wear">
                                                 <img src="" data-src="'.$this->storeFileIfExists('theme/8', 'static/'.$locale.'/8.webp', 'static/en/8.webp').'" class="lazy" width="615" height="600" alt="'.trans('installer::app.seeders.shop.theme-customizations.game-container.content.title', [], $locale).'">
-                                                
-                                                <h3 class="overlay-text">'.trans('installer::app.seeders.shop.theme-customizations.game-container.content.sub-title-1', [], $locale).'</h3> 
+
+                                                <h3 class="overlay-text">'.trans('installer::app.seeders.shop.theme-customizations.game-container.content.sub-title-1', [], $locale).'</h3>
                                             </a>
                                         </div>
 
                                         <div class="single-collection-card">
                                             <a href="#active-wear-female">
                                                 <img src="" data-src="'.$this->storeFileIfExists('theme/8', 'static/'.$locale.'/9.webp', 'static/en/9.webp').'" class="lazy" width="615" height="600" alt="'.trans('installer::app.seeders.shop.theme-customizations.game-container.content.title', [], $locale).'">
-                                                
-                                                <h3 class="overlay-text"> '.trans('installer::app.seeders.shop.theme-customizations.game-container.content.sub-title-2', [], $locale).' </h3> 
+
+                                                <h3 class="overlay-text"> '.trans('installer::app.seeders.shop.theme-customizations.game-container.content.sub-title-2', [], $locale).' </h3>
                                             </a>
                                         </div>
                                     </div>
@@ -284,10 +284,10 @@ class ThemeCustomizationTableSeeder extends Seeder
                                     </div>
 
                                     <div class="inline-col-content-wrapper direction-ltr">
-                                        <h2 class="inline-col-title">'.trans('installer::app.seeders.shop.theme-customizations.bold-collections-2.content.title', [], $locale).'</h2> 
-                                        
+                                        <h2 class="inline-col-title">'.trans('installer::app.seeders.shop.theme-customizations.bold-collections-2.content.title', [], $locale).'</h2>
+
                                         <p class="inline-col-description">'.trans('installer::app.seeders.shop.theme-customizations.bold-collections-2.content.description', [], $locale).'</p>
-                                        
+
                                         <a href="#electronics">
                                             <button class="primary-button max-md:rounded-lg max-md:px-4 max-md:py-2.5 max-md:text-sm">'.trans('installer::app.seeders.shop.theme-customizations.bold-collections-2.content.btn-title', [], $locale).'</button>
                                         </a>

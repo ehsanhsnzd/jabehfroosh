@@ -2,7 +2,6 @@
 
 namespace Webkul\Admin\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
@@ -171,15 +170,6 @@ class ProductForm extends FormRequest
         }
 
         return $this->rules;
-    }
-
-    protected function failedValidation(
-        Validator $validator
-    ) {
-        dd([
-            'errors' => $validator->errors()->toArray(),
-            'request' => $this->all(),
-        ]);
     }
 
     /**

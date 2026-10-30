@@ -142,6 +142,23 @@
                                     </p>
                                 </v-error-message>
                             </x-admin::form.control-group>
+                            <x-admin::form.control-group>
+                                <x-admin::form.control-group.label class="required">
+                                    @lang('admin::app.variant-pricing.multiplier')
+                                </x-admin::form.control-group.label>
+
+                                <x-admin::form.control-group.control
+                                    type="number"
+                                    name="price_multiplier"
+                                    rules="required|integer|min_value:1|max_value:1000000"
+                                    value="1"
+                                    min="1"
+                                    max="1000000"
+                                    :label="trans('admin::app.variant-pricing.multiplier')"
+                                />
+
+                                <x-admin::form.control-group.error control-name="price_multiplier" />
+                            </x-admin::form.control-group>
                         </x-slot>
         
                         <!-- Modal Footer -->
@@ -302,15 +319,15 @@
                                                             class="absolute top-1/2 -translate-y-1/2 text-gray-500 ltr:left-4 rtl:right-4"
                                                             v-pre
                                                         >
-                                                            {{ core()->currencySymbol(core()->getBaseCurrencyCode()) }}
+                                                            ×
                                                         </span>
 
                                                         <x-admin::form.control-group.control
                                                             type="text"
                                                             class="ltr:pl-8 rtl:pr-8"
-                                                            name="price"
-                                                            ::rules="{required: true, decimal: true, min_value: 0}"
-                                                            :label="trans('admin::app.catalog.products.edit.types.configurable.mass-edit.price')"
+                                                            name="price_multiplier"
+                                                            ::rules="{required: true, integer: true, min_value: 1, max_value: 1000000}"
+                                                            :label="trans('admin::app.variant-pricing.multiplier')"
                                                         />
                                                     </div>
                                                 </x-admin::form.control-group>
@@ -320,7 +337,7 @@
                                                 </button>
                                             </div>
                     
-                                            <x-admin::form.control-group.error control-name="price" />
+                                            <x-admin::form.control-group.error control-name="price_multiplier" />
                                         </div>
                                     </template>
 
@@ -498,7 +515,7 @@
                                                 class="absolute top-1/2 -translate-y-1/2 text-gray-500 ltr:left-4 rtl:right-4"
                                                 v-pre
                                             >
-                                                {{ core()->currencySymbol(core()->getBaseCurrencyCode()) }}
+                                                ×
                                             </span>
 
                                             <v-field
@@ -506,9 +523,9 @@
                                                 class="flex min-h-[39px] w-full rounded-md border bg-white py-1.5 text-sm font-normal text-gray-600 transition-all hover:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 ltr:pl-8 rtl:pr-8"
                                                 :class="[errors['variants[variant_' + variant.id + ']'] ? 'border border-red-500' : '']"
                                                 :name="'variants[variant_' + variant.id + ']'"
-                                                :rules="{required: true, decimal: true, min_value: 0}"
-                                                v-model="variant.price"
-                                                label="@lang('admin::app.catalog.products.edit.types.configurable.mass-edit.price')"
+                                                :rules="{required: true, integer: true, min_value: 1, max_value: 1000000}"
+                                                v-model="variant.price_multiplier"
+                                                label="@lang('admin::app.variant-pricing.multiplier')"
                                             >
                                             </v-field>
                                         </div>
@@ -724,8 +741,8 @@
 
                 <input
                     type="hidden"
-                    :name="'variants[' + variant.id + '][price]'"
-                    :value="variant.price"
+                    :name="'variants[' + variant.id + '][price_multiplier]'"
+                    :value="variant.price_multiplier"
                 />
 
                 <input
@@ -848,9 +865,9 @@
                         </p>
                     </div>
 
-                    <!-- Error message for price attribute -->
+                    <!-- Error message for price_multiplier attribute -->
                     <v-error-message
-                        :name="'variants[' + variant.id + '].price'"
+                        :name="'variants[' + variant.id + '].price_multiplier'"
                         v-slot="{ message }"
                     >
                         <p class="mt-1 text-xs italic text-red-600">
@@ -863,7 +880,7 @@
             <!-- Actions -->
             <div class="grid place-content-start gap-1 text-right">
                 <p class="font-semibold text-gray-800 dark:text-white">
-                    @{{ $admin.formatPrice(variant.price) }}  
+                    @{{ '× ' + variant.price_multiplier }}
                 </p>
 
                 <p class="font-semibold text-gray-800 dark:text-white">
@@ -955,18 +972,18 @@
                                         <div class="mb-2.5 flex gap-4">
                                             <x-admin::form.control-group class="flex-1">
                                                 <x-admin::form.control-group.label class="required">
-                                                    @lang('admin::app.catalog.products.edit.types.configurable.edit.price')
+                                                    @lang('admin::app.variant-pricing.multiplier')
                                                 </x-admin::form.control-group.label>
                     
                                                 <x-admin::form.control-group.control
                                                     type="text"
-                                                    name="price"
-                                                    ::rules="{required: true, decimal: true, min_value: 0}"
-                                                    ::value="variant.price"
-                                                    :label="trans('admin::app.catalog.products.edit.types.configurable.edit.price')"
+                                                    name="price_multiplier"
+                                                    ::rules="{required: true, integer: true, min_value: 1, max_value: 1000000}"
+                                                    ::value="variant.price_multiplier"
+                                                    :label="trans('admin::app.variant-pricing.multiplier')"
                                                 />
                     
-                                                <x-admin::form.control-group.error control-name="price" />
+                                                <x-admin::form.control-group.error control-name="price_multiplier" />
                                             </x-admin::form.control-group>
 
                                             <x-admin::form.control-group class="flex-1">
@@ -1105,7 +1122,7 @@
                         id: null,
                         name: '',
                         sku: '',
-                        price: 0,
+                        price_multiplier: 1,
                         status: 1,
                         weight: 0,
                         inventories: {},
@@ -1119,7 +1136,7 @@
                     let filteredVariants = this.variants.filter((variant) => {
                         let matchCount = 0;
 
-                        for (let key in params) {
+                        for (let { code: key } of this.superAttributes) {
                             if (variant[key] == params[key]) {
                                 matchCount++;
                             }
@@ -1134,13 +1151,13 @@
                         return;
                     }
 
-                    const optionIds = Object.values(params);
+                    const optionIds = this.superAttributes.map(attribute => params[attribute.code]);
 
                     this.variants.push(Object.assign({
                         id: 'variant_' + this.variants.length,
                         sku: '{{ $product->sku }}' + '-variant-' + optionIds.join('-'),
                         name: '',
-                        price: 0,
+                        price_multiplier: 1,
                         status: 1,
                         weight: 0,
                         inventories: {},
@@ -1190,8 +1207,8 @@
 
                         editPrices: {
                             key: 'editPrices',
-                            value: 'price',
-                            title: "@lang('admin::app.catalog.products.edit.types.configurable.mass-edit.edit-prices')"
+                            value: 'price_multiplier',
+                            title: "@lang('admin::app.variant-pricing.multiplier')"
                         },
 
                         editInventories: {
@@ -1377,9 +1394,9 @@
 
                 editPrices(params) {
                     this.selectedVariants.forEach((variant) => {
-                        variant.price = this.findVariantByAttribute({
+                        variant.price_multiplier = this.findVariantByAttribute({
                             id: variant.id,
-                            name: 'price'
+                            name: 'price_multiplier'
                         });
                     });
                 },

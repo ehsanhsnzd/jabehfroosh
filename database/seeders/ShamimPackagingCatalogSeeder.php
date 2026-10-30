@@ -17,6 +17,8 @@ use Webkul\Product\Repositories\ProductRepository;
 
 class ShamimPackagingCatalogSeeder extends Seeder
 {
+    protected bool $productsOnly = false;
+
     private string $assetDirectory;
 
     public function run(): void
@@ -40,9 +42,17 @@ class ShamimPackagingCatalogSeeder extends Seeder
             throw new \RuntimeException('Default channel, attribute family, or inventory source is missing.');
         }
 
+        // Check all source images before changing the catalog.
+        foreach ($this->products() as $item) {
+            $this->imageFiles($item);
+        }
+
         $categories = $this->seedCategories($categoryRepository, (int) $channel->root_category_id);
-        $filterOptions = $this->seedFilterOptions();
-        $this->attachCategoryFilters($categories);
+        $filterOptions = $this->productsOnly ? $this->existingFilterOptions() : $this->seedFilterOptions();
+
+        if (! $this->productsOnly) {
+            $this->attachCategoryFilters($categories);
+        }
 
         foreach ($this->products() as $item) {
             $product = $productRepository->findOneByField('sku', $item['sku']);
@@ -89,8 +99,8 @@ class ShamimPackagingCatalogSeeder extends Seeder
                 'featured' => in_array($item['sku'], ['SP-FC-002-W', 'SP-FC-HANDLE-B', 'SP-FF-BOAT-L', 'SP-PAPER-3550']),
                 'guest_checkout' => 1,
                 'manage_stock' => 1,
-                'color' => $filterOptions['color'][$item['color_option']],
-                'size' => $filterOptions['size'][$item['size_option']],
+                'color' => $filterOptions['color'][$item['color_option']] ?? null,
+                'size' => $filterOptions['size'][$item['size_option']] ?? null,
                 'channels' => [$channel->id],
                 'categories' => $categoryIds,
                 'inventories' => [$inventorySourceId => 100000],
@@ -102,11 +112,28 @@ class ShamimPackagingCatalogSeeder extends Seeder
             $this->command?->line("Seeded: {$item['sku']} - {$item['name']}");
         }
 
-        $this->seedSearchSynonyms();
+        if (! $this->productsOnly) {
+            $this->seedSearchSynonyms();
 
-        $this->seedSeoSettings($channel->code);
+            $this->seedSeoSettings($channel->code);
+        }
 
         Log::info('Shamim packaging catalog seeded', ['products' => count($this->products())]);
+    }
+
+    private function existingFilterOptions(): array
+    {
+        $options = [];
+
+        foreach (['color', 'size'] as $code) {
+            $attributeId = DB::table('attributes')->where('code', $code)->value('id');
+
+            $options[$code] = $attributeId
+                ? DB::table('attribute_options')->where('attribute_id', $attributeId)->pluck('id', 'admin_name')->all()
+                : [];
+        }
+
+        return $options;
     }
 
     private function seedFilterOptions(): array
@@ -368,7 +395,7 @@ class ShamimPackagingCatalogSeeder extends Seeder
         // photo from appearing on the product detail page.
         $measuredImage = "{$this->assetDirectory}/measured/{$item['sku']}.png";
         $fallbackImage = $item['image']
-            ? base_path('packages/BagistoPlus/ShamimPackVisual/resources/assets/images/'.$item['image'])
+            ? base_path('packages/BagistoPlus/ShamimDigiMobile/resources/assets/images/'.$item['image'])
             : null;
         $paths = [is_file($measuredImage) ? $measuredImage : $fallbackImage];
 
