@@ -465,17 +465,19 @@
                                         <!-- Add To Cart Button -->
                                         {!! view_render_event('bagisto.shop.products.view.add_to_cart.before', ['product' => $product]) !!}
 
-                                        <x-shop::button
-                                            type="submit"
-                                            class="secondary-button w-full max-w-full max-md:py-3 max-sm:rounded-lg max-sm:py-1.5"
-                                            button-type="secondary-button"
-                                            :loading="false"
-                                            :title="trans('shop::app.products.view.add-to-cart')"
-                                            :disabled="! $product->isSaleable(1)"
-                                            ::loading="isStoring.addToCart"
-                                            ::disabled="isStoring.addToCart"
-                                            @click="is_buy_now=0;"
-                                        />
+                                        <x-shop::products.cart-link :product-id="$product->id">
+                                            <x-shop::button
+                                                type="submit"
+                                                class="secondary-button w-full max-w-full max-md:py-3 max-sm:rounded-lg max-sm:py-1.5"
+                                                button-type="secondary-button"
+                                                :loading="false"
+                                                :title="trans('shop::app.products.view.add-to-cart')"
+                                                :disabled="! $product->isSaleable(1)"
+                                                ::loading="isStoring.addToCart"
+                                                ::disabled="isStoring.addToCart"
+                                                @click="is_buy_now=0;"
+                                            />
+                                        </x-shop::products.cart-link>
 
                                         {!! view_render_event('bagisto.shop.products.view.add_to_cart.after', ['product' => $product]) !!}
                                     @endif
@@ -575,6 +577,10 @@
                             .then(response => {
                                 if (response.data.message) {
                                     this.$emitter.emit('update-mini-cart', response.data.data);
+
+                                    if (operation === 'addToCart' && ! response.data.redirect) {
+                                        this.$emitter.emit('shamim-product-added-to-cart', {{ $product->id }});
+                                    }
 
                                     this.$emitter.emit('add-flash', {
                                         type: 'success',
@@ -773,14 +779,16 @@
                 </div>
             </div>
 
-            <button
-                type="submit"
-                form="shamim-product-form"
-                class="sh-digi-product-bottom-bar__submit"
-                @disabled(! $product->isSaleable(1))
-            >
-                افزودن به سبد خرید
-            </button>
+            <x-shop::products.cart-link :product-id="$product->id">
+                <button
+                    type="submit"
+                    form="shamim-product-form"
+                    class="sh-digi-product-bottom-bar__submit"
+                    @disabled(! $product->isSaleable(1))
+                >
+                    افزودن به سبد خرید
+                </button>
+            </x-shop::products.cart-link>
         </aside>
 
         @pushOnce('scripts')

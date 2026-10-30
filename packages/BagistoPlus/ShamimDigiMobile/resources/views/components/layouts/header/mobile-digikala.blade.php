@@ -139,3 +139,37 @@
         </a>
     </div>
 </div>
+
+@pushOnce('scripts')
+    <script>
+        (() => {
+            let framePending = false;
+
+            const updateHeader = () => {
+                const scrollTop = Math.max(0, window.scrollY);
+                const progress = Math.min(1, Math.max(0, (scrollTop - 16) / 180));
+
+                document.querySelectorAll('.sh-digi-mobile-header').forEach(header => {
+                    header.style.setProperty('--sh-digi-tab-expanded', (1 - progress).toFixed(4));
+                });
+
+                framePending = false;
+            };
+
+            const scheduleUpdate = () => {
+                if (! framePending) {
+                    framePending = true;
+                    window.requestAnimationFrame(updateHeader);
+                }
+            };
+
+            window.addEventListener('scroll', scheduleUpdate, { passive: true });
+            window.addEventListener('resize', scheduleUpdate);
+            window.addEventListener('pageshow', scheduleUpdate);
+            document.addEventListener('visual:section:load', scheduleUpdate);
+            document.addEventListener('visual:page:load', scheduleUpdate);
+
+            scheduleUpdate();
+        })();
+    </script>
+@endPushOnce

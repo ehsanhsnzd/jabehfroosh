@@ -8,6 +8,7 @@
         }
 
         .shamim-digi-mobile-layout .sh-digi-mobile-header {
+            --sh-digi-tab-expanded: 1;
             position: sticky;
             top: 0;
             z-index: 50;
@@ -37,11 +38,12 @@
         .shamim-digi-mobile-layout .sh-digi-tab {
             display: flex;
             flex: 0 0 82px;
-            min-height: 88px;
+            min-height: 44px;
+            height: calc(44px + 44px * var(--sh-digi-tab-expanded));
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: calc(5px * var(--sh-digi-tab-expanded));
             overflow: hidden;
             padding: 6px 4px;
             color: #23254e;
@@ -67,17 +69,21 @@
 
         .shamim-digi-mobile-layout .sh-digi-tab__icon {
             display: grid;
-            width: 39px;
-            height: 39px;
+            width: calc(39px * var(--sh-digi-tab-expanded));
+            height: calc(39px * var(--sh-digi-tab-expanded));
+            flex-shrink: 0;
             place-items: center;
             overflow: hidden;
             border-radius: 11px;
             /*background: #f4f5f7;*/
             color: #5f6470;
-            font-size: 18px;
+            font-size: calc(18px * var(--sh-digi-tab-expanded));
             font-weight: 800;
             line-height: 1;
+            opacity: var(--sh-digi-tab-expanded);
         }
+
+        .shamim-digi-mobile-layout .sh-digi-tab__icon svg { max-width: 100%; max-height: 100%; }
 
         .shamim-digi-mobile-layout .sh-digi-tab--active .sh-digi-tab__icon,
         .shamim-digi-mobile-layout .sh-digi-tab:hover .sh-digi-tab__icon,

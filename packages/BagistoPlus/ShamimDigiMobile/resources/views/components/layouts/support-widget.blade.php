@@ -1,19 +1,19 @@
 <details class="support-widget" data-support-widget>
-    <summary class="support-widget__trigger">
+    <summary class="support-widget__trigger" aria-controls="supportPanel">
         <span class="support-widget__label">ارتباط با پشتیبانی</span>
         <span class="support-widget__bubble">
             <svg aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-8 8H5l-3 2v-10a9 9 0 1 1 18 0Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>
         </span>
     </summary>
 
-    <div class="support-widget__panel" id="supportPanel" aria-hidden="true">
+    <div class="support-widget__panel" id="supportPanel">
         <div class="support-widget__heading">
             <div>
                 <strong>ارتباط با پشتیبانی</strong>
                 <small>شنبه تا پنجشنبه، پاسخ‌گوی شما هستیم</small>
             </div>
 
-            <small class="support-widget__close-hint">برای بستن، دوباره دکمه پشتیبانی را بزنید</small>
+            <small class="support-widget__close-hint">برای بستن، بیرون پنجره کلیک کنید یا Escape را بزنید</small>
         </div>
 
         <div class="support-widget__options">
@@ -44,3 +44,28 @@
     </div>
 
 </details>
+
+@pushOnce('scripts')
+    <script>
+        (() => {
+            document.addEventListener('click', event => {
+                document.querySelectorAll('[data-support-widget][open]').forEach(widget => {
+                    if (! widget.contains(event.target)) {
+                        widget.open = false;
+                    }
+                });
+            });
+
+            document.addEventListener('keydown', event => {
+                if (event.key !== 'Escape') {
+                    return;
+                }
+
+                document.querySelectorAll('[data-support-widget][open]').forEach(widget => {
+                    widget.open = false;
+                    widget.querySelector('summary')?.focus({ preventScroll: true });
+                });
+            });
+        })();
+    </script>
+@endPushOnce

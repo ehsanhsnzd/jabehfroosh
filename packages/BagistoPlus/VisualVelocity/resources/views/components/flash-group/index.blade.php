@@ -28,7 +28,7 @@
             leave-from-class="ltr:translate-y-0 rtl:-translate-y-0"
             leave-active-class="transform transition duration-200 ease-in-out"
             leave-to-class="ltr:translate-y-full rtl:-translate-y-full"
-            class='fixed bottom-10 left-1/2 z-[1001] grid -translate-x-1/2 -translate-y-1/2 transform justify-items-center gap-2.5 sm:hidden'
+            class='fixed bottom-20 left-1/2 z-[1001] grid -translate-x-1/2 -translate-y-1/2 transform justify-items-center gap-2.5 sm:hidden'
         >
             <x-shop::flash-group.item />
         </transition-group>
