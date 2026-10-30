@@ -1115,7 +1115,7 @@ body,
 .support-widget__trigger:hover .support-widget__bubble { transform: translateY(-3px); background: #00a651; }
 .support-widget__panel {
     position: absolute;
-    right: 0;
+    left: 0;
     bottom: 75px;
     width: min(390px, calc(100vw - 32px));
     padding: 18px;
