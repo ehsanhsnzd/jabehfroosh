@@ -139,7 +139,7 @@
             pointer-events: none;
             transform: translateY(-50%);
         }
-        .sh-digi-search__brand img { width: 100px; height: 36px; object-fit: contain; }
+        .sh-digi-search__brand img { width: 100px; height: 36px; object-fit: contain; margin-top: 6px }
         .sh-digi-search:focus-within .sh-digi-search__brand,
         .sh-digi-search__input:not(:placeholder-shown) + .sh-digi-search__brand { display: none; }
 

@@ -200,6 +200,7 @@ img.lazy {
 
 .sh-digi-product-card__price .final-price.line-through,
 .sh-digi-product-card__price .regular-price {
+  font-family: 'Vazirmatn';
   order: 1;
   color: #a1a3a8;
   font-size: 12px;
