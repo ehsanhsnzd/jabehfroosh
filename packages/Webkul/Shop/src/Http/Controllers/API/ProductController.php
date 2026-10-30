@@ -6,8 +6,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Webkul\Category\Repositories\CategoryRepository;
 use Webkul\Marketing\Jobs\UpdateCreateSearchTerm as UpdateCreateSearchTermJob;
+use Webkul\Product\Helpers\CatalogRegion;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Shop\Helpers\CatalogApiCache;
+use Webkul\Shop\Helpers\StorefrontRegion;
 use Webkul\Shop\Http\Resources\ProductCardResource;
 
 class ProductController extends APIController
@@ -86,6 +88,7 @@ class ProductController extends APIController
                 'channel_id' => core()->getCurrentChannel()->id,
                 'status' => 1,
                 'visible_individually' => 1,
+                'catalog_region' => StorefrontRegion::selected(),
             ]));
     }
 
@@ -128,7 +131,10 @@ class ProductController extends APIController
     {
         $product = $this->productRepository->findOrFail($id);
 
-        $relatedProducts = $product->related_products()
+        $relatedQuery = $product->related_products();
+        CatalogRegion::apply($relatedQuery->getQuery(), StorefrontRegion::selected());
+
+        $relatedProducts = $relatedQuery
             ->take(core()->getConfigData('catalog.products.product_view_page.no_of_related_products'))
             ->get();
 
@@ -144,7 +150,10 @@ class ProductController extends APIController
     {
         $product = $this->productRepository->findOrFail($id);
 
-        $upSellProducts = $product->up_sells()
+        $upSellQuery = $product->up_sells();
+        CatalogRegion::apply($upSellQuery->getQuery(), StorefrontRegion::selected());
+
+        $upSellProducts = $upSellQuery
             ->take(core()->getConfigData('catalog.products.product_view_page.no_of_up_sells_products'))
             ->get();
 

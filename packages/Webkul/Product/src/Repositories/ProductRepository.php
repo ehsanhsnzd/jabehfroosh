@@ -14,6 +14,7 @@ use Webkul\Core\Eloquent\Repository;
 use Webkul\Customer\Repositories\CustomerRepository;
 use Webkul\Marketing\Repositories\SearchSynonymRepository;
 use Webkul\Product\Contracts\Product;
+use Webkul\Product\Helpers\CatalogRegion;
 
 class ProductRepository extends Repository
 {
@@ -231,7 +232,7 @@ class ProductRepository extends Repository
      */
     public function getAll(array $params = [])
     {
-        if ($this->searchEngine == 'elastic') {
+        if ($this->searchEngine == 'elastic' && empty($params['catalog_region'])) {
             return $this->searchFromElastic($params);
         }
 
@@ -265,6 +266,8 @@ class ProductRepository extends Repository
             'variants.price_indices',
             'variants.inventory_indices',
         ])->scopeQuery(function ($query) use ($params) {
+            CatalogRegion::apply($query, $params['catalog_region'] ?? null);
+
             $prefix = DB::getTablePrefix();
 
             $qb = $query->distinct()
@@ -601,7 +604,7 @@ class ProductRepository extends Repository
      */
     public function getMaxPrice($params = [])
     {
-        if ($this->searchEngine == 'elastic') {
+        if ($this->searchEngine == 'elastic' && empty($params['catalog_region'])) {
             return $this->elasticSearchRepository->getMaxPrice($params);
         }
 
@@ -614,6 +617,8 @@ class ProductRepository extends Repository
                 ->leftJoin('product_price_indices', 'products.id', 'product_price_indices.product_id')
                 ->leftJoin('product_categories', 'products.id', 'product_categories.product_id')
                 ->where('product_price_indices.customer_group_id', $customerGroup->id);
+
+            CatalogRegion::apply($query, $params['catalog_region'] ?? null);
 
             if (! empty($params['category_id'])) {
                 $query->where('product_categories.category_id', $params['category_id']);
@@ -636,6 +641,8 @@ class ProductRepository extends Repository
                 $join->on('products.id', '=', 'attr_pav.product_id')
                     ->where('attr_pav.attribute_id', $attribute->id);
             });
+
+        CatalogRegion::apply($query, $params['catalog_region'] ?? null);
 
         if (! empty($params['category_id'])) {
             $query->leftJoin('product_categories', 'products.id', 'product_categories.product_id')

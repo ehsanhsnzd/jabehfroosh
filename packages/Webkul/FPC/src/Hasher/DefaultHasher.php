@@ -4,6 +4,7 @@ namespace Webkul\FPC\Hasher;
 
 use Illuminate\Http\Request;
 use Spatie\ResponseCache\Hasher\DefaultHasher as BaseDefaultHasher;
+use Webkul\Shop\Helpers\StorefrontRegion;
 
 class DefaultHasher extends BaseDefaultHasher
 {
@@ -30,13 +31,16 @@ class DefaultHasher extends BaseDefaultHasher
     protected function getCacheNameSuffix(Request $request): string
     {
         if ($request->attributes->has('responsecache.cacheNameSuffix')) {
-            return $request->attributes->get('responsecache.cacheNameSuffix');
+            return $request->attributes->get('responsecache.cacheNameSuffix')
+                .'-region-v2-'.(StorefrontRegion::selected() ?? 'all');
         }
 
         $cacheNameSuffix = core()->getCurrentChannel()->code
             .'-'.core()->getCurrentLocale()->code
             .'-'.core()->getCurrentCurrency()->code
             .'-'.$this->cacheProfile->useCacheNameSuffix($request);
+
+        $cacheNameSuffix .= '-region-v2-'.(StorefrontRegion::selected() ?? 'all');
 
         return $cacheNameSuffix;
     }

@@ -155,6 +155,7 @@
                 <div class="flex flex-col gap-2 {{ $column == 1 ? 'flex-1 max-xl:flex-auto' : 'w-[360px] max-w-full max-sm:w-full' }}">
                     @if ($column != 1 || $isSingleColumn)
                         @include('admin::catalog.products.edit.variant-pricing')
+                        @include('admin::catalog.products.edit.catalog-regions')
                     @endif
 
                     @foreach ($groups as $group)

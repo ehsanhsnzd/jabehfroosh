@@ -36,6 +36,7 @@ class Product extends Model implements ProductContract
         'parent_id',
         'price_multiplier',
         'variant_discount_percent',
+        'catalog_regions',
     ];
 
     /**
@@ -45,6 +46,7 @@ class Product extends Model implements ProductContract
         'additional' => 'array',
         'price_multiplier' => 'integer',
         'variant_discount_percent' => 'decimal:2',
+        'catalog_regions' => 'array',
     ];
 
     /**

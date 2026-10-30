@@ -155,6 +155,12 @@ class Configurable extends AbstractType
         $product = parent::update($data, $id, $attributes);
         $product->refresh();
 
+        if (array_key_exists('catalog_regions', $data)) {
+            foreach ($product->variants as $variant) {
+                $variant->update(['catalog_regions' => $product->catalog_regions ?? []]);
+            }
+        }
+
         if (! empty($attributes)) {
             return $product;
         }
@@ -232,6 +238,7 @@ class Configurable extends AbstractType
             'attribute_family_id' => $product->attribute_family_id,
             'parent_id' => $product->id,
             'price_multiplier' => $data['price_multiplier'],
+            'catalog_regions' => $product->catalog_regions ?? [],
         ]);
 
         foreach ($superAttributes as $attributeCode => $optionId) {

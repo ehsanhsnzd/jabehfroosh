@@ -29,6 +29,10 @@ class Header extends BladeSection
             Text::make('logo_subtitle', 'زیرعنوان لوگو')->default('SHAMIM PACK'),
             Text::make('logo_mark', 'حرف لوگو')->default('ش'),
             Text::make('search_placeholder', 'متن جستجو')->default('جستجو در محصولات بسته‌بندی...'),
+            Text::make('search_brand_prompt', 'متن کنار لوگوی جستجو')->default('جستجو در'),
+            Image::make('search_brand_image', 'لوگوی داخل جستجو')->info('اگر خالی باشد، لوگوی سبز جعبه فروش نمایش داده می‌شود'),
+            Textarea::make('quick_links', 'منوی زیر جستجو (هر خط: عنوان|لینک)')
+                ->default("همه|/search\nکاغذ ساندویچ|/sandwich-wrapping-paper\nسینگل|/pizza-boards\nسطل کنتاکی|/fried-chicken-buckets\nپاکت همبرگر|/burger-boxes"),
             Text::make('sale_text', 'پیام فروش ویژه')->default('● قیمت همکاری برای سفارش‌های عمده'),
             Text::make('drawer_title', 'عنوان منوی موبایل')->default('منوی فروشگاه'),
             Text::make('cart_title', 'عنوان سبد خرید')->default('سبد خرید شما'),
@@ -39,6 +43,10 @@ class Header extends BladeSection
     public static function blocks(): array
     {
         return [
+            Block::make('quick_link', 'لینک منوی زیر جستجو')->settings([
+                Text::make('title', 'عنوان')->default('همه'),
+                Link::make('url', 'آدرس لینک')->default('/search'),
+            ]),
             Block::make('menu_link', 'لینک منو')->settings([
                 Text::make('title', 'عنوان')->default('خانه'),
                 Link::make('url', 'آدرس')->default('/'),

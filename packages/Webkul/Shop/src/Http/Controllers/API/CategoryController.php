@@ -9,6 +9,7 @@ use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Category\Repositories\CategoryRepository;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Shop\Helpers\CatalogApiCache;
+use Webkul\Shop\Helpers\StorefrontRegion;
 use Webkul\Shop\Http\Resources\AttributeOptionResource;
 use Webkul\Shop\Http\Resources\AttributeResource;
 use Webkul\Shop\Http\Resources\CategoryResource;
@@ -131,6 +132,7 @@ class CategoryController extends APIController
             ->getMaxPrice([
                 'category_id' => $categoryId,
                 'attribute_code' => request('attribute_code', 'price'),
+                'catalog_region' => StorefrontRegion::selected(),
             ]);
 
         return new JsonResource([

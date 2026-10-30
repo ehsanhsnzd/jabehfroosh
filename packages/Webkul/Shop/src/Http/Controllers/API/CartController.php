@@ -8,8 +8,10 @@ use Webkul\CartRule\Repositories\CartRuleCouponRepository;
 use Webkul\Checkout\Facades\Cart;
 use Webkul\Checkout\Models\CartAddress;
 use Webkul\Product\Exceptions\InsufficientProductInventoryException;
+use Webkul\Product\Helpers\CatalogRegion;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Shipping\Facades\Shipping;
+use Webkul\Shop\Helpers\StorefrontRegion;
 use Webkul\Shop\Http\Resources\CartResource;
 use Webkul\Shop\Http\Resources\ProductResource;
 
@@ -296,6 +298,7 @@ class CartController extends APIController
         $productIds = $cart->items->pluck('product_id')->toArray();
 
         $products = $this->productRepository
+            ->scopeQuery(fn ($query) => CatalogRegion::apply($query, StorefrontRegion::selected()))
             ->select('products.*', 'product_cross_sells.child_id')
             ->join('product_cross_sells', 'products.id', '=', 'product_cross_sells.child_id')
             ->whereIn('product_cross_sells.parent_id', $productIds)

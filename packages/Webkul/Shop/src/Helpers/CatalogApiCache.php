@@ -82,12 +82,13 @@ class CatalogApiCache
     protected function key(string $segment, array $params): string
     {
         return implode(':', [
-            'shop_api',
+            'shop_api_regions_v2',
             $this->version(),
             $segment,
             core()->getCurrentChannel()->id,
             core()->getCurrentLocale()->code,
             core()->getCurrentCurrencyCode(),
+            StorefrontRegion::selected() ?? 'all',
             md5(json_encode($params)),
         ]);
     }

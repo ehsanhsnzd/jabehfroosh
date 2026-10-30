@@ -1,9 +1,13 @@
 <?php
 
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CatalogRegionController;
 use App\Http\Controllers\CustomerOtpController;
 use Illuminate\Support\Facades\Route;
 use Webkul\Core\Http\Middleware\PreventRequestsDuringMaintenance;
+
+Route::post('/catalog/region', [CatalogRegionController::class, 'store'])
+    ->name('shop.catalog.region.store');
 
 Route::middleware(['shop', PreventRequestsDuringMaintenance::class])->controller(BlogController::class)->group(function () {
     Route::get('/blog', 'index')->name('shop.blog.index');

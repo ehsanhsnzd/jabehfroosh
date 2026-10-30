@@ -92,6 +92,8 @@ class ProductForm extends FormRequest
             'guest_checkout' => ['sometimes', 'required', 'in:0,1'],
             'new' => ['sometimes', 'required', 'in:0,1'],
             'featured' => ['sometimes', 'required', 'in:0,1'],
+            'catalog_regions' => ['sometimes', 'array'],
+            'catalog_regions.*' => ['string', 'distinct', Rule::in(array_diff(array_keys(config('catalog-regions')), ['northwest']))],
             'rma_rule_id' => [
                 'nullable',
                 Rule::exists('rma_rules', 'id')->where(function ($query) use ($currentRmaRuleId) {

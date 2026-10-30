@@ -165,6 +165,10 @@ class ProductController extends Controller
      */
     public function update(ProductForm $request, int $id)
     {
+        if ($request->boolean('catalog_regions_present')) {
+            $request->merge(['catalog_regions' => $request->input('catalog_regions', [])]);
+        }
+
         Event::dispatch('catalog.product.update.before', $id);
 
         $product = $this->productRepository->update($request->all(), $id);
