@@ -2,9 +2,9 @@
 
 return [
 
-    'kavenegar' => [
-        'api_key' => env('KAVENEGAR_API_KEY'),
-        'template' => env('KAVENEGAR_OTP_TEMPLATE', 'login'),
+    'ghasedak' => [
+        'api_key' => env('GHASEDAK_API_KEY'),
+        'template' => env('GHASEDAK_OTP_TEMPLATE'),
     ],
 
     /*

@@ -44,7 +44,7 @@
                 </div>
 
                 <p class="otp-login__message {{ session('otp_error') ? 'is-error' : ($otpFeedback ? 'is-success' : '') }}" id="otpMessage" aria-live="polite">
-                    @if (session('otp_debug_code'))
+                    @if (session('otp_debug_code') && app(\App\Services\CustomerOtpSms::class)->isTesting())
                         حالت آزمایشی — کد ورود: {{ session('otp_debug_code') }}
                     @else
                         {{ $otpFeedback }}

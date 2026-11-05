@@ -80,16 +80,16 @@ it('should handle certain validation errors when storing the guest user address 
     ])
         ->assertJsonValidationErrorFor('billing.first_name')
         ->assertJsonValidationErrorFor('billing.last_name')
-        ->assertJsonValidationErrorFor('billing.email')
+        ->assertJsonMissingValidationErrors('billing.email')
         ->assertJsonValidationErrorFor('billing.address')
         ->assertJsonValidationErrorFor('billing.city')
-        ->assertJsonValidationErrorFor('billing.phone')
+        ->assertJsonMissingValidationErrors('billing.phone')
         ->assertJsonValidationErrorFor('shipping.first_name')
         ->assertJsonValidationErrorFor('shipping.last_name')
-        ->assertJsonValidationErrorFor('shipping.email')
+        ->assertJsonMissingValidationErrors('shipping.email')
         ->assertJsonValidationErrorFor('shipping.address')
         ->assertJsonValidationErrorFor('shipping.city')
-        ->assertJsonValidationErrorFor('shipping.phone')
+        ->assertJsonMissingValidationErrors('shipping.phone')
         ->assertUnprocessable();
 });
 
@@ -157,16 +157,16 @@ it('should handle certain validation errors when storing the customer address fo
     ])
         ->assertJsonValidationErrorFor('billing.first_name')
         ->assertJsonValidationErrorFor('billing.last_name')
-        ->assertJsonValidationErrorFor('billing.email')
+        ->assertJsonMissingValidationErrors('billing.email')
         ->assertJsonValidationErrorFor('billing.address')
         ->assertJsonValidationErrorFor('billing.city')
-        ->assertJsonValidationErrorFor('billing.phone')
+        ->assertJsonMissingValidationErrors('billing.phone')
         ->assertJsonValidationErrorFor('shipping.first_name')
         ->assertJsonValidationErrorFor('shipping.last_name')
-        ->assertJsonValidationErrorFor('shipping.email')
+        ->assertJsonMissingValidationErrors('shipping.email')
         ->assertJsonValidationErrorFor('shipping.address')
         ->assertJsonValidationErrorFor('shipping.city')
-        ->assertJsonValidationErrorFor('shipping.phone')
+        ->assertJsonMissingValidationErrors('shipping.phone')
         ->assertUnprocessable();
 });
 
@@ -913,10 +913,10 @@ it('should fails the certain validation errors when use for shipping is set to f
     ])
         ->assertJsonValidationErrorFor('shipping.first_name')
         ->assertJsonValidationErrorFor('shipping.last_name')
-        ->assertJsonValidationErrorFor('shipping.email')
+        ->assertJsonMissingValidationErrors('shipping.email')
         ->assertJsonValidationErrorFor('shipping.address')
         ->assertJsonValidationErrorFor('shipping.city')
-        ->assertJsonValidationErrorFor('shipping.phone')
+        ->assertJsonMissingValidationErrors('shipping.phone')
         ->assertUnprocessable();
 });
 
@@ -986,10 +986,10 @@ it('should fails the certain validation errors when use for shipping is set to f
     ])
         ->assertJsonValidationErrorFor('shipping.first_name')
         ->assertJsonValidationErrorFor('shipping.last_name')
-        ->assertJsonValidationErrorFor('shipping.email')
+        ->assertJsonMissingValidationErrors('shipping.email')
         ->assertJsonValidationErrorFor('shipping.address')
         ->assertJsonValidationErrorFor('shipping.city')
-        ->assertJsonValidationErrorFor('shipping.phone')
+        ->assertJsonMissingValidationErrors('shipping.phone')
         ->assertUnprocessable();
 });
 

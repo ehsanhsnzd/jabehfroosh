@@ -297,8 +297,9 @@ class CartController extends APIController
 
         $productIds = $cart->items->pluck('product_id')->toArray();
 
-        $products = $this->productRepository
-            ->scopeQuery(fn ($query) => CatalogRegion::apply($query, StorefrontRegion::selected()))
+        $query = $this->productRepository->getModel()->newQuery();
+
+        $products = CatalogRegion::apply($query, StorefrontRegion::selected())
             ->select('products.*', 'product_cross_sells.child_id')
             ->join('product_cross_sells', 'products.id', '=', 'product_cross_sells.child_id')
             ->whereIn('product_cross_sells.parent_id', $productIds)

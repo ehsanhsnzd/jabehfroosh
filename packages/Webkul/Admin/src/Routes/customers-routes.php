@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Webkul\Admin\Http\Controllers\Customers\AddressController;
+use Webkul\Admin\Http\Controllers\Customers\CreditController;
 use Webkul\Admin\Http\Controllers\Customers\Customer\CartController;
 use Webkul\Admin\Http\Controllers\Customers\Customer\CompareController;
 use Webkul\Admin\Http\Controllers\Customers\Customer\OrderController;
@@ -15,6 +16,16 @@ use Webkul\Admin\Http\Controllers\Customers\ReviewController;
  * Customers routes.
  */
 Route::prefix('customers')->group(function () {
+    Route::controller(CreditController::class)->prefix('credit')->group(function () {
+        Route::get('', 'index')->name('admin.customers.credit.index');
+        Route::get('report', 'report')->name('admin.customers.credit.report');
+        Route::get('export', 'export')->name('admin.customers.credit.export');
+        Route::post('', 'store')->name('admin.customers.credit.store');
+        Route::get('{id}', 'show')->whereNumber('id')->name('admin.customers.credit.show');
+        Route::put('{id}', 'update')->whereNumber('id')->name('admin.customers.credit.update');
+        Route::post('{id}/adjust', 'adjust')->whereNumber('id')->name('admin.customers.credit.adjust');
+    });
+
     /**
      * Customer management routes.
      */

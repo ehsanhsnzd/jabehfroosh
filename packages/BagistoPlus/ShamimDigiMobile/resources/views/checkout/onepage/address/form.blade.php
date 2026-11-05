@@ -12,21 +12,11 @@
                 />
             </x-shop::form.control-group>
 
-            <!-- Company Name -->
-            <x-shop::form.control-group>
-                <x-shop::form.control-group.label>
-                    @lang('shop::app.checkout.onepage.address.company-name')
-                </x-shop::form.control-group.label>
-
-                <x-shop::form.control-group.control
-                    type="text"
-                    ::name="controlName + '.company_name'"
-                    ::value="address.company_name"
-                    :placeholder="trans('shop::app.checkout.onepage.address.company-name')"
-                />
-            </x-shop::form.control-group>
-
-            {!! view_render_event('bagisto.shop.checkout.onepage.address.form.company_name.after') !!}
+            <x-shop::form.control-group.control
+                type="hidden"
+                ::name="controlName + '.country'"
+                ::value="selectedCountry"
+            />
 
             <!-- First Name -->
             <div class="grid grid-cols-2 gap-x-5 max-md:grid-cols-1">
@@ -69,47 +59,6 @@
 
                 {!! view_render_event('bagisto.shop.checkout.onepage.address.form.last_name.after') !!}
             </div>
-
-            <!-- Email -->
-            <x-shop::form.control-group>
-                <x-shop::form.control-group.label class="required !mt-0">
-                    @lang('shop::app.checkout.onepage.address.email')
-                </x-shop::form.control-group.label>
-
-                <x-shop::form.control-group.control
-                    type="email"
-                    ::name="controlName + '.email'"
-                    ::value="address.email"
-                    rules="required|email"
-                    :label="trans('shop::app.checkout.onepage.address.email')"
-                    placeholder="email@example.com"
-                />
-
-                <x-shop::form.control-group.error ::name="controlName + '.email'" />
-            </x-shop::form.control-group>
-
-            {!! view_render_event('bagisto.shop.checkout.onepage.address.form.email.after') !!}
-
-            <!-- Vat ID -->
-            <template v-if="controlName=='billing'">
-                <x-shop::form.control-group>
-                    <x-shop::form.control-group.label>
-                        @lang('shop::app.checkout.onepage.address.vat-id')
-                    </x-shop::form.control-group.label>
-
-                    <x-shop::form.control-group.control
-                        type="text"
-                        ::name="controlName + '.vat_id'"
-                        ::value="address.vat_id"
-                        :label="trans('shop::app.checkout.onepage.address.vat-id')"
-                        :placeholder="trans('shop::app.checkout.onepage.address.vat-id')"
-                    />
-
-                    <x-shop::form.control-group.error ::name="controlName + '.vat_id'" />
-                </x-shop::form.control-group>
-
-                {!! view_render_event('bagisto.shop.checkout.onepage.address.form.vat_id.after') !!}
-            </template>
 
             <!-- Street Address -->
             <x-shop::form.control-group>
@@ -162,7 +111,23 @@
                         @lang('shop::app.checkout.onepage.address.state')
                     </x-shop::form.control-group.label>
 
-                    <template v-if="states">
+                    <template v-if="selectedCountry === 'IR'">
+                        <x-shop::form.control-group.control
+                            type="select"
+                            ::name="controlName + '.state'"
+                            v-model="selectedState"
+                            rules="required"
+                            :label="trans('shop::app.checkout.onepage.address.state')"
+                            @change="changeProvince"
+                        >
+                            <option value="">@lang('shop::app.checkout.onepage.address.select-state')</option>
+                            <option v-for="province in iranProvinces" :key="province.name" :value="province.name">
+                                @{{ province.name }}
+                            </option>
+                        </x-shop::form.control-group.control>
+                    </template>
+
+                    <template v-else-if="states">
                         <template v-if="haveStates">
                             <x-shop::form.control-group.control
                                 type="select"
@@ -210,14 +175,30 @@
                         @lang('shop::app.checkout.onepage.address.city')
                     </x-shop::form.control-group.label>
 
-                    <x-shop::form.control-group.control
-                        type="text"
-                        ::name="controlName + '.city'"
-                        ::value="address.city"
-                        rules="required"
-                        :label="trans('shop::app.checkout.onepage.address.city')"
-                        :placeholder="trans('shop::app.checkout.onepage.address.city')"
-                    />
+                    <template v-if="selectedCountry === 'IR'">
+                        <x-shop::form.control-group.control
+                            type="select"
+                            ::name="controlName + '.city'"
+                            v-model="selectedCity"
+                            rules="required"
+                            ::disabled="! selectedState"
+                            :label="trans('shop::app.checkout.onepage.address.city')"
+                        >
+                            <option value="">@lang('shop::app.checkout.onepage.address.city')</option>
+                            <option v-for="city in iranCities" :key="city" :value="city">@{{ city }}</option>
+                        </x-shop::form.control-group.control>
+                    </template>
+
+                    <template v-else>
+                        <x-shop::form.control-group.control
+                            type="text"
+                            ::name="controlName + '.city'"
+                            ::value="address.city"
+                            rules="required"
+                            :label="trans('shop::app.checkout.onepage.address.city')"
+                            :placeholder="trans('shop::app.checkout.onepage.address.city')"
+                        />
+                    </template>
 
                     <x-shop::form.control-group.error ::name="controlName + '.city'" />
                 </x-shop::form.control-group>
@@ -245,25 +226,6 @@
                 {!! view_render_event('bagisto.shop.checkout.onepage.address.form.postcode.after') !!}
             </div>
 
-            <!-- Phone Number -->
-            <x-shop::form.control-group>
-                <x-shop::form.control-group.label class="required !mt-0">
-                    @lang('shop::app.checkout.onepage.address.telephone')
-                </x-shop::form.control-group.label>
-
-                <x-shop::form.control-group.control
-                    type="text"
-                    ::name="controlName + '.phone'"
-                    ::value="address.phone"
-                    rules="required|numeric"
-                    :label="trans('shop::app.checkout.onepage.address.telephone')"
-                    :placeholder="trans('shop::app.checkout.onepage.address.telephone')"
-                />
-
-                <x-shop::form.control-group.error ::name="controlName + '.phone'" />
-            </x-shop::form.control-group>
-
-            {!! view_render_event('bagisto.shop.checkout.onepage.address.form.phone.after') !!}
         </div>
     </script>
 
@@ -298,7 +260,13 @@
 
             data() {
                 return {
-                    selectedCountry: this.address.country,
+                    selectedCountry: this.address.country || 'IR',
+
+                    selectedState: this.address.state || '',
+
+                    selectedCity: this.address.city || '',
+
+                    iranProvinces: @json(\Webkul\Shop\Helpers\IranAddress::provinces()),
 
                     countries: [],
 
@@ -307,18 +275,26 @@
             },
 
             computed: {
+                iranCities() {
+                    return this.iranProvinces.find(province => province.name === this.selectedState)?.cities || [];
+                },
+
                 haveStates() {
                     return !! this.states[this.selectedCountry]?.length;
                 },
             },
 
             mounted() {
-                this.getCountries();
-
-                this.getStates();
+                if (this.selectedCountry !== 'IR') {
+                    this.getStates();
+                }
             },
 
             methods: {
+                changeProvince() {
+                    this.selectedCity = '';
+                },
+
                 getCountries() {
                     this.$axios.get("{{ route('shop.api.core.countries') }}")
                         .then(response => {

@@ -1,6 +1,6 @@
 {
   "resources/assets/css/shop.css": {
-    "file": "assets/shop-Cshdsrlw.css",
+    "file": "assets/shop-BYLhuaB6.css",
     "src": "resources/assets/css/shop.css",
     "isEntry": true
   },
@@ -311,6 +311,10 @@
   "resources/assets/images/wishlist.png": {
     "file": "assets/wishlist-DPRG46v-.png",
     "src": "resources/assets/images/wishlist.png"
+  },
+  "resources/assets/images/zarinpal.png": {
+    "file": "assets/zarinpal-DH2VlRTI.png",
+    "src": "resources/assets/images/zarinpal.png"
   },
   "resources/assets/js/shop.js": {
     "file": "assets/shop-B3q_T-Ev.js",

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\ParallelTesting;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
+use Webkul\Customer\Payment\CustomerCredit;
 use Webkul\Product\Type\Simple;
 
 class AppServiceProvider extends ServiceProvider
@@ -40,6 +41,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        config(['payment_methods.customer_credit' => ['class' => CustomerCredit::class, 'code' => 'customer_credit']]);
+        Event::listen('customer.after.login', [\Webkul\Customer\Listeners\CustomerCredit::class, 'login']);
+        Event::listen('customer.registration.after', [\Webkul\Customer\Listeners\CustomerCredit::class, 'login']);
+        Event::listen('checkout.order.save.after', [\Webkul\Customer\Listeners\CustomerCredit::class, 'orderCreated']);
+        Event::listen('sales.order.cancel.after', [\Webkul\Customer\Listeners\CustomerCredit::class, 'canceled']);
+        Event::listen('sales.refund.save.after', [\Webkul\Customer\Listeners\CustomerCredit::class, 'refunded']);
+
         Event::listen('checkout.cart.update.before', function ($item) {
             $type = $item->getTypeInstance();
 

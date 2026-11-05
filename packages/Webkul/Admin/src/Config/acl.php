@@ -485,6 +485,36 @@ return [
         'route' => 'admin.customers.customers.index',
         'sort' => 4,
     ], [
+        'key' => 'customers.credit',
+        'name' => 'customer::credit.title',
+        'route' => ['admin.customers.credit.index', 'admin.customers.credit.show'],
+        'sort' => 2,
+    ], [
+        'key' => 'customers.credit.create',
+        'name' => 'customer::credit.create',
+        'route' => 'admin.customers.credit.store',
+        'sort' => 1,
+    ], [
+        'key' => 'customers.credit.edit',
+        'name' => 'customer::credit.edit',
+        'route' => 'admin.customers.credit.update',
+        'sort' => 2,
+    ], [
+        'key' => 'customers.credit.adjust',
+        'name' => 'customer::credit.adjust',
+        'route' => 'admin.customers.credit.adjust',
+        'sort' => 3,
+    ], [
+        'key' => 'customers.credit.report',
+        'name' => 'customer::credit.report',
+        'route' => 'admin.customers.credit.report',
+        'sort' => 4,
+    ], [
+        'key' => 'customers.credit.export',
+        'name' => 'customer::credit.export',
+        'route' => 'admin.customers.credit.export',
+        'sort' => 5,
+    ], [
         'key' => 'customers.customers',
         'name' => 'admin::app.acl.customers',
         'route' => [

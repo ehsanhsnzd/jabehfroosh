@@ -4,6 +4,7 @@ namespace Webkul\Shop\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Webkul\Customer\Helpers\CreditSummary;
 use Webkul\Tax\Facades\Tax;
 
 class CartResource extends JsonResource
@@ -38,6 +39,7 @@ class CartResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'credit' => CreditSummary::forCart($this->resource),
             'is_guest' => $this->is_guest,
             'customer_id' => $this->customer_id,
             'items_count' => $this->items_count,
@@ -69,7 +71,7 @@ class CartResource extends JsonResource
             'shipping_address' => new AddressResource($this->shipping_address),
             'have_stockable_items' => $this->haveStockableItems(),
             'payment_method' => $this->payment?->method,
-            'payment_method_title' => core()->getConfigData('sales.payment_methods.'.$this->payment?->method.'.title'),
+            'payment_method_title' => $this->payment?->method === 'customer_credit' ? trans('customer::credit.pay-with-credit') : core()->getConfigData('sales.payment_methods.'.$this->payment?->method.'.title'),
         ];
     }
 }

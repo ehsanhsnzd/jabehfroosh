@@ -4,8 +4,10 @@ namespace Webkul\Shop\Http\Controllers\API;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 use Webkul\CartRule\Exceptions\CouponUsageLimitExceededException;
 use Webkul\Checkout\Facades\Cart;
+use Webkul\Customer\Helpers\CreditCheckout;
 use Webkul\Customer\Repositories\CustomerRepository;
 use Webkul\Payment\Facades\Payment;
 use Webkul\Sales\Repositories\OrderRepository;
@@ -177,7 +179,11 @@ class OnepageController extends APIController
         $data = (new OrderResource($cart))->jsonSerialize();
 
         try {
-            $order = $this->orderRepository->create($data);
+            $order = $cart->payment->method === 'customer_credit'
+                ? app(CreditCheckout::class)->place($cart, $data)
+                : $this->orderRepository->create($data);
+        } catch (ValidationException $e) {
+            return response()->json(['message' => collect($e->errors())->flatten()->first()], 422);
         } catch (CouponUsageLimitExceededException $e) {
             cart()->removeCouponCode();
 

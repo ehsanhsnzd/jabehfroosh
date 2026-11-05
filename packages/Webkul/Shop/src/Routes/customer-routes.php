@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Webkul\Core\Http\Middleware\NoCacheMiddleware;
 use Webkul\Shop\Http\Controllers\Customer\Account\AddressController;
+use Webkul\Shop\Http\Controllers\Customer\Account\CreditController;
 use Webkul\Shop\Http\Controllers\Customer\Account\DownloadableProductController;
 use Webkul\Shop\Http\Controllers\Customer\Account\EUWithdrawalController as CustomerEUWithdrawalController;
 use Webkul\Shop\Http\Controllers\Customer\Account\OrderController;
@@ -84,6 +85,9 @@ Route::prefix('customer')->group(function () {
          * customer account details.
          */
         Route::prefix('account')->group(function () {
+            Route::get('credit', [CreditController::class, 'index'])->name('shop.customers.account.credit.index');
+            Route::get('credit/verify', [CreditController::class, 'verify'])->name('shop.customers.account.credit.verify');
+
             Route::get('', [CustomerController::class, 'account'])->name('shop.customers.account.index');
 
             /**

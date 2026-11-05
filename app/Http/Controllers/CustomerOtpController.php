@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\CustomerOtpSms;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use RuntimeException;
 use Webkul\Customer\Models\Customer;
 
 class CustomerOtpController extends Controller
@@ -18,6 +19,9 @@ class CustomerOtpController extends Controller
     public function send(Request $request): JsonResponse|RedirectResponse
     {
         $phone = $this->normalizePhone($request->input('phone', ''));
+        if ($request->boolean('credit_verification') && auth()->guard('customer')->check()) {
+            $phone = $this->normalizePhone((string) auth()->guard('customer')->user()->phone);
+        }
 
         if (! preg_match('/^09\d{9}$/', $phone)) {
             return $this->errorResponse($request, 'شماره موبایل باید با ۰۹ شروع شود و ۱۱ رقم باشد.', 422);
@@ -26,31 +30,24 @@ class CustomerOtpController extends Controller
         $code = (string) random_int(100000, 999999);
         $key = $this->cacheKey($phone);
 
-        Cache::put($key, Hash::make($code), now()->addMinutes(2));
-        Cache::put($key.':attempts', 0, now()->addMinutes(2));
+        try {
+            $testing = app(CustomerOtpSms::class)->send($phone, $code);
+        } catch (ConnectionException|RuntimeException $exception) {
+            Cache::forget($key);
+            Cache::forget($key.':attempts');
+            Cache::forget($key.':testing');
 
-        $apiKey = config('services.kavenegar.api_key');
-
-        if ($apiKey) {
-            $response = Http::timeout(10)->get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
-                'receptor' => $phone,
-                'token' => $code,
-                'template' => config('services.kavenegar.template', 'login'),
-            ]);
-
-            if ($response->failed()) {
-                Log::error('Kavenegar OTP delivery failed', ['phone' => $phone, 'status' => $response->status()]);
-
-                return $this->errorResponse($request, 'ارسال پیامک ناموفق بود؛ چند لحظه دیگر تلاش کنید.', 502);
-            }
-        } else {
-            Log::info('Local customer OTP', ['phone' => $phone, 'code' => $code]);
+            return $this->errorResponse($request, 'ارسال پیامک ناموفق بود؛ تنظیمات پیامک را بررسی کنید یا چند لحظه دیگر تلاش کنید.', 502);
         }
 
+        Cache::put($key, Hash::make($code), now()->addMinutes(2));
+        Cache::put($key.':attempts', 0, now()->addMinutes(2));
+        Cache::put($key.':testing', $testing, now()->addMinutes(2));
+
         $payload = [
-            'message' => 'کد ورود ارسال شد.',
+            'message' => $testing ? 'حالت آزمایشی فعال است؛ پیامک واقعی ارسال نشد.' : 'کد ورود ارسال شد.',
             'expires_in' => 120,
-            'debug_code' => app()->isLocal() && ! $apiKey ? $code : null,
+            'debug_code' => $testing ? $code : null,
         ];
 
         if ($request->expectsJson()) {
@@ -58,7 +55,7 @@ class CustomerOtpController extends Controller
         }
 
         return redirect()
-            ->route('shop.customer.session.index', array_filter(['redirect_to' => $request->input('redirect_to')]))
+            ->route($request->boolean('credit_verification') && auth()->guard('customer')->check() ? 'shop.customers.account.credit.verify' : 'shop.customer.session.index', array_filter(['redirect_to' => $request->input('redirect_to')]))
             ->with('otp_sent', true)
             ->with('otp_phone', $phone)
             ->with('otp_message', $payload['message'])
@@ -68,6 +65,9 @@ class CustomerOtpController extends Controller
     public function verify(Request $request): JsonResponse|RedirectResponse
     {
         $phone = $this->normalizePhone($request->input('phone', ''));
+        if ($request->boolean('credit_verification') && auth()->guard('customer')->check()) {
+            $phone = $this->normalizePhone((string) auth()->guard('customer')->user()->phone);
+        }
         $code = $this->normalizeDigits($request->input('code', ''));
         $key = $this->cacheKey($phone);
 
@@ -77,15 +77,22 @@ class CustomerOtpController extends Controller
 
         $attempts = (int) Cache::increment($key.':attempts');
         $hashedCode = Cache::get($key);
+        $testing = Cache::get($key.':testing');
 
-        if ($attempts > 5 || ! $hashedCode || ! Hash::check($code, $hashedCode)) {
+        if (
+            $attempts > 5 || ! $hashedCode || ! Hash::check($code, $hashedCode)
+            || ($testing !== null && $testing !== app(CustomerOtpSms::class)->isTesting())
+        ) {
             return $this->verificationErrorResponse($request, $phone, 'کد ورود اشتباه یا منقضی شده است.');
         }
 
         Cache::forget($key);
         Cache::forget($key.':attempts');
+        Cache::forget($key.':testing');
 
-        $customer = Customer::query()->where('phone', $phone)->first();
+        $customer = $request->boolean('credit_verification') && auth()->guard('customer')->check()
+            ? auth()->guard('customer')->user()
+            : Customer::query()->whereIn('phone', [$phone, '98'.substr($phone, 1), '+98'.substr($phone, 1), '0098'.substr($phone, 1)])->first();
 
         if (! $customer) {
             $customer = Customer::query()->create([
@@ -103,6 +110,8 @@ class CustomerOtpController extends Controller
         if (! $customer->status || $customer->is_suspended) {
             return $this->errorResponse($request, 'حساب شما غیرفعال است؛ با پشتیبانی تماس بگیرید.', 403);
         }
+
+        $customer->forceFill(['credit_verified_phone' => $phone, 'credit_phone_verified_at' => now()])->save();
 
         auth()->guard('customer')->login($customer, true);
         $request->session()->regenerate();
@@ -136,7 +145,7 @@ class CustomerOtpController extends Controller
         }
 
         return redirect()
-            ->route('shop.customer.session.index', array_filter(['redirect_to' => $request->input('redirect_to')]))
+            ->route($request->boolean('credit_verification') && auth()->guard('customer')->check() ? 'shop.customers.account.credit.verify' : 'shop.customer.session.index', array_filter(['redirect_to' => $request->input('redirect_to')]))
             ->with('otp_sent', true)
             ->with('otp_phone', $phone)
             ->with('otp_error', $message);

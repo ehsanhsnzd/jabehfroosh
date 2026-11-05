@@ -1226,6 +1226,64 @@ return [
         'info' => 'admin::app.configuration.index.customer.info',
         'sort' => 4,
     ], [
+        'key' => 'customer.sms',
+        'name' => 'customer::sms.title',
+        'info' => 'customer::sms.info',
+        'icon' => 'settings/store.svg',
+        'sort' => 5,
+    ], [
+        'key' => 'customer.sms.ghasedak',
+        'name' => 'customer::sms.settings',
+        'info' => 'customer::sms.info',
+        'sort' => 1,
+        'fields' => [
+            [
+                'name' => 'provider',
+                'title' => 'customer::sms.provider',
+                'type' => 'select',
+                'default' => 'ghasedak',
+                'options' => [
+                    ['title' => 'customer::sms.ghasedak', 'value' => 'ghasedak'],
+                    ['title' => 'customer::sms.vip0098', 'value' => 'vip0098'],
+                ],
+            ], [
+                'name' => 'api_key',
+                'title' => 'customer::sms.apiKey',
+                'type' => 'password',
+                'validation' => 'max:500',
+            ], [
+                'name' => 'template',
+                'title' => 'customer::sms.template',
+                'info' => 'customer::sms.templateHelp',
+                'type' => 'text',
+                'validation' => 'max:150',
+            ], [
+                'name' => 'test_mode',
+                'title' => 'customer::sms.testMode',
+                'info' => 'customer::sms.testHelp',
+                'type' => 'boolean',
+                'default' => false,
+            ],
+        ],
+    ], [
+        'key' => 'customer.sms.vip0098',
+        'name' => 'customer::sms.vip0098',
+        'info' => 'customer::sms.vipHelp',
+        'sort' => 2,
+        'fields' => [
+            ['name' => 'from', 'title' => 'customer::sms.from', 'type' => 'text', 'validation' => 'max:30'],
+            ['name' => 'username', 'title' => 'customer::sms.username', 'type' => 'text', 'validation' => 'max:255'],
+            ['name' => 'password', 'title' => 'customer::sms.password', 'type' => 'password', 'validation' => 'max:500'],
+            [
+                'name' => 'message',
+                'title' => 'customer::sms.message',
+                'type' => 'textarea',
+                'info' => 'customer::sms.messageHelp',
+                'default' => "جعبه فروش\nکد تأیید شما: {code}",
+                'validation' => 'max:1000',
+            ],
+        ],
+    ], [
         'key' => 'customer.address',
         'name' => 'admin::app.configuration.index.customer.address.title',
         'info' => 'admin::app.configuration.index.customer.address.info',

@@ -19,6 +19,17 @@ class AddressRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $customer = auth()->guard('customer')->user();
+
+        $this->merge([
+            'email' => $this->input('email') ?? $customer?->email,
+            'phone' => $this->input('phone') ?? $customer?->phone,
+            'country' => $this->input('country') ?? 'IR',
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -35,9 +46,9 @@ class AddressRequest extends FormRequest
             'state' => core()->isStateRequired() ? ['required'] : ['nullable'],
             'city' => ['required', 'string'],
             'postcode' => core()->isPostCodeRequired() ? ['required', new PostCode] : [new PostCode],
-            'phone' => ['required', new PhoneNumber],
+            'phone' => ['nullable', new PhoneNumber],
             'vat_id' => [(new VatIdRule)->setCountry($this->input('country'))],
-            'email' => ['required'],
+            'email' => ['nullable', 'email'],
         ];
     }
 

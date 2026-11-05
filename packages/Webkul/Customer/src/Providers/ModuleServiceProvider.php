@@ -4,6 +4,8 @@ namespace Webkul\Customer\Providers;
 
 use Webkul\Core\Providers\CoreModuleServiceProvider;
 use Webkul\Customer\Models\CompareItem;
+use Webkul\Customer\Models\CreditAccount;
+use Webkul\Customer\Models\CreditTransaction;
 use Webkul\Customer\Models\Customer;
 use Webkul\Customer\Models\CustomerAddress;
 use Webkul\Customer\Models\CustomerGroup;
@@ -19,6 +21,8 @@ class ModuleServiceProvider extends CoreModuleServiceProvider
      */
     protected $models = [
         CompareItem::class,
+        CreditAccount::class,
+        CreditTransaction::class,
         Customer::class,
         CustomerAddress::class,
         CustomerGroup::class,

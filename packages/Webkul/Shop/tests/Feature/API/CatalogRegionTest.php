@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
+use Webkul\Checkout\Facades\Cart;
 use Webkul\Faker\Helpers\Category as CategoryFaker;
 use Webkul\Faker\Helpers\Product as ProductFaker;
 use Webkul\Product\Helpers\CatalogRegion;
@@ -82,3 +83,29 @@ it('filters search results and recommendations by city', function () {
     getJson(route('shop.api.products.related.index', $tabriz->id))->assertOk()->assertJsonCount(0, 'data');
     getJson(route('shop.api.products.up-sell.index', $tabriz->id))->assertOk()->assertJsonCount(0, 'data');
 });
+
+it('filters cart cross sells by city using a product query', function ($region, $cities) {
+    $product = (new ProductFaker)->getSimpleProductFactory()->create();
+    $recommendations = collect(['tabriz', 'ardabil', 'other'])->mapWithKeys(function ($city) {
+        return [$city => (new ProductFaker)->getSimpleProductFactory()->create(['catalog_regions' => [$city]])];
+    });
+    $everywhere = (new ProductFaker)->getSimpleProductFactory()->create();
+    $product->cross_sells()->attach([...$recommendations->pluck('id')->all(), $everywhere->id, $product->id]);
+
+    $cart = new Webkul\Checkout\Models\Cart;
+    $cart->setRelation('items', collect([(object) ['product_id' => $product->id]]));
+    Cart::shouldReceive('getCart')->once()->andReturn($cart);
+    $this->withSession(['catalog_region' => $region]);
+
+    $data = getJson(route('shop.api.checkout.cart.cross-sell.index'))->assertOk()->json('data');
+
+    expect(collect($data)->pluck('id')->all())->toEqualCanonicalizing([
+        ...$recommendations->only($cities)->pluck('id')->all(),
+        $everywhere->id,
+    ]);
+})->with([
+    'no city' => [null, ['tabriz', 'ardabil', 'other']],
+    'tabriz' => ['tabriz', ['tabriz']],
+    'ardabil' => ['ardabil', ['ardabil']],
+    'northwest' => ['northwest', ['tabriz', 'ardabil']],
+]);

@@ -6,6 +6,7 @@ use Illuminate\Container\Container;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Webkul\CartRule\Exceptions\CouponUsageLimitExceededException;
 use Webkul\Core\Eloquent\Repository;
 use Webkul\Product\Repositories\ProductCustomizableOptionRepository;
@@ -84,7 +85,9 @@ class OrderRepository extends Repository
             }
 
             Event::dispatch('checkout.order.save.after', $order);
-        } catch (\Exception $e) {
+
+            DB::commit();
+        } catch (\Throwable $e) {
             /* rolling back first */
             DB::rollBack();
 
@@ -92,7 +95,7 @@ class OrderRepository extends Repository
              * Do not retry when coupon usage limits are exceeded — this is a
              * definitive business-logic failure, not a transient DB error.
              */
-            if ($e instanceof CouponUsageLimitExceededException) {
+            if ($e instanceof CouponUsageLimitExceededException || $e instanceof ValidationException) {
                 throw $e;
             }
 
@@ -109,9 +112,6 @@ class OrderRepository extends Repository
 
             /* rethrow the exception if max attempts reached */
             throw $e;
-        } finally {
-            /* commit in each case */
-            DB::commit();
         }
 
         return $order;

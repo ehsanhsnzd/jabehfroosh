@@ -97,16 +97,17 @@
                             @include('shop::checkout.onepage.summary')
                         </div>
 
-                        <template v-if="cart.have_stockable_items && ['shipping', 'payment', 'review'].includes(currentStep)">
+                        <div ref="shippingStep" v-if="cart.have_stockable_items && ['shipping', 'payment', 'review'].includes(currentStep)">
                             @include('shop::checkout.onepage.shipping')
-                        </template>
+                        </div>
 
-                        <template v-if="['payment', 'review'].includes(currentStep)">
+                        <div ref="paymentStep" v-if="['payment', 'review'].includes(currentStep)">
                             @include('shop::checkout.onepage.payment')
-                        </template>
+                        </div>
 
                         <div
                             class="mt-6 flex justify-end"
+                            ref="reviewStep"
                         >
                             <template v-if="cart.payment_method == 'paypal_smart_button'">
                                 {!! view_render_event('bagisto.shop.checkout.onepage.summary.paypal_smart_button.before') !!}
@@ -202,15 +203,21 @@
                     },
 
                     scrollToCurrentStep() {
-                        let container = document.getElementById('steps-container');
+                        this.$nextTick(() => {
+                            const mobile = window.matchMedia('(max-width: 1023px)').matches;
 
-                        if (!container) {
-                            return;
-                        }
+                            if (mobile && this.currentStep === 'address') {
+                                return;
+                            }
 
-                        container.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'end'
+                            const target = mobile
+                                ? this.$refs[`${this.currentStep}Step`]
+                                : document.getElementById('steps-container');
+
+                            target?.scrollIntoView({
+                                behavior: 'smooth',
+                                block: mobile ? 'start' : 'end',
+                            });
                         });
                     },
 

@@ -158,6 +158,12 @@ return [
         'sort' => 2,
         'icon' => '',
     ], [
+        'key' => 'customers.credit',
+        'name' => 'customer::credit.title',
+        'route' => 'admin.customers.credit.index',
+        'sort' => 2,
+        'icon' => '',
+    ], [
         'key' => 'customers.reviews',
         'name' => 'admin::app.components.layouts.sidebar.reviews',
         'route' => 'admin.customers.customers.review.index',

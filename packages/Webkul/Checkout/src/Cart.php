@@ -612,7 +612,9 @@ class Cart
         $cartPayment = new CartPayment;
 
         $cartPayment->method = $params['method'];
-        $cartPayment->method_title = core()->getConfigData('sales.payment_methods.'.$params['method'].'.title');
+        $cartPayment->method_title = $params['method'] === 'customer_credit'
+            ? trans('customer::credit.pay-with-credit')
+            : core()->getConfigData('sales.payment_methods.'.$params['method'].'.title');
         $cartPayment->cart_id = $this->cart->id;
         $cartPayment->save();
 

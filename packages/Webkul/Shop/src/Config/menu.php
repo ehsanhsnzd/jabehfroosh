@@ -26,6 +26,12 @@ return [
         'icon' => 'icon-orders',
         'sort' => 3,
     ], [
+        'key' => 'account.credit',
+        'name' => 'customer::credit.myCredit',
+        'route' => 'shop.customers.account.credit.index',
+        'icon' => 'icon-orders',
+        'sort' => 3,
+    ], [
         'key' => 'account.downloadables',
         'name' => 'shop::app.layouts.downloadable-products',
         'route' => 'shop.customers.account.downloadable_products.index',
@@ -49,11 +55,12 @@ return [
         'route' => 'shop.customers.account.gdpr.index',
         'icon' => 'icon-gdpr-safe',
         'sort' => 7,
-    ], [
-        'key' => 'account.rma',
-        'name' => 'shop::app.layouts.rma',
-        'route' => 'shop.customers.account.rma.index',
-        'icon' => 'icon-compare-1',
-        'sort' => 8,
     ],
+    //    , [
+    //        'key' => 'account.rma',
+    //        'name' => 'shop::app.layouts.rma',
+    //        'route' => 'shop.customers.account.rma.index',
+    //        'icon' => 'icon-compare-1',
+    //        'sort' => 8,
+    //    ],
 ];
