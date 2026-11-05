@@ -1,0 +1,4 @@
+---
+deployment:
+  tasks:
+    - /bin/bash -c '/bin/bash ./scripts/install-cpanel-pull-hook.sh && /bin/bash ./scripts/deploy-cpanel.sh'
