@@ -465,19 +465,21 @@
                                         <!-- Add To Cart Button -->
                                         {!! view_render_event('bagisto.shop.products.view.add_to_cart.before', ['product' => $product]) !!}
 
-                                        <x-shop::products.cart-link :product-id="$product->id">
-                                            <x-shop::button
-                                                type="submit"
-                                                class="secondary-button w-full max-w-full max-md:py-3 max-sm:rounded-lg max-sm:py-1.5"
-                                                button-type="secondary-button"
-                                                :loading="false"
-                                                :title="trans('shop::app.products.view.add-to-cart')"
-                                                :disabled="! $product->isSaleable(1)"
-                                                ::loading="isStoring.addToCart"
-                                                ::disabled="isStoring.addToCart"
-                                                @click="is_buy_now=0;"
-                                            />
-                                        </x-shop::products.cart-link>
+                                        <div class="sh-digi-product-inline-cart">
+                                            <x-shop::products.cart-link :product-id="$product->id">
+                                                <x-shop::button
+                                                    type="submit"
+                                                    class="secondary-button w-full max-w-full max-md:py-3 max-sm:rounded-lg max-sm:py-1.5"
+                                                    button-type="secondary-button"
+                                                    :loading="false"
+                                                    :title="trans('shop::app.products.view.add-to-cart')"
+                                                    :disabled="! $product->isSaleable(1)"
+                                                    ::loading="isStoring.addToCart"
+                                                    ::disabled="isStoring.addToCart"
+                                                    @click="is_buy_now=0;"
+                                                />
+                                            </x-shop::products.cart-link>
+                                        </div>
 
                                         {!! view_render_event('bagisto.shop.products.view.add_to_cart.after', ['product' => $product]) !!}
                                     @endif

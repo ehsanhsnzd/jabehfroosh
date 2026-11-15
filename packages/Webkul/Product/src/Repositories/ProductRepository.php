@@ -358,6 +358,40 @@ class ProductRepository extends Repository
              * Filter collection by required attributes.
              */
             foreach ($attributes as $attribute) {
+                if ($attribute->code === 'name' && ! empty($params['query'])) {
+                    $synonyms = $this->searchSynonymRepository->getSynonymsByQuery(urldecode($params['query']));
+                    $searchAttributes = $this->attributeRepository->getProductDefaultAttributes([
+                        'name', 'short_description', 'description',
+                    ]);
+
+                    $qb->whereExists(function ($searchQuery) use ($searchAttributes, $synonyms) {
+                        $searchQuery->selectRaw('1')->from('product_attribute_values as search_values')
+                            ->whereColumn('search_values.product_id', 'products.id')
+                            ->where(function ($fields) use ($searchAttributes) {
+                                foreach ($searchAttributes as $searchAttribute) {
+                                    $fields->orWhere(function ($field) use ($searchAttribute) {
+                                        $field->where('search_values.attribute_id', $searchAttribute->id);
+
+                                        if ($searchAttribute->value_per_locale) {
+                                            $field->where('search_values.locale', core()->getRequestedLocaleCode());
+                                        }
+
+                                        if ($searchAttribute->value_per_channel) {
+                                            $field->where('search_values.channel', core()->getRequestedChannelCode());
+                                        }
+                                    });
+                                }
+                            })
+                            ->where(function ($text) use ($synonyms) {
+                                foreach ($synonyms as $synonym) {
+                                    $text->orWhere('search_values.text_value', 'like', '%'.$synonym.'%');
+                                }
+                            });
+                    });
+
+                    continue;
+                }
+
                 $alias = $attribute->code.'_product_attribute_values';
 
                 $qb->leftJoin('product_attribute_values as '.$alias, 'products.id', '=', $alias.'.product_id')

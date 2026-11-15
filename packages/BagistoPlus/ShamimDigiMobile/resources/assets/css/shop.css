@@ -1426,11 +1426,20 @@ body textarea {
     color: #9f17f4;
 }
 
+.sh-digi-product-inline-cart {
+    display: flex;
+    flex: 1;
+}
+
 .sh-digi-product-bottom-bar {
     display: none;
 }
 
 @media (max-width: 980px) {
+    .sh-digi-product-inline-cart {
+        display: none;
+    }
+
     body.shamim-product-page {
         padding-bottom: calc(92px + env(safe-area-inset-bottom));
     }

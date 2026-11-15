@@ -21,6 +21,8 @@ class ProductDataGrid extends DataGrid
      */
     protected $primaryColumn = 'product_id';
 
+    protected bool $hasUnindexedProducts = false;
+
     /**
      * Constructor for the class.
      *
@@ -37,10 +39,50 @@ class ProductDataGrid extends DataGrid
     {
         $tablePrefix = DB::getTablePrefix();
 
-        /**
-         * Query Builder to fetch records from `product_flat` table
-         */
-        $queryBuilder = DB::table('product_flat')
+        $locale = app()->getLocale();
+
+        $this->hasUnindexedProducts = DB::table('products')
+            ->whereNotExists(function ($query) use ($locale) {
+                $query->selectRaw('1')->from('product_flat')
+                    ->whereColumn('product_flat.product_id', 'products.id')
+                    ->where('product_flat.locale', $locale);
+            })->exists();
+
+        $sourceName = DB::table('product_attribute_values as name_value')
+            ->join('attributes as name_attribute', 'name_attribute.id', '=', 'name_value.attribute_id')
+            ->whereColumn('name_value.product_id', 'products.id')
+            ->where('name_attribute.code', 'name')
+            ->where(function ($query) use ($locale) {
+                $query->where('name_value.locale', $locale)->orWhereNull('name_value.locale');
+            })
+            ->orderByDesc('name_value.locale')
+            ->select('name_value.text_value')->limit(1);
+
+        // The product table is authoritative: an incomplete index must never
+        // hide a product from administrators or from bulk deletion.
+        $products = DB::table('products')
+            ->leftJoin('product_flat as localized_flat', function ($join) use ($locale) {
+                $join->on('localized_flat.product_id', '=', 'products.id')
+                    ->where('localized_flat.locale', $locale);
+            })
+            ->select([
+                'products.id as product_id',
+                'products.sku',
+                'products.type',
+                'products.attribute_family_id',
+                'localized_flat.channel',
+                'localized_flat.status',
+                'localized_flat.price',
+                'localized_flat.url_key',
+                'localized_flat.visible_individually',
+            ])
+            ->selectRaw('? as locale', [$locale])
+            ->selectRaw(
+                'COALESCE('.$tablePrefix.'localized_flat.name, ('.$sourceName->toSql().'), '.$tablePrefix.'products.sku) as name',
+                $sourceName->getBindings()
+            );
+
+        $queryBuilder = DB::query()->fromSub($products, 'product_flat')
             ->distinct()
             ->leftJoin('attribute_families as af', 'product_flat.attribute_family_id', '=', 'af.id')
             ->leftJoin('product_inventories', 'product_flat.product_id', '=', 'product_inventories.product_id')
@@ -75,6 +117,7 @@ class ProductDataGrid extends DataGrid
         $this->addFilter('channel', 'product_flat.channel');
         $this->addFilter('locale', 'product_flat.locale');
         $this->addFilter('name', 'product_flat.name');
+        $this->addFilter('sku', 'product_flat.sku');
         $this->addFilter('type', 'product_flat.type');
         $this->addFilter('status', 'product_flat.status');
         $this->addFilter('attribute_family', 'af.id');
@@ -291,7 +334,8 @@ class ProductDataGrid extends DataGrid
     protected function processRequest(): void
     {
         if (
-            core()->getConfigData('catalog.products.search.engine') != 'elastic'
+            $this->hasUnindexedProducts
+            || core()->getConfigData('catalog.products.search.engine') != 'elastic'
             || core()->getConfigData('catalog.products.search.admin_mode') != 'elastic'
         ) {
             parent::processRequest();

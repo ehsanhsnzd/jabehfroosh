@@ -62,6 +62,7 @@ fi
 printf 'Deploying %s with %s\n' "$app_root" "$php_bin"
 "$php_bin" artisan optimize:clear --no-interaction
 "$php_bin" artisan migrate --force --no-interaction
+"$php_bin" artisan indexer:index --type=flat --mode=full --no-interaction
 "$php_bin" artisan optimize --no-interaction
 "$php_bin" artisan queue:restart --no-interaction
 printf 'Deployment completed.\n'
