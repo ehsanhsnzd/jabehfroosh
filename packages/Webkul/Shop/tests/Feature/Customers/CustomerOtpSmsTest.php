@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\CustomerOtpSms;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Client\Request;
@@ -7,6 +8,7 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Webkul\Core\Models\CoreConfig;
 use Webkul\Customer\Models\Customer;
 
@@ -29,11 +31,19 @@ beforeEach(function () {
         VerifyCsrfToken::class,
     ]);
     config(['services.ghasedak.api_key' => null, 'services.ghasedak.template' => null]);
+    config(['cache.default' => 'array']);
 });
 
-it('sends real login OTP through Ghasedak without exposing or logging the code', function () {
+function otpGhasedakFake(array $body, int $status = 200): void
+{
+    Http::fake([
+        'gateway.ghasedak.me/rest/api/v1/WebService/SendOtpSMS' => Http::response($body, $status),
+    ]);
+}
+
+it('sends real login OTP through Ghasedak without exposing or logging the code', function ($body) {
     otpSmsSettings();
-    Http::fake(['gateway.ghasedak.me/*' => Http::response(['IsSuccess' => true, 'StatusCode' => 200])]);
+    otpGhasedakFake($body);
     $phone = '0912'.random_int(1000000, 9999999);
     $customer = Customer::factory()->create(['phone' => $phone]);
 
@@ -42,11 +52,17 @@ it('sends real login OTP through Ghasedak without exposing or logging the code',
 
     $code = null;
     Http::assertSent(function (Request $request) use ($phone, &$code) {
-        $code = $request['param1'];
+        if ($request->method() !== 'POST') {
+            return false;
+        }
+
+        $code = $request['inputs'][0]['value'];
 
         return $request->method() === 'POST'
             && $request->hasHeader('ApiKey', 'test-api-key')
             && $request['templateName'] === 'login-test'
+            && $request->url() === 'https://gateway.ghasedak.me/rest/api/v1/WebService/SendOtpSMS'
+            && $request['inputs'][0]['param'] === 'Code'
             && $request['receptors'][0]['mobile'] === $phone
             && preg_match('/^\d{6}$/', $code)
             && Hash::check($code, Cache::get('customer-otp:'.$phone));
@@ -54,11 +70,15 @@ it('sends real login OTP through Ghasedak without exposing or logging the code',
 
     postJson(route('shop.customer.otp.verify'), ['phone' => $phone, 'code' => $code])->assertOk();
     expect(auth()->guard('customer')->id())->toBe($customer->id);
-});
+    Http::assertSentCount(1);
+})->with([
+    [['IsSuccess' => true, 'StatusCode' => 200]],
+    [['isSuccess' => true, 'statusCode' => 200]],
+]);
 
 it('does not treat a failed or malformed Ghasedak reply as successful delivery', function ($body, $status) {
     otpSmsSettings();
-    Http::fake(['gateway.ghasedak.me/*' => Http::response($body, $status)]);
+    otpGhasedakFake($body, $status);
     $phone = '0912'.random_int(1000000, 9999999);
 
     postJson(route('shop.customer.otp.send'), ['phone' => $phone])
@@ -66,8 +86,11 @@ it('does not treat a failed or malformed Ghasedak reply as successful delivery',
     expect(Cache::get('customer-otp:'.$phone))->toBeNull();
 })->with([
     [['IsSuccess' => false, 'StatusCode' => 401], 200],
+    [['isSuccess' => false, 'statusCode' => 401], 200],
+    [['isSuccess' => 'true', 'statusCode' => 200], 200],
     [['unexpected' => true], 200],
     [['IsSuccess' => false], 500],
+    [['isSuccess' => true, 'statusCode' => 200], 302],
 ]);
 
 it('requires credentials in real mode and handles connection failures', function () {
@@ -80,6 +103,18 @@ it('requires credentials in real mode and handles connection failures', function
     Http::fake(['gateway.ghasedak.me/*' => Http::failedConnection()]);
     postJson(route('shop.customer.otp.send'), ['phone' => $phone])->assertStatus(502);
     expect(Cache::get('customer-otp:'.$phone))->toBeNull();
+});
+
+it('sends one request per OTP using the fixed Code parameter without a metadata lookup', function () {
+    otpSmsSettings();
+    otpGhasedakFake(['isSuccess' => true]);
+    $sms = app(CustomerOtpSms::class);
+    $sms->send('09123456789', '123456');
+    $sms->send('09123456789', '654321');
+
+    Http::assertSentCount(2);
+    Http::assertSent(fn (Request $request) => $request->method() === 'POST' && $request['inputs'] === [['param' => 'Code', 'value' => '123456']]);
+    Http::assertNotSent(fn (Request $request) => $request->method() === 'GET');
 });
 
 it('uses the admin test switch for login even outside the local environment', function () {
@@ -113,14 +148,37 @@ it('shows the same test code on credit verification and never sends an SMS', fun
 
 it('uses real delivery for credit verification when the test switch is off', function () {
     otpSmsSettings();
-    Http::fake(['gateway.ghasedak.me/*' => Http::response(['IsSuccess' => true])]);
+    otpGhasedakFake(['isSuccess' => true]);
     $phone = '0912'.random_int(1000000, 9999999);
     $this->loginAsCustomer(Customer::factory()->create(['phone' => $phone]));
 
     post(route('shop.customer.otp.send'), ['credit_verification' => 1])
         ->assertRedirect()->assertSessionMissing('otp_debug_code');
-    Http::assertSent(fn (Request $request) => $request['receptors'][0]['mobile'] === $phone);
+    Http::assertSent(fn (Request $request) => $request->method() === 'POST' && $request['receptors'][0]['mobile'] === $phone);
 });
+
+it('normalizes international profile numbers for credit verification without trusting the submitted phone', function ($format) {
+    otpSmsSettings();
+    otpGhasedakFake(['isSuccess' => true]);
+    $phone = '0912'.random_int(1000000, 9999999);
+    $stored = $format === 'persian'
+        ? strtr('0098'.substr($phone, 1), array_combine(str_split('0123456789'), preg_split('//u', '۰۱۲۳۴۵۶۷۸۹', -1, PREG_SPLIT_NO_EMPTY)))
+        : $format.substr($phone, 1);
+    $customer = Customer::factory()->create(['phone' => $stored]);
+    $this->loginAsCustomer($customer);
+    get(route('shop.customers.account.credit.verify'))->assertOk()->assertSee('value="'.$phone.'"', false);
+
+    postJson(route('shop.customer.otp.send'), ['credit_verification' => 1, 'phone' => '09999999999'])->assertOk();
+    $code = null;
+    Http::assertSent(function (Request $request) use ($phone, &$code) {
+        $code = $request['inputs'][0]['value'];
+
+        return $request['receptors'][0]['mobile'] === $phone;
+    });
+    postJson(route('shop.customer.otp.verify'), ['credit_verification' => 1, 'phone' => '09999999999', 'code' => $code])->assertOk();
+    expect($customer->fresh()->credit_verified_phone)->toBe($phone);
+    Http::assertSentCount(1);
+})->with(['0098', '+98', 'persian']);
 
 it('rejects a test code after the admin disables test mode', function () {
     otpSmsSettings(true);
@@ -259,3 +317,20 @@ it('requires the OTP placeholder before sending through 0098VIP', function () {
     postJson(route('shop.customer.otp.send'), ['phone' => '0912'.random_int(1000000, 9999999)])->assertStatus(502);
     Http::assertNothingSent();
 });
+
+it('records the safe SOAP result code without logging provider text or credentials', function ($result, $expected) {
+    otpVipSettings();
+    Log::spy();
+    Http::fake(['webservice.0098vip.com/*' => Http::response(otpSoapReply($result))]);
+
+    postJson(route('shop.customer.otp.send'), ['phone' => '0912'.random_int(1000000, 9999999)])->assertStatus(502);
+
+    Log::shouldHaveReceived('warning')->once()->with('0098VIP OTP delivery failed', [
+        'http_status' => 200,
+        'response_code' => $expected,
+    ]);
+})->with([
+    ['-26', '-26'],
+    ['10', '10'],
+    ['sensitive provider text', 'unknown_response_code'],
+]);

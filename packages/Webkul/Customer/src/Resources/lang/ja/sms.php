@@ -6,7 +6,7 @@ return [
     'ghasedak' => 'Ghasedak',
     'apiKey' => 'API key',
     'template' => 'Ghasedak approved OTP template name',
-    'templateHelp' => 'Enter the approved Ghasedak template name. The six-digit code is sent as %param1%.',
+    'templateHelp' => 'Enter the approved Ghasedak template name. Use %Code% as the verification code parameter in the template text.',
     'testMode' => 'Test mode (no SMS sent)',
     'testHelp' => 'When enabled, no SMS is sent and the code appears on login and credit verification pages, including on the live store. Disable for real phone verification.',
     'testCode' => 'Test mode — verification code: :code',

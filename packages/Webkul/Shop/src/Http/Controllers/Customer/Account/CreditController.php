@@ -2,6 +2,7 @@
 
 namespace Webkul\Shop\Http\Controllers\Customer\Account;
 
+use Webkul\Customer\Helpers\CreditIdentity;
 use Webkul\Customer\Repositories\CreditAccountRepository;
 use Webkul\Shop\Http\Controllers\Controller;
 
@@ -18,11 +19,18 @@ class CreditController extends Controller
     public function verify()
     {
         $customer = auth()->guard('customer')->user();
+        $phone = CreditIdentity::phone((string) $customer->phone);
+
+        if (! preg_match('/^09\d{9}$/', $phone)) {
+            return redirect()->route('shop.customers.account.profile.edit')
+                ->with('error', trans('customer::credit.completePhone'));
+        }
+
         $redirectTo = request('redirect_to', '/customer/account/credit');
         if (! is_string($redirectTo) || ! str_starts_with($redirectTo, '/') || str_starts_with($redirectTo, '//')) {
             $redirectTo = '/customer/account/credit';
         }
 
-        return view('shop::customers.account.credit.verify', compact('customer', 'redirectTo'));
+        return view('shop::customers.account.credit.verify', compact('customer', 'phone', 'redirectTo'));
     }
 }

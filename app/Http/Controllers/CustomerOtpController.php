@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use RuntimeException;
+use Webkul\Customer\Helpers\CreditIdentity;
 use Webkul\Customer\Models\Customer;
 
 class CustomerOtpController extends Controller
@@ -162,13 +163,7 @@ class CustomerOtpController extends Controller
 
     private function normalizePhone(string $phone): string
     {
-        $phone = preg_replace('/\D+/', '', $this->normalizeDigits($phone));
-
-        if (str_starts_with($phone, '98')) {
-            $phone = '0'.substr($phone, 2);
-        }
-
-        return $phone;
+        return CreditIdentity::phone($phone);
     }
 
     private function normalizeDigits(string $value): string

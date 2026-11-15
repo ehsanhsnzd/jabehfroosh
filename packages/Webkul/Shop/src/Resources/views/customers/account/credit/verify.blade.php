@@ -12,7 +12,7 @@
             @csrf
             <input type="hidden" name="credit_verification" value="1">
             <input type="hidden" name="redirect_to" value="{{ $redirectTo }}">
-            <label class="mb-4 grid gap-2 text-sm">@lang('customer::credit.phone')<input name="phone" type="tel" value="{{ $customer->phone }}" readonly required dir="ltr" class="rounded border px-3 py-2"></label>
+            <label class="mb-4 grid gap-2 text-sm">@lang('customer::credit.phone')<input name="phone" type="tel" value="{{ $phone }}" readonly required dir="ltr" class="rounded border px-3 py-2"></label>
             @if(session('otp_sent'))<label class="mb-4 grid gap-2 text-sm">@lang('customer::credit.code')<input name="code" required inputmode="numeric" autocomplete="one-time-code" maxlength="6" class="rounded border px-3 py-2" autofocus></label>@endif
             <button class="primary-button">@lang('customer::credit.'.(session('otp_sent') ? 'confirm' : 'send'))</button>
         </form>

@@ -50,6 +50,11 @@ class EventServiceProvider extends ServiceProvider
             [CatalogCache::class, 'flush'],
         ],
 
+        'catalog.product.delete.after' => [
+            // Discard listings repopulated while the product was being deleted.
+            [CatalogCache::class, 'flush'],
+        ],
+
         'catalog.category.create.after' => [
             [CatalogCache::class, 'flush'],
         ],

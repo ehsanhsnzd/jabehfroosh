@@ -176,6 +176,7 @@ img.lazy {
   font-size: 12px;
   font-weight: 700;
   line-height: 1.35;
+  font-family: 'Vazirmatn';
 }
 
 .sh-digi-product-card__price {
@@ -196,6 +197,7 @@ img.lazy {
   color: #25284f;
   font: inherit;
   text-decoration: none;
+  font-family: 'Vazirmatn';
 }
 
 .sh-digi-product-card__price .final-price.line-through,

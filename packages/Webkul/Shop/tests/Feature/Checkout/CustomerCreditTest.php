@@ -171,10 +171,10 @@ it('keeps ordinary payment methods independent from customer credit', function (
         ->and($account->transactions()->where('kind', 'purchase')->count())->toBe(0);
 });
 
-it('verifies the logged-in customer phone without creating a duplicate account for international formatting', function () {
+it('verifies the logged-in customer phone without creating a duplicate account for international formatting', function ($prefix) {
     $customer = creditCustomer(false);
     $phone = $customer->phone;
-    $customer->update(['phone' => '+98'.substr($phone, 1)]);
+    $customer->update(['phone' => $prefix.substr($phone, 1)]);
     $this->loginAsCustomer($customer);
     $account = app(CreditAccountRepository::class)->open(['phone' => $phone], 1000, (string) Str::uuid(), null);
     Cache::put('customer-otp:'.$phone, Hash::make('123456'), 120);
@@ -182,4 +182,13 @@ it('verifies the logged-in customer phone without creating a duplicate account f
     postJson(route('shop.customer.otp.verify'), ['phone' => '09999999999', 'code' => '123456', 'credit_verification' => 1])->assertOk();
     expect(auth()->guard('customer')->id())->toBe($customer->id)
         ->and($account->fresh()->customer_id)->toBe($customer->id);
-});
+})->with(['+98', '0098', '98']);
+
+it('requires a valid profile phone before opening credit verification', function ($phone) {
+    $customer = Customer::factory()->create(['phone' => $phone]);
+    $this->loginAsCustomer($customer);
+
+    get(route('shop.customers.account.credit.verify'))
+        ->assertRedirect(route('shop.customers.account.profile.edit'))
+        ->assertSessionHas('error', trans('customer::credit.completePhone'));
+})->with([null, '123']);

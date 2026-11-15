@@ -77,4 +77,5 @@ return [
     'order-charge' => 'Credit payment for order :order',
     'order-return' => 'Credit returned for order :order',
     'pay-with-credit' => 'Pay with credit',
+    'completePhone' => 'Before verifying credit, save a valid mobile number in your account profile. Use an 11-digit Iranian mobile number starting with 09.',
 ];

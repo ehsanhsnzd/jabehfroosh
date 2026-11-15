@@ -4,6 +4,7 @@ namespace App\Services;
 
 use DOMDocument;
 use DOMXPath;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -50,23 +51,33 @@ class CustomerOtpSms
             throw new RuntimeException('SMS credentials are not configured.');
         }
 
-        // https://ghasedak.me/docs — SendOtpWithParams; the OTP occupies %param1%.
         $response = Http::acceptJson()->withHeaders(['ApiKey' => $apiKey])
             ->connectTimeout(5)->timeout(15)
-            ->post('https://gateway.ghasedak.me/rest/api/v1/WebService/SendOtpWithParams', [
+            ->post('https://gateway.ghasedak.me/rest/api/v1/WebService/SendOtpSMS', [
                 'receptors' => [['mobile' => $phone, 'clientReferenceId' => (string) Str::uuid()]],
                 'templateName' => $template,
-                'param1' => $code,
-                'isVoice' => false,
+                'inputs' => [['param' => 'Code', 'value' => $code]],
                 'udh' => false,
             ]);
 
-        if ($response->failed() || $response->json('IsSuccess') !== true) {
-            Log::warning('Ghasedak OTP delivery failed', ['http_status' => $response->status(), 'status_code' => $response->json('StatusCode')]);
+        $this->checkGhasedakResponse($response, 'send');
+    }
+
+    private function checkGhasedakResponse(Response $response, string $stage): void
+    {
+        // Live responses use camelCase; older documentation shows PascalCase.
+        $success = $response->json('isSuccess') ?? $response->json('IsSuccess');
+        $statusCode = $response->json('statusCode') ?? $response->json('StatusCode');
+
+        if (! $response->successful() || $success !== true) {
+            Log::warning('Ghasedak OTP delivery failed', [
+                'http_status' => $response->status(),
+                'status_code' => is_numeric($statusCode) ? (int) $statusCode : null,
+                'stage' => $stage,
+            ]);
 
             throw new RuntimeException('SMS delivery failed.');
         }
-
     }
 
     private function sendViaVip0098(string $phone, string $code): void
@@ -111,18 +122,23 @@ class CustomerOtpSms
             ->connectTimeout(5)->timeout(15)
             ->post('https://webservice.0098vip.com/service.asmx');
 
+        $result = $this->vipSoapResult($response->body());
+
         // SOAP SendSMS reports success as 2; the old link API used a different code.
-        if (! $response->successful() || ! $this->vipSoapSucceeded($response->body())) {
-            Log::warning('0098VIP OTP delivery failed', ['http_status' => $response->status()]);
+        if (! $response->successful() || $result !== '2') {
+            Log::warning('0098VIP OTP delivery failed', [
+                'http_status' => $response->status(),
+                'response_code' => $result,
+            ]);
 
             throw new RuntimeException('SMS delivery failed.');
         }
     }
 
-    private function vipSoapSucceeded(string $xml): bool
+    private function vipSoapResult(string $xml): string
     {
         if ($xml === '' || stripos($xml, '<!DOCTYPE') !== false) {
-            return false;
+            return 'invalid_xml';
         }
 
         $previous = libxml_use_internal_errors(true);
@@ -131,7 +147,7 @@ class CustomerOtpSms
             $document = new DOMDocument;
 
             if (! $document->loadXML($xml, LIBXML_NONET)) {
-                return false;
+                return 'invalid_xml';
             }
 
             $xpath = new DOMXPath($document);
@@ -139,9 +155,20 @@ class CustomerOtpSms
             $xpath->registerNamespace('sms', 'http://tempuri.org/');
             $results = $xpath->query('/soap:Envelope/soap:Body/sms:SendSMSResponse/sms:SendSMSResult');
 
-            return $xpath->query('/soap:Envelope/soap:Body/soap:Fault')->length === 0
-                && $results->length === 1
-                && trim($results->item(0)->textContent) === '2';
+            if ($xpath->query('/soap:Envelope/soap:Body/soap:Fault')->length !== 0) {
+                return 'soap_fault';
+            }
+
+            if ($results->length !== 1) {
+                return 'unexpected_soap_response';
+            }
+
+            $result = trim($results->item(0)->textContent);
+
+            // Log only documented status values, never arbitrary provider text.
+            return preg_match('/^(?:-?\d{1,6}|Hang|No Doc|Wrong timestamp|Wrong time)$/D', $result)
+                ? $result
+                : 'unknown_response_code';
         } finally {
             libxml_clear_errors();
             libxml_use_internal_errors($previous);
