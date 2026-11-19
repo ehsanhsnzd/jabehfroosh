@@ -75,7 +75,7 @@ class Simple extends AbstractType
         $variant = $this->productRepository->find($id);
 
         if ($variant->parent_id && $variant->parent->type === 'configurable') {
-            $data = app(VariantPrice::class)->prepare($data, $variant->parent, $variant->price_multiplier ?? 1);
+            $data = app(VariantPrice::class)->prepare($data, $variant->parent, $variant->price_multiplier ?? 1, $variant->variant_fixed_price, $variant->variant_discount_override);
 
             if (! empty($attributes)) {
                 $attributes = array_unique(array_merge($attributes, ['price', 'special_price', 'special_price_from', 'special_price_to']));
@@ -375,7 +375,11 @@ class Simple extends AbstractType
     public function getTypeValidationRules()
     {
         if ($this->product->parent_id) {
-            return ['price_multiplier' => 'required|integer|min:1|max:1000000'];
+            return [
+                'price_multiplier' => 'required|integer|min:1|max:1000000',
+                'variant_fixed_price' => 'nullable|numeric|min:0|max:99999999.9999',
+                'variant_discount_override' => 'nullable|numeric|min:0|max:99.99',
+            ];
         }
 
         return [

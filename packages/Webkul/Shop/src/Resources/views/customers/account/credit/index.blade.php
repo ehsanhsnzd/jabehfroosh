@@ -3,6 +3,7 @@
     <div class="max-md:hidden"><x-shop::layouts.account.navigation /></div>
     <div class="mx-4 min-w-0 flex-auto">
         <h1 class="mb-6 text-2xl font-semibold">@lang('customer::credit.myCredit')</h1>
+        @include('shop::customers.account.credit.purchase-application')
         @if (! auth()->guard('customer')->user()->credit_phone_verified_at || auth()->guard('customer')->user()->credit_verified_phone !== \Webkul\Customer\Helpers\CreditIdentity::phone((string) auth()->guard('customer')->user()->phone))
             <p class="mb-4">@lang('customer::credit.verifyHelp')</p>
             <a class="primary-button" href="{{ route('shop.customers.account.credit.verify') }}">@lang('customer::credit.verify')</a>

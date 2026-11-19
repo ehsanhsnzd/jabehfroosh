@@ -2,6 +2,7 @@
 export default {
   content: [
     'resources/views/**/*',
+    '../../Webkul/Shop/src/Resources/views/customers/account/credit/**/*.blade.php',
     'vendor/bagisto/bagisto/packages/Webkul/Shop/src/Resources/**/*.blade.php',
     'vendor/bagisto/bagisto/packages/Webkul/Shop/src/Resources/**/*.js',
   ],

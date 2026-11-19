@@ -7,6 +7,7 @@
     $logoUrl = core()->getCurrentChannel()->logo_url ?? asset('themes/shop/shamim-pack/images/jabehfroosh-logo-professional-v2.png');
     $isHome = request()->routeIs('shop.home.index');
     $selectedRegion = \Webkul\Shop\Helpers\StorefrontRegion::selected();
+    $availableRegions = \Webkul\Product\Helpers\CatalogRegionSettings::visible('home');
     $quickLinks = collect($section->blocks)->where('type', 'quick_link')->map(fn ($block) => [
         'title' => $block->settings->get('title'),
         'url' => $block->settings->get('url') ?: '/search',
@@ -164,7 +165,7 @@
     <div class="sh-digi-local-nav">
         <button type="button" class="sh-digi-region-trigger" data-region-open aria-haspopup="dialog" aria-controls="sh-digi-region-dialog">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>{{ config('catalog-regions.'.$selectedRegion) ?: 'انتخاب آدرس' }}</span>
+            <span>{{ ($availableRegions[$selectedRegion] ?? null) ?: 'انتخاب آدرس' }}</span>
             <span aria-hidden="true">⌄</span>
         </button>
 
@@ -183,7 +184,7 @@
         <p>محصولات متناسب با شهر انتخابی شما نمایش داده می‌شوند.</p>
         <form action="{{ route('shop.catalog.region.store') }}" method="POST">
             @csrf
-            @foreach (config('catalog-regions') as $code => $label)
+            @foreach ($availableRegions as $code => $label)
                 <button type="submit" name="region" value="{{ $code }}" @class(['sh-digi-region-option', 'is-selected' => $selectedRegion === $code])>
                     {{ $label }}
                     @if ($selectedRegion === $code)<span aria-hidden="true">✓</span>@endif

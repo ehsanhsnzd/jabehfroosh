@@ -581,6 +581,7 @@
 
                                     {!! view_render_event('bagisto.admin.catalog.products.create_form.attributes.controls.after') !!}
                                 </div>
+                                @include('admin::catalog.products.edit.catalog-regions', ['product' => null])
                             </x-slot>
 
                             <!-- Modal Footer -->

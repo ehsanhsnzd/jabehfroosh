@@ -7,6 +7,7 @@ use Webkul\Shop\Http\Controllers\Customer\Account\CreditController;
 use Webkul\Shop\Http\Controllers\Customer\Account\DownloadableProductController;
 use Webkul\Shop\Http\Controllers\Customer\Account\EUWithdrawalController as CustomerEUWithdrawalController;
 use Webkul\Shop\Http\Controllers\Customer\Account\OrderController;
+use Webkul\Shop\Http\Controllers\Customer\Account\PurchaseCreditController;
 use Webkul\Shop\Http\Controllers\Customer\Account\RMAController;
 use Webkul\Shop\Http\Controllers\Customer\Account\WishlistController;
 use Webkul\Shop\Http\Controllers\Customer\CustomerController;
@@ -87,6 +88,9 @@ Route::prefix('customer')->group(function () {
         Route::prefix('account')->group(function () {
             Route::get('credit', [CreditController::class, 'index'])->name('shop.customers.account.credit.index');
             Route::get('credit/verify', [CreditController::class, 'verify'])->name('shop.customers.account.credit.verify');
+            Route::post('credit/application', [PurchaseCreditController::class, 'store'])->name('shop.customers.account.credit.apply');
+            Route::post('credit/application/{id}/cheque', [PurchaseCreditController::class, 'cheque'])->whereNumber('id')->name('shop.customers.account.credit.cheque');
+            Route::get('credit/application/{id}/documents/{index}', [PurchaseCreditController::class, 'document'])->whereNumber(['id', 'index'])->name('shop.customers.account.credit.document');
 
             Route::get('', [CustomerController::class, 'account'])->name('shop.customers.account.index');
 

@@ -159,6 +159,44 @@
 
                                 <x-admin::form.control-group.error control-name="price_multiplier" />
                             </x-admin::form.control-group>
+
+                            <x-admin::form.control-group>
+                                <x-admin::form.control-group.label>
+                                    @lang('admin::app.variant-pricing.fixed-price')
+                                </x-admin::form.control-group.label>
+
+                                <x-admin::form.control-group.control
+                                    type="price"
+                                    inputmode="decimal"
+                                    name="variant_fixed_price"
+                                    rules="decimal|min_value:0|max_value:99999999.9999"
+                                    :label="trans('admin::app.variant-pricing.fixed-price')"
+                                />
+
+                                <x-admin::form.control-group.error control-name="variant_fixed_price" />
+                                <p class="mt-2 text-xs text-gray-500 dark:text-gray-300">
+                                    @lang('admin::app.variant-pricing.fixed-price-info')
+                                </p>
+                            </x-admin::form.control-group>
+
+                            <x-admin::form.control-group>
+                                <x-admin::form.control-group.label>
+                                    @lang('admin::app.variant-pricing.discount-override')
+                                </x-admin::form.control-group.label>
+
+                                <x-admin::form.control-group.control
+                                    type="text"
+                                    inputmode="decimal"
+                                    name="variant_discount_override"
+                                    rules="decimal|min_value:0|max_value:99.99"
+                                    :label="trans('admin::app.variant-pricing.discount-override')"
+                                />
+
+                                <x-admin::form.control-group.error control-name="variant_discount_override" />
+                                <p class="mt-2 text-xs text-gray-500 dark:text-gray-300">
+                                    @lang('admin::app.variant-pricing.discount-override-info')
+                                </p>
+                            </x-admin::form.control-group>
                         </x-slot>
         
                         <!-- Modal Footer -->
@@ -747,6 +785,18 @@
 
                 <input
                     type="hidden"
+                    :name="'variants[' + variant.id + '][variant_fixed_price]'"
+                    :value="variant.variant_fixed_price ?? ''"
+                />
+
+                <input
+                    type="hidden"
+                    :name="'variants[' + variant.id + '][variant_discount_override]'"
+                    :value="variant.variant_discount_override ?? ''"
+                />
+
+                <input
+                    type="hidden"
                     :name="'variants[' + variant.id + '][weight]'"
                     :value="variant.weight"
                 />
@@ -865,6 +915,20 @@
                         </p>
                     </div>
 
+                    <v-error-message
+                        :name="'variants[' + variant.id + '].variant_fixed_price'"
+                        v-slot="{ message }"
+                    >
+                        <p class="mt-1 text-xs italic text-red-600">@{{ message }}</p>
+                    </v-error-message>
+
+                    <v-error-message
+                        :name="'variants[' + variant.id + '].variant_discount_override'"
+                        v-slot="{ message }"
+                    >
+                        <p class="mt-1 text-xs italic text-red-600">@{{ message }}</p>
+                    </v-error-message>
+
                     <!-- Error message for price_multiplier attribute -->
                     <v-error-message
                         :name="'variants[' + variant.id + '].price_multiplier'"
@@ -881,6 +945,13 @@
             <div class="grid place-content-start gap-1 text-right">
                 <p class="font-semibold text-gray-800 dark:text-white">
                     @{{ '× ' + variant.price_multiplier }}
+                </p>
+
+                <p
+                    v-if="variant.variant_fixed_price !== null && variant.variant_fixed_price !== '' && variant.variant_fixed_price !== undefined"
+                    class="font-semibold text-gray-800 dark:text-white"
+                >
+                    @{{ $admin.formatPrice(variant.variant_fixed_price) }}
                 </p>
 
                 <p class="font-semibold text-gray-800 dark:text-white">
@@ -967,6 +1038,46 @@
                                             />
                 
                                             <x-admin::form.control-group.error control-name="sku" />
+                                        </x-admin::form.control-group>
+
+                                        <x-admin::form.control-group>
+                                            <x-admin::form.control-group.label>
+                                                @lang('admin::app.variant-pricing.fixed-price')
+                                            </x-admin::form.control-group.label>
+
+                                            <x-admin::form.control-group.control
+                                                type="price"
+                                                inputmode="decimal"
+                                                name="variant_fixed_price"
+                                                rules="decimal|min_value:0|max_value:99999999.9999"
+                                                ::value="variant.variant_fixed_price"
+                                                :label="trans('admin::app.variant-pricing.fixed-price')"
+                                            />
+
+                                            <x-admin::form.control-group.error control-name="variant_fixed_price" />
+                                            <p class="mt-2 text-xs text-gray-500 dark:text-gray-300">
+                                                @lang('admin::app.variant-pricing.fixed-price-info')
+                                            </p>
+                                        </x-admin::form.control-group>
+
+                                        <x-admin::form.control-group>
+                                            <x-admin::form.control-group.label>
+                                                @lang('admin::app.variant-pricing.discount-override')
+                                            </x-admin::form.control-group.label>
+
+                                            <x-admin::form.control-group.control
+                                                type="text"
+                                                inputmode="decimal"
+                                                name="variant_discount_override"
+                                                rules="decimal|min_value:0|max_value:99.99"
+                                                ::value="variant.variant_discount_override"
+                                                :label="trans('admin::app.variant-pricing.discount-override')"
+                                            />
+
+                                            <x-admin::form.control-group.error control-name="variant_discount_override" />
+                                            <p class="mt-2 text-xs text-gray-500 dark:text-gray-300">
+                                                @lang('admin::app.variant-pricing.discount-override-info')
+                                            </p>
                                         </x-admin::form.control-group>
 
                                         <div class="mb-2.5 flex gap-4">
@@ -1123,6 +1234,8 @@
                         name: '',
                         sku: '',
                         price_multiplier: 1,
+                        variant_fixed_price: null,
+                        variant_discount_override: null,
                         status: 1,
                         weight: 0,
                         inventories: {},
@@ -1158,6 +1271,8 @@
                         sku: '{{ $product->sku }}' + '-variant-' + optionIds.join('-'),
                         name: '',
                         price_multiplier: 1,
+                        variant_fixed_price: null,
+                        variant_discount_override: null,
                         status: 1,
                         weight: 0,
                         inventories: {},

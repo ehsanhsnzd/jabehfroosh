@@ -41,6 +41,88 @@ function otpGhasedakFake(array $body, int $status = 200): void
     ]);
 }
 
+function otpKavenegarSettings(bool $testing = false, string $key = 'test-kavenegar-key', string $template = 'LoginOtp'): void
+{
+    otpSmsSettings($testing);
+
+    foreach (['ghasedak.provider' => 'kavenegar', 'kavenegar.api_key' => $key, 'kavenegar.template' => $template] as $field => $value) {
+        CoreConfig::updateOrCreate(['code' => 'customer.sms.'.$field, 'channel_code' => null, 'locale_code' => null], ['value' => $value]);
+    }
+}
+
+it('uses Kavenegar only when selected for login and credit verification', function (bool $creditVerification) {
+    otpKavenegarSettings();
+    Http::fake(['api.kavenegar.com/*' => Http::response(['return' => ['status' => 200], 'entries' => [['messageid' => 1]]])]);
+    $phone = '0912'.random_int(1000000, 9999999);
+    $customer = Customer::factory()->create(['phone' => $phone]);
+
+    if ($creditVerification) {
+        $this->loginAsCustomer($customer);
+    }
+
+    postJson(route('shop.customer.otp.send'), ['phone' => $phone, 'credit_verification' => $creditVerification])
+        ->assertOk()->assertJsonPath('debug_code', null);
+
+    $code = null;
+    Http::assertSent(function (Request $request) use ($phone, &$code) {
+        $code = $request['token'];
+
+        return $request->method() === 'POST'
+            && $request->url() === 'https://api.kavenegar.com/v1/test-kavenegar-key/verify/lookup.json'
+            && $request->hasHeader('Content-Type', 'application/x-www-form-urlencoded')
+            && $request['receptor'] === $phone
+            && $request['template'] === 'LoginOtp'
+            && $request['type'] === 'sms'
+            && preg_match('/^\d{6}$/', $code)
+            && Hash::check($code, Cache::get('customer-otp:'.$phone));
+    });
+
+    postJson(route('shop.customer.otp.verify'), [
+        'phone' => $phone, 'code' => $code, 'credit_verification' => $creditVerification,
+    ])->assertOk();
+    expect(auth()->guard('customer')->id())->toBe($customer->id);
+    Http::assertSentCount(1);
+})->with([false, true]);
+
+it('rejects unsuccessful or malformed Kavenegar responses without exposing provider text', function ($body, int $status) {
+    otpKavenegarSettings();
+    Http::fake(['api.kavenegar.com/*' => Http::response($body, $status)]);
+    $phone = '0912'.random_int(1000000, 9999999);
+
+    postJson(route('shop.customer.otp.send'), ['phone' => $phone])
+        ->assertStatus(502)->assertJsonMissingPath('debug_code')->assertDontSee('secret-provider-message');
+    expect(Cache::get('customer-otp:'.$phone))->toBeNull();
+    Http::assertSentCount(1);
+})->with([
+    [['return' => ['status' => 424, 'message' => 'secret-provider-message']], 200],
+    [['return' => ['status' => '200']], 200],
+    [['unexpected' => true], 200],
+    ['invalid-json', 200],
+    [['return' => ['status' => 200]], 500],
+    [['return' => ['status' => 200]], 302],
+]);
+
+it('does not send Kavenegar requests in test mode', function () {
+    otpKavenegarSettings(true);
+    $this->app->instance('env', 'production');
+
+    postJson(route('shop.customer.otp.send'), ['phone' => '0912'.random_int(1000000, 9999999)])
+        ->assertOk()->assertJsonStructure(['debug_code']);
+    Http::assertNothingSent();
+});
+
+it('requires Kavenegar credentials and handles connection failures without caching a code', function () {
+    otpKavenegarSettings(false, '', '');
+    $phone = '0912'.random_int(1000000, 9999999);
+    postJson(route('shop.customer.otp.send'), ['phone' => $phone])->assertStatus(502);
+    Http::assertNothingSent();
+
+    otpKavenegarSettings();
+    Http::fake(['api.kavenegar.com/*' => Http::failedConnection()]);
+    postJson(route('shop.customer.otp.send'), ['phone' => $phone])->assertStatus(502);
+    expect(Cache::get('customer-otp:'.$phone))->toBeNull();
+});
+
 it('sends real login OTP through Ghasedak without exposing or logging the code', function ($body) {
     otpSmsSettings();
     otpGhasedakFake($body);

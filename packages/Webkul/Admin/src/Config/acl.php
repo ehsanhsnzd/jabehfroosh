@@ -331,6 +331,11 @@ return [
         'route' => 'admin.catalog.products.index',
         'sort' => 3,
     ], [
+        'key' => 'catalog.regions',
+        'name' => 'admin::catalog-regions.title',
+        'route' => ['admin.catalog.regions.index', 'admin.catalog.regions.update'],
+        'sort' => 5,
+    ], [
         'key' => 'catalog.products',
         'name' => 'admin::app.acl.products',
         'route' => [
@@ -489,6 +494,41 @@ return [
         'name' => 'customer::credit.title',
         'route' => ['admin.customers.credit.index', 'admin.customers.credit.show'],
         'sort' => 2,
+    ], [
+        'key' => 'customers.purchase_credit',
+        'name' => 'customer::purchase-credit.applications',
+        'route' => ['admin.customers.credit.applications', 'admin.customers.credit.document'],
+        'sort' => 2,
+    ], [
+        'key' => 'customers.purchase_credit.approve',
+        'name' => 'customer::purchase-credit.activate',
+        'route' => 'admin.customers.credit.review',
+        'sort' => 1,
+    ], [
+        'key' => 'customers.credit_cheques',
+        'name' => 'customer::cheques.title',
+        'route' => ['admin.customers.cheques.index', 'admin.customers.cheques.show', 'admin.customers.cheques.document'],
+        'sort' => 3,
+    ], [
+        'key' => 'customers.credit_cheques.manage',
+        'name' => 'customer::cheques.manage',
+        'route' => ['admin.customers.cheques.create', 'admin.customers.cheques.customers', 'admin.customers.cheques.store', 'admin.customers.cheques.update'],
+        'sort' => 1,
+    ], [
+        'key' => 'customers.credit_cheques.allocate',
+        'name' => 'customer::cheques.allocatePermission',
+        'route' => 'admin.customers.cheques.allocate',
+        'sort' => 2,
+    ], [
+        'key' => 'customers.credit_cheques.export',
+        'name' => 'customer::cheques.exportPermission',
+        'route' => 'admin.customers.cheques.export',
+        'sort' => 3,
+    ], [
+        'key' => 'customers.purchase_credit_settings',
+        'name' => 'customer::purchase-credit.settings',
+        'route' => ['admin.customers.credit.settings', 'admin.customers.credit.settings.save'],
+        'sort' => 3,
     ], [
         'key' => 'customers.credit.create',
         'name' => 'customer::credit.create',

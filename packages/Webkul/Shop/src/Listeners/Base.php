@@ -3,6 +3,7 @@
 namespace Webkul\Shop\Listeners;
 
 use Illuminate\Support\Facades\Mail;
+use Webkul\Sales\Contracts\Order;
 use Webkul\Sales\Contracts\OrderComment;
 
 class Base
@@ -26,11 +27,16 @@ class Base
 
     /**
      * Prepare mail.
-     *
-     * @return void
      */
-    protected function prepareMail($entity, $notification)
+    protected function prepareMail($entity, $notification): bool
     {
+        $order = $entity instanceof Order ? $entity : $entity->order;
+        $email = $notification->duplicateInvoiceEmail ?? $order->customer_email;
+
+        if (! is_string($email) || ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+
         $customerLocale = $this->getLocale($entity);
 
         $previousLocale = core()->getCurrentLocale()->code;
@@ -41,8 +47,12 @@ class Base
             Mail::queue($notification);
         } catch (\Exception $e) {
             \Log::error('Error in Sending Email'.$e->getMessage());
+
+            return false;
+        } finally {
+            app()->setLocale($previousLocale);
         }
 
-        app()->setLocale($previousLocale);
+        return true;
     }
 }

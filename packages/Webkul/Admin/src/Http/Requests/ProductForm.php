@@ -11,6 +11,7 @@ use Webkul\Attribute\Enums\AttributeTypeEnum;
 use Webkul\Core\Rules\Decimal;
 use Webkul\Core\Rules\Slug;
 use Webkul\Product\Contracts\Product;
+use Webkul\Product\Helpers\CatalogRegionSettings;
 use Webkul\Product\Repositories\ProductAttributeValueRepository;
 use Webkul\Product\Repositories\ProductRepository;
 
@@ -76,6 +77,10 @@ class ProductForm extends FormRequest
         $this->product = $this->productRepository->find($this->id);
 
         $currentRmaRuleId = $this->product->rma_rule_id;
+        $savedRegions = $this->product->catalog_regions ?: ($this->product->parent?->catalog_regions ?? []);
+        if (in_array('northwest', $savedRegions)) {
+            $savedRegions = array_merge($savedRegions, ['tabriz', 'ardabil']);
+        }
 
         $this->rules = array_merge($this->product->getTypeInstance()->getTypeValidationRules(), [
             'sku' => ['required', 'unique:products,sku,'.$this->id, new Slug],
@@ -93,7 +98,7 @@ class ProductForm extends FormRequest
             'new' => ['sometimes', 'required', 'in:0,1'],
             'featured' => ['sometimes', 'required', 'in:0,1'],
             'catalog_regions' => ['sometimes', 'array'],
-            'catalog_regions.*' => ['string', 'distinct', Rule::in(array_diff(array_keys(config('catalog-regions')), ['northwest']))],
+            'catalog_regions.*' => ['string', 'distinct', Rule::in(array_unique(array_merge(array_keys(CatalogRegionSettings::visible('product')), $savedRegions)))],
             'rma_rule_id' => [
                 'nullable',
                 Rule::exists('rma_rules', 'id')->where(function ($query) use ($currentRmaRuleId) {

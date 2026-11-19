@@ -1245,6 +1245,7 @@ return [
                 'options' => [
                     ['title' => 'customer::sms.ghasedak', 'value' => 'ghasedak'],
                     ['title' => 'customer::sms.vip0098', 'value' => 'vip0098'],
+                    ['title' => 'customer::sms.kavenegar', 'value' => 'kavenegar'],
                 ],
             ], [
                 'name' => 'api_key',
@@ -1281,6 +1282,25 @@ return [
                 'info' => 'customer::sms.messageHelp',
                 'default' => "جعبه فروش\nکد تأیید شما: {code}",
                 'validation' => 'max:1000',
+            ],
+        ],
+    ], [
+        'key' => 'customer.sms.kavenegar',
+        'name' => 'customer::sms.kavenegar',
+        'info' => 'customer::sms.kavenegarHelp',
+        'sort' => 3,
+        'fields' => [
+            [
+                'name' => 'api_key',
+                'title' => 'customer::sms.kavenegarApiKey',
+                'type' => 'password',
+                'validation' => 'max:500',
+            ], [
+                'name' => 'template',
+                'title' => 'customer::sms.kavenegarTemplate',
+                'info' => 'customer::sms.kavenegarTemplateHelp',
+                'type' => 'text',
+                'validation' => 'max:150',
             ],
         ],
     ], [

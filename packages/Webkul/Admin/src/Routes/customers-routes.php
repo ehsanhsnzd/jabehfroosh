@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Webkul\Admin\Http\Controllers\Customers\AddressController;
+use Webkul\Admin\Http\Controllers\Customers\CreditChequeController;
 use Webkul\Admin\Http\Controllers\Customers\CreditController;
 use Webkul\Admin\Http\Controllers\Customers\Customer\CartController;
 use Webkul\Admin\Http\Controllers\Customers\Customer\CompareController;
@@ -10,6 +11,7 @@ use Webkul\Admin\Http\Controllers\Customers\Customer\WishlistController;
 use Webkul\Admin\Http\Controllers\Customers\CustomerController;
 use Webkul\Admin\Http\Controllers\Customers\CustomerGroupController;
 use Webkul\Admin\Http\Controllers\Customers\GDPRController;
+use Webkul\Admin\Http\Controllers\Customers\PurchaseCreditController;
 use Webkul\Admin\Http\Controllers\Customers\ReviewController;
 
 /**
@@ -17,6 +19,22 @@ use Webkul\Admin\Http\Controllers\Customers\ReviewController;
  */
 Route::prefix('customers')->group(function () {
     Route::controller(CreditController::class)->prefix('credit')->group(function () {
+        Route::controller(CreditChequeController::class)->prefix('cheques')->group(function () {
+            Route::get('', 'index')->name('admin.customers.cheques.index');
+            Route::get('create', 'create')->name('admin.customers.cheques.create');
+            Route::get('customers', 'customers')->name('admin.customers.cheques.customers');
+            Route::get('export', 'export')->name('admin.customers.cheques.export');
+            Route::post('', 'store')->name('admin.customers.cheques.store');
+            Route::get('{id}', 'show')->whereNumber('id')->name('admin.customers.cheques.show');
+            Route::put('{id}', 'update')->whereNumber('id')->name('admin.customers.cheques.update');
+            Route::post('{id}/allocate', 'allocate')->whereNumber('id')->name('admin.customers.cheques.allocate');
+            Route::get('{id}/document', 'document')->whereNumber('id')->name('admin.customers.cheques.document');
+        });
+        Route::get('applications', [PurchaseCreditController::class, 'index'])->name('admin.customers.credit.applications');
+        Route::get('settings', [PurchaseCreditController::class, 'settings'])->name('admin.customers.credit.settings');
+        Route::post('settings', [PurchaseCreditController::class, 'saveSettings'])->name('admin.customers.credit.settings.save');
+        Route::post('applications/{id}/review', [PurchaseCreditController::class, 'review'])->whereNumber('id')->name('admin.customers.credit.review');
+        Route::get('applications/{id}/documents/{index}', [PurchaseCreditController::class, 'document'])->whereNumber(['id', 'index'])->name('admin.customers.credit.document');
         Route::get('', 'index')->name('admin.customers.credit.index');
         Route::get('report', 'report')->name('admin.customers.credit.report');
         Route::get('export', 'export')->name('admin.customers.credit.export');

@@ -3,16 +3,26 @@
         @lang('admin::catalog-regions.title')
     </p>
 
+    @if (bouncer()->hasPermission('catalog.regions'))
+        <a class="mb-4 inline-block text-sm text-blue-600" href="{{ route('admin.catalog.regions.index') }}">@lang('admin::catalog-regions.manage')</a>
+    @endif
+
     <input type="hidden" name="catalog_regions_present" value="1">
 
     @php
-        $selectedRegions = old('catalog_regions', $product->catalog_regions ?: ($product->parent?->catalog_regions ?? []));
+        $product = $product ?? null;
+        $selectedRegions = old('catalog_regions', $product?->catalog_regions ?: ($product?->parent?->catalog_regions ?? []));
+        $availableRegions = \Webkul\Product\Helpers\CatalogRegionSettings::visible('product');
         if (in_array('northwest', $selectedRegions)) {
             $selectedRegions = array_unique(array_merge($selectedRegions, ['tabriz', 'ardabil']));
         }
     @endphp
 
-    @foreach (array_diff_key(config('catalog-regions'), ['northwest' => true]) as $code => $label)
+    @foreach (array_diff($selectedRegions, array_keys($availableRegions)) as $code)
+        <input type="hidden" name="catalog_regions[]" value="{{ $code }}">
+    @endforeach
+
+    @foreach ($availableRegions as $code => $label)
         <label class="mb-3 flex cursor-pointer items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
             <input
                 type="checkbox"
@@ -20,7 +30,7 @@
                 value="{{ $code }}"
                 @checked(in_array($code, $selectedRegions))
             >
-            @lang('admin::catalog-regions.'.$code)
+            {{ $label }}
         </label>
     @endforeach
 

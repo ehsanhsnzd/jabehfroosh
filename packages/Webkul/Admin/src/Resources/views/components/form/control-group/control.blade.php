@@ -27,7 +27,7 @@
 
     @case('price')
         <v-field
-            v-slot="{ field, errors }"
+            v-slot="{ field, errors, handleChange, handleBlur }"
             {{ $attributes->only(['name', ':name', 'value', ':value', 'v-model', 'rules', ':rules', 'label', ':label']) }}
             name="{{ $name }}"
         >
@@ -45,11 +45,12 @@
                     </span>
                 @endif
 
-                <input
-                    type="text"
-                    name="{{ $name }}"
-                    v-bind="field"
-                    {{ $attributes->except(['value', ':value', 'v-model', 'rules', ':rules', 'label', ':label'])->merge(['class' => 'w-full p-2.5 text-sm text-gray-600 dark:bg-gray-900 dark:text-gray-300']) }}
+                <x-admin::form.price-input
+                    ::name="field.name"
+                    ::model-value="field.value"
+                    @update:model-value="handleChange"
+                    @blur="handleBlur"
+                    {{ $attributes->except(['name', ':name', 'value', ':value', 'v-model', 'rules', ':rules', 'label', ':label'])->merge(['class' => 'w-full p-2.5 text-sm text-gray-600 dark:bg-gray-900 dark:text-gray-300']) }}
                 />
             </div>
         </v-field>

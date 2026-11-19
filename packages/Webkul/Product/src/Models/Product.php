@@ -35,6 +35,8 @@ class Product extends Model implements ProductContract
         'sku',
         'parent_id',
         'price_multiplier',
+        'variant_fixed_price',
+        'variant_discount_override',
         'variant_discount_percent',
         'catalog_regions',
     ];
@@ -45,6 +47,8 @@ class Product extends Model implements ProductContract
     protected $casts = [
         'additional' => 'array',
         'price_multiplier' => 'integer',
+        'variant_fixed_price' => 'decimal:4',
+        'variant_discount_override' => 'decimal:2',
         'variant_discount_percent' => 'decimal:2',
         'catalog_regions' => 'array',
     ];

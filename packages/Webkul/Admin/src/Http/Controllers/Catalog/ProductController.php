@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Webkul\Admin\DataGrids\Catalog\ProductDataGrid;
 use Webkul\Admin\Http\Controllers\Controller;
@@ -19,6 +20,7 @@ use Webkul\Admin\Http\Resources\ProductResource;
 use Webkul\Attribute\Repositories\AttributeFamilyRepository;
 use Webkul\Core\Rules\Slug;
 use Webkul\Customer\Repositories\CustomerRepository;
+use Webkul\Product\Helpers\CatalogRegionSettings;
 use Webkul\Product\Helpers\Product;
 use Webkul\Product\Helpers\ProductType;
 use Webkul\Product\Repositories\ProductAttributeValueRepository;
@@ -104,6 +106,8 @@ class ProductController extends Controller
             'type' => 'required',
             'attribute_family_id' => 'required',
             'sku' => ['required', 'unique:products,sku', new Slug],
+            'catalog_regions' => ['sometimes', 'array'],
+            'catalog_regions.*' => ['string', 'distinct', Rule::in(array_keys(CatalogRegionSettings::visible('product')))],
             'super_attributes' => 'array|min:1',
             'super_attributes.*' => 'array|min:1',
         ]);
@@ -133,6 +137,7 @@ class ProductController extends Controller
             'name',
             'price',
             'packaging_product',
+            'catalog_regions',
         ]));
 
         Event::dispatch('catalog.product.create.after', $product);

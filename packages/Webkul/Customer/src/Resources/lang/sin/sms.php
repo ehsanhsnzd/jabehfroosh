@@ -19,4 +19,9 @@ return [
     'password' => '0098VIP web service password',
     'message' => 'Verification SMS text',
     'messageHelp' => 'Use {code} for the six-digit code. Text must match the approved OTP settings in your provider panel.',
+    'kavenegar' => 'Kavenegar',
+    'kavenegarHelp' => 'OTP delivery through Kavenegar for login and credit phone verification. Saving these settings does not select this provider; choose it under Active SMS provider when ready.',
+    'kavenegarApiKey' => 'Kavenegar API key',
+    'kavenegarTemplate' => 'Kavenegar approved OTP template name',
+    'kavenegarTemplateHelp' => 'Enter the approved Kavenegar template name. Use %token for the verification code in the template text.',
 ];

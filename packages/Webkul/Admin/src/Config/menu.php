@@ -134,6 +134,12 @@ return [
         'route' => 'admin.catalog.families.index',
         'sort' => 4,
         'icon' => '',
+    ], [
+        'key' => 'catalog.regions',
+        'name' => 'admin::catalog-regions.title',
+        'route' => 'admin.catalog.regions.index',
+        'sort' => 5,
+        'icon' => '',
     ],
 
     /**
@@ -161,19 +167,37 @@ return [
         'key' => 'customers.credit',
         'name' => 'customer::credit.title',
         'route' => 'admin.customers.credit.index',
-        'sort' => 2,
+        'sort' => 3,
+        'icon' => '',
+    ], [
+        'key' => 'customers.purchase_credit',
+        'name' => 'customer::purchase-credit.applications',
+        'route' => 'admin.customers.credit.applications',
+        'sort' => 4,
+        'icon' => '',
+    ], [
+        'key' => 'customers.credit_cheques',
+        'name' => 'customer::cheques.title',
+        'route' => 'admin.customers.cheques.index',
+        'sort' => 5,
+        'icon' => '',
+    ], [
+        'key' => 'customers.purchase_credit_settings',
+        'name' => 'customer::purchase-credit.settings',
+        'route' => 'admin.customers.credit.settings',
+        'sort' => 6,
         'icon' => '',
     ], [
         'key' => 'customers.reviews',
         'name' => 'admin::app.components.layouts.sidebar.reviews',
         'route' => 'admin.customers.customers.review.index',
-        'sort' => 3,
+        'sort' => 7,
         'icon' => '',
     ], [
         'key' => 'customers.gdpr_requests',
         'name' => 'admin::app.components.layouts.sidebar.gdpr-data-requests',
         'route' => 'admin.customers.gdpr.index',
-        'sort' => 4,
+        'sort' => 8,
         'icon' => '',
     ],
 

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Webkul\Admin\Http\Controllers\Catalog\AttributeController;
 use Webkul\Admin\Http\Controllers\Catalog\AttributeFamilyController;
+use Webkul\Admin\Http\Controllers\Catalog\CatalogRegionController;
 use Webkul\Admin\Http\Controllers\Catalog\CategoryController;
 use Webkul\Admin\Http\Controllers\Catalog\Product\BundleController;
 use Webkul\Admin\Http\Controllers\Catalog\Product\ConfigurableController;
@@ -16,6 +17,9 @@ use Webkul\Admin\Http\Controllers\Catalog\ProductController;
  * Catalog routes.
  */
 Route::prefix('catalog')->group(function () {
+    Route::get('regions', [CatalogRegionController::class, 'index'])->name('admin.catalog.regions.index');
+    Route::put('regions', [CatalogRegionController::class, 'update'])->name('admin.catalog.regions.update');
+
     /**
      * Attributes routes.
      */

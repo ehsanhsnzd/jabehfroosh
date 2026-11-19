@@ -43,10 +43,10 @@
             <a
                 href="{{ auth()->guard('customer')->check() ? route('shop.customers.account.index') : route('shop.customer.session.create') }}"
                 class="sh-mobile-bottom-nav__item {{ request()->routeIs('shop.customers.account.*', 'shop.customer.session.*') ? 'is-active' : '' }}"
-                aria-label="جعبه فروش من"
+                aria-label="{{ auth()->guard('customer')->check() ? 'جعبه فروش من' : 'ورود' }}"
             >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0" stroke-linecap="round"/></svg>
-                <span>جعبه فروش من</span>
+                <span>{{ auth()->guard('customer')->check() ? 'جعبه فروش من' : 'ورود' }}</span>
             </a>
         </nav>
     </script>

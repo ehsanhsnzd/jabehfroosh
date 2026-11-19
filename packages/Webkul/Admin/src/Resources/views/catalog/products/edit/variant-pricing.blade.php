@@ -37,6 +37,46 @@
                 />
 
                 <x-admin::form.control-group.error control-name="price_multiplier" />
+
+                <x-admin::form.control-group>
+                    <x-admin::form.control-group.label>
+                        @lang('admin::app.variant-pricing.fixed-price')
+                    </x-admin::form.control-group.label>
+
+                    <x-admin::form.control-group.control
+                        type="price"
+                        inputmode="decimal"
+                        name="variant_fixed_price"
+                        rules="decimal|min_value:0|max_value:99999999.9999"
+                        :value="old('variant_fixed_price', $product->variant_fixed_price)"
+                        :label="trans('admin::app.variant-pricing.fixed-price')"
+                    />
+
+                    <x-admin::form.control-group.error control-name="variant_fixed_price" />
+                    <p class="mt-2 text-xs text-gray-500 dark:text-gray-300">
+                        @lang('admin::app.variant-pricing.fixed-price-info')
+                    </p>
+                </x-admin::form.control-group>
+
+                <x-admin::form.control-group>
+                    <x-admin::form.control-group.label>
+                        @lang('admin::app.variant-pricing.discount-override')
+                    </x-admin::form.control-group.label>
+
+                    <x-admin::form.control-group.control
+                        type="text"
+                        inputmode="decimal"
+                        name="variant_discount_override"
+                        rules="decimal|min_value:0|max_value:99.99"
+                        :value="old('variant_discount_override', $product->variant_discount_override)"
+                        :label="trans('admin::app.variant-pricing.discount-override')"
+                    />
+
+                    <x-admin::form.control-group.error control-name="variant_discount_override" />
+                    <p class="mt-2 text-xs text-gray-500 dark:text-gray-300">
+                        @lang('admin::app.variant-pricing.discount-override-info')
+                    </p>
+                </x-admin::form.control-group>
             @endif
         </x-admin::form.control-group>
 

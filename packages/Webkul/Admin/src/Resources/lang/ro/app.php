@@ -2,10 +2,14 @@
 
 return [
     'variant-pricing' => [
+        'discount-override' => 'Variant discount (percent, optional)',
+        'discount-override-info' => 'Leave empty or enter 0 to inherit the parent discount. Enter a positive percentage to use this variant discount.',
+        'fixed-price' => 'Fixed variant price (optional)',
+        'fixed-price-info' => 'Enter a fixed price to override the quantity calculation. Leave empty to use quantity-based pricing.',
         'title' => 'Variant pricing',
         'multiplier' => 'Units per pack (price multiplier)',
         'discount' => 'Discount for all variants (%)',
-        'info' => 'Variant price = parent unit price × units per pack. The parent discount determines the special price.',
+        'info' => 'Without a fixed price, variant price = parent unit price × units per pack. An empty variant discount inherits the parent discount.',
     ],
 
     'users' => [

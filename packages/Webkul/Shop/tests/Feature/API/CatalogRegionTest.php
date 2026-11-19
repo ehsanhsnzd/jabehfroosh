@@ -5,7 +5,9 @@ use Webkul\Checkout\Facades\Cart;
 use Webkul\Faker\Helpers\Category as CategoryFaker;
 use Webkul\Faker\Helpers\Product as ProductFaker;
 use Webkul\Product\Helpers\CatalogRegion;
+use Webkul\Product\Helpers\CatalogRegionSettings;
 use Webkul\Product\Repositories\ProductRepository;
+use Webkul\Shop\Helpers\StorefrontRegion;
 
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\post;
@@ -16,6 +18,22 @@ it('stores a supported city in the session and varies browser cache cookies', fu
         ->assertSessionHas('catalog_region', $region)
         ->assertCookie('catalog_region', $region);
 })->with(['tabriz', 'ardabil', 'northwest', 'other']);
+
+it('filters products for an enabled province and rejects provinces hidden from the storefront', function () {
+    CatalogRegionSettings::save(['tehran'], ['isfahan']);
+    $tehran = (new ProductFaker)->getSimpleProductFactory()->create(['catalog_regions' => ['tehran']]);
+    $isfahan = (new ProductFaker)->getSimpleProductFactory()->create(['catalog_regions' => ['isfahan']]);
+    $everywhere = (new ProductFaker)->getSimpleProductFactory()->create();
+    post(route('shop.catalog.region.store'), ['region' => 'tehran'])->assertRedirect()->assertSessionHas('catalog_region', 'tehran');
+    expect(StorefrontRegion::selected())->toBe('tehran');
+
+    $query = app(ProductRepository::class)->getModel()->newQuery()->whereIn('id', [$tehran->id, $isfahan->id, $everywhere->id]);
+    expect(CatalogRegion::apply($query, 'tehran')->pluck('id')->all())->toEqualCanonicalizing([$tehran->id, $everywhere->id]);
+    post(route('shop.catalog.region.store'), ['region' => 'isfahan'])->assertSessionHasErrors('region');
+
+    CatalogRegionSettings::save([], ['isfahan']);
+    expect(StorefrontRegion::selected())->toBeNull();
+});
 
 it('rejects unsupported cities and keeps the previously selected city', function () {
     $this->withSession(['catalog_region' => 'tabriz']);

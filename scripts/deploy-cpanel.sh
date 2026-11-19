@@ -65,4 +65,5 @@ printf 'Deploying %s with %s\n' "$app_root" "$php_bin"
 "$php_bin" artisan indexer:index --type=flat --mode=full --no-interaction
 "$php_bin" artisan optimize --no-interaction
 "$php_bin" artisan queue:restart --no-interaction
+DEPLOY_PHP="$php_bin" /bin/bash ./scripts/install-purchase-credit-cron.sh
 printf 'Deployment completed.\n'

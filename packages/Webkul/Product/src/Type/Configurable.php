@@ -238,6 +238,8 @@ class Configurable extends AbstractType
             'attribute_family_id' => $product->attribute_family_id,
             'parent_id' => $product->id,
             'price_multiplier' => $data['price_multiplier'],
+            'variant_fixed_price' => $data['variant_fixed_price'],
+            'variant_discount_override' => $data['variant_discount_override'],
             'catalog_regions' => $product->catalog_regions ?? [],
         ]);
 
@@ -264,11 +266,13 @@ class Configurable extends AbstractType
     {
         $variant = $this->productRepository->find($id);
 
-        $data = app(VariantPrice::class)->prepare($data, $variant->parent, $variant->price_multiplier ?? 1);
+        $data = app(VariantPrice::class)->prepare($data, $variant->parent, $variant->price_multiplier ?? 1, $variant->variant_fixed_price, $variant->variant_discount_override);
 
         $variant->update([
             'sku' => $data['sku'],
             'price_multiplier' => $data['price_multiplier'],
+            'variant_fixed_price' => $data['variant_fixed_price'],
+            'variant_discount_override' => $data['variant_discount_override'],
         ]);
 
         $this->attributeValueRepository->saveValues($data, $variant, $this->fillableVariantAttributes);
@@ -350,6 +354,8 @@ class Configurable extends AbstractType
             ],
             'variant_discount_percent' => 'nullable|numeric|min:0|max:99.99',
             'variants.*.price_multiplier' => 'required|integer|min:1|max:1000000',
+            'variants.*.variant_fixed_price' => 'nullable|numeric|min:0|max:99999999.9999',
+            'variants.*.variant_discount_override' => 'nullable|numeric|min:0|max:99.99',
             'variants.*.weight' => 'required',
         ];
     }

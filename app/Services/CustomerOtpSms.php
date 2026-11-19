@@ -27,6 +27,12 @@ class CustomerOtpSms
 
         $provider = core()->getConfigData('customer.sms.ghasedak.provider');
 
+        if ($provider === 'kavenegar') {
+            $this->sendViaKavenegar($phone, $code);
+
+            return false;
+        }
+
         if ($provider === 'vip0098') {
             $this->sendViaVip0098($phone, $code);
 
@@ -40,6 +46,36 @@ class CustomerOtpSms
         $this->sendViaGhasedak($phone, $code);
 
         return false;
+    }
+
+    private function sendViaKavenegar(string $phone, string $code): void
+    {
+        $apiKey = trim((string) core()->getConfigData('customer.sms.kavenegar.api_key'));
+        $template = trim((string) core()->getConfigData('customer.sms.kavenegar.template'));
+
+        if ($apiKey === '' || $template === '') {
+            throw new RuntimeException('Kavenegar SMS settings are not configured.');
+        }
+
+        $response = Http::asForm()->acceptJson()->withOptions(['allow_redirects' => false])
+            ->connectTimeout(5)->timeout(15)
+            ->post('https://api.kavenegar.com/v1/'.rawurlencode($apiKey).'/verify/lookup.json', [
+                'receptor' => $phone,
+                'token' => $code,
+                'template' => $template,
+                'type' => 'sms',
+            ]);
+
+        $status = $response->json('return.status');
+
+        if (! $response->successful() || $status !== 200) {
+            Log::warning('Kavenegar OTP delivery failed', [
+                'http_status' => $response->status(),
+                'status_code' => is_numeric($status) ? (int) $status : null,
+            ]);
+
+            throw new RuntimeException('SMS delivery failed.');
+        }
     }
 
     private function sendViaGhasedak(string $phone, string $code): void
@@ -82,19 +118,24 @@ class CustomerOtpSms
 
     private function sendViaVip0098(string $phone, string $code): void
     {
+        $message = trim((string) core()->getConfigData('customer.sms.vip0098.message'));
+        if ($message === '' || ! str_contains($message, '{code}')) {
+            throw new RuntimeException('Invalid 0098VIP SMS settings.');
+        }
+        $this->sendVipMessage($phone, str_replace('{code}', $code, $message));
+    }
+
+    public function sendVipMessage(string $phone, string $message): void
+    {
         $settings = [];
 
-        foreach (['from', 'username', 'password', 'message'] as $field) {
+        foreach (['from', 'username', 'password'] as $field) {
             $value = (string) core()->getConfigData('customer.sms.vip0098.'.$field);
             $settings[$field] = $field === 'password' ? $value : trim($value);
 
             if ($settings[$field] === '') {
                 throw new RuntimeException('0098VIP SMS settings are not configured.');
             }
-        }
-
-        if (! str_contains($settings['message'], '{code}')) {
-            throw new RuntimeException('Invalid 0098VIP SMS settings.');
         }
 
         // Match SendSMS in https://webservice.0098vip.com/service.asmx?WSDL.
@@ -108,7 +149,7 @@ class CustomerOtpSms
         foreach ([
             'username' => $settings['username'],
             'password' => $settings['password'],
-            'text' => str_replace('{code}', $code, $settings['message']),
+            'text' => $message,
             'mobileno' => $phone,
             'pnlno' => $settings['from'],
         ] as $name => $value) {

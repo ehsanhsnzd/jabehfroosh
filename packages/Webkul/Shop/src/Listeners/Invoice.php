@@ -20,9 +20,9 @@ class Invoice extends Base
                 return;
             }
 
-            $this->prepareMail($invoice, new InvoicedNotification($invoice, $duplicateInvoiceEmail));
-
-            $invoice->query()->update(['email_sent' => 1]);
+            if ($this->prepareMail($invoice, new InvoicedNotification($invoice, $duplicateInvoiceEmail))) {
+                $invoice->query()->update(['email_sent' => 1]);
+            }
         } catch (\Exception $e) {
             report($e);
         }

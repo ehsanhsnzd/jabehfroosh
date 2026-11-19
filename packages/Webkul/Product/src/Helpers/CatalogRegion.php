@@ -11,7 +11,7 @@ class CatalogRegion
      */
     public static function apply(Builder $query, ?string $region): Builder
     {
-        if (! $region || ! array_key_exists($region, config('catalog-regions', []))) {
+        if (! $region || ! array_key_exists($region, CatalogRegionSettings::labels())) {
             return $query;
         }
 

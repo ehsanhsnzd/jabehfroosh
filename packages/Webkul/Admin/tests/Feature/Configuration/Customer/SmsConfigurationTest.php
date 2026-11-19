@@ -1,6 +1,7 @@
 <?php
 
 use Webkul\Core\Models\Channel;
+use Webkul\Core\Models\CoreConfig;
 use Webkul\Core\Models\Locale;
 
 use function Pest\Laravel\get;
@@ -14,6 +15,8 @@ it('renders Ghasedak SMS configuration and the shared test checkbox', function (
         ->assertSee(trans('customer::sms.title'))
         ->assertSee(trans('customer::sms.provider'))
         ->assertSee(trans('customer::sms.vip0098'))
+        ->assertSee(trans('customer::sms.kavenegar'))
+        ->assertSee(trans('customer::sms.kavenegarTemplate'))
         ->assertSee(trans('customer::sms.testMode'));
 
     expect(core()->getConfigField('customer.sms.ghasedak.test_mode')['type'])->toBe('boolean')
@@ -21,7 +24,36 @@ it('renders Ghasedak SMS configuration and the shared test checkbox', function (
         ->and(core()->getConfigField('customer.sms.ghasedak.api_key')['type'])->toBe('password');
 
     expect(core()->getConfigField('customer.sms.ghasedak.provider')['default'])->toBe('ghasedak')
+        ->and(core()->getConfigField('customer.sms.kavenegar.api_key')['type'])->toBe('password')
         ->and(core()->getConfigField('customer.sms.vip0098.domain'))->toBeNull();
+});
+
+it('saves Kavenegar settings without activating it or changing the existing provider credentials', function () {
+    $this->loginAsAdmin();
+    $channel = Channel::factory()->create();
+    $locale = Locale::factory()->create();
+    CoreConfig::updateOrCreate([
+        'code' => 'customer.sms.ghasedak.provider', 'channel_code' => null, 'locale_code' => null,
+    ], ['value' => 'vip0098']);
+    CoreConfig::updateOrCreate([
+        'code' => 'customer.sms.vip0098.username', 'channel_code' => null, 'locale_code' => null,
+    ], ['value' => 'existing-sms-account']);
+    $section = collect(config('core'))->firstWhere('key', 'customer.sms.kavenegar');
+
+    postJson(route('admin.configuration.store', ['customer', 'sms']), [
+        'channel' => $channel->code,
+        'locale' => $locale->code,
+        'keys' => [json_encode($section)],
+        'customer' => ['sms' => ['kavenegar' => [
+            'api_key' => 'new-kavenegar-key',
+            'template' => 'LoginOtp',
+        ]]],
+    ])->assertRedirect()->assertSessionHas('success');
+
+    expect(core()->getConfigData('customer.sms.kavenegar.api_key'))->toBe('new-kavenegar-key')
+        ->and(core()->getConfigData('customer.sms.kavenegar.template'))->toBe('LoginOtp')
+        ->and(core()->getConfigData('customer.sms.ghasedak.provider'))->toBe('vip0098')
+        ->and(core()->getConfigData('customer.sms.vip0098.username'))->toBe('existing-sms-account');
 });
 
 it('saves and disables SMS test mode through admin configuration', function () {
