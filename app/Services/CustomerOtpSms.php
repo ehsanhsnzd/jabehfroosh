@@ -14,7 +14,16 @@ class CustomerOtpSms
 {
     public function isTesting(): bool
     {
+        if (core()->getConfigData('customer.sms.ghasedak.provider') === 'vip0098') {
+            return $this->isVipTesting();
+        }
+
         return filter_var(core()->getConfigData('customer.sms.ghasedak.test_mode'), FILTER_VALIDATE_BOOLEAN);
+    }
+
+    public function isVipTesting(): bool
+    {
+        return filter_var(core()->getConfigData('customer.sms.vip0098.test_mode') ?? true, FILTER_VALIDATE_BOOLEAN);
     }
 
     public function send(string $phone, string $code): bool

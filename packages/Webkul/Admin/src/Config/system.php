@@ -1272,6 +1272,13 @@ return [
         'info' => 'customer::sms.vipHelp',
         'sort' => 2,
         'fields' => [
+            [
+                'name' => 'test_mode',
+                'title' => 'customer::sms.vipTestMode',
+                'info' => 'customer::sms.vipTestHelp',
+                'type' => 'boolean',
+                'default' => true,
+            ],
             ['name' => 'from', 'title' => 'customer::sms.from', 'type' => 'text', 'validation' => 'max:30'],
             ['name' => 'username', 'title' => 'customer::sms.username', 'type' => 'text', 'validation' => 'max:255'],
             ['name' => 'password', 'title' => 'customer::sms.password', 'type' => 'password', 'validation' => 'max:500'],

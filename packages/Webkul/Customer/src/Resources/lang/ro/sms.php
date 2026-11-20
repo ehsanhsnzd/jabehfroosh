@@ -2,13 +2,15 @@
 
 return [
     'title' => 'SMS settings',
-    'info' => 'The selected provider and test mode apply to both mobile login and credit phone verification.',
+    'info' => 'The selected provider handles login and credit phone verification. 0098SMS has an independent test mode; credit advertising also has separate settings.',
     'ghasedak' => 'Ghasedak',
     'apiKey' => 'API key',
     'template' => 'Ghasedak approved OTP template name',
     'templateHelp' => 'Enter the approved Ghasedak template name. Use %Code% as the verification code parameter in the template text.',
-    'testMode' => 'Test mode (no SMS sent)',
-    'testHelp' => 'When enabled, no SMS is sent and the code appears on login and credit verification pages, including on the live store. Disable for real phone verification.',
+    'testMode' => 'Ghasedak and Kavenegar test mode (no SMS sent)',
+    'testHelp' => 'For Ghasedak and Kavenegar only: no SMS is sent and the login or verification code is displayed on screen. Does not affect 0098SMS or credit advertising.',
+    'vipTestMode' => '0098SMS verification test mode (no delivery)',
+    'vipTestHelp' => 'Tests only 0098SMS login and phone verification and displays the code on screen. Credit advertising has its own test mode under purchase credit settings.',
     'testCode' => 'Test mode — verification code: :code',
     'settings' => 'Provider and delivery settings',
     'provider' => 'Active SMS provider',

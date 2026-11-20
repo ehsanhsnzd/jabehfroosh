@@ -279,6 +279,7 @@ function otpVipSettings(bool $testing = false): void
 
     foreach ([
         'ghasedak.provider' => 'vip0098',
+        'vip0098.test_mode' => $testing ? '1' : '0',
         'vip0098.from' => '300012345678',
         'vip0098.username' => 'user+&=name',
         'vip0098.password' => 'pass+&=? word',
@@ -363,8 +364,9 @@ it('rejects 0098VIP errors empty replies redirects and unrelated HTML without ca
     [otpSoapReply(), 500],
 ]);
 
-it('uses 0098VIP for credit phone verification and the shared test switch', function ($testing) {
+it('uses 0098VIP for credit phone verification and its independent test switch', function ($testing) {
     otpVipSettings($testing);
+    CoreConfig::where('code', 'customer.sms.ghasedak.test_mode')->update(['value' => $testing ? '0' : '1']);
     Http::fake(['webservice.0098vip.com/*' => Http::response(otpSoapReply())]);
     $phone = '0912'.random_int(1000000, 9999999);
     $customer = Customer::factory()->create(['phone' => $phone]);
@@ -416,3 +418,24 @@ it('records the safe SOAP result code without logging provider text or credentia
     ['10', '10'],
     ['sensitive provider text', 'unknown_response_code'],
 ]);
+
+it('keeps 0098 test mode independent from Ghasedak login delivery', function () {
+    otpVipSettings(true);
+    otpSmsSettings(false);
+    otpGhasedakFake(['isSuccess' => true, 'statusCode' => 200]);
+
+    postJson(route('shop.customer.otp.send'), ['phone' => '0912'.random_int(1000000, 9999999)])
+        ->assertOk()->assertJsonPath('debug_code', null);
+
+    Http::assertSentCount(1);
+    Http::assertSent(fn (Request $request) => str_contains($request->url(), 'gateway.ghasedak.me'));
+});
+
+it('does not apply OTP test switches to 0098 credit advertising', function () {
+    otpVipSettings(true);
+    Http::fake(['webservice.0098vip.com/*' => Http::response(otpSoapReply())]);
+
+    app(CustomerOtpSms::class)->sendVipMessage('09123456789', 'Credit offer');
+
+    Http::assertSentCount(1);
+});

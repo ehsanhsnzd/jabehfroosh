@@ -28,7 +28,7 @@ return [
     'instructions' => 'Terms and required documents',
     'accounting_address' => 'Accounting address for original cheque',
     'marketing_enabled' => 'Enable promotional reminders',
-    'sms_testing' => 'Credit SMS test mode (log only, no delivery)',
+    'sms_testing' => '0098SMS credit advertising test mode (log only, no delivery)',
     'send_hour' => 'Sending hour in Iran time (0–23)',
     'offer_text' => 'Eligibility SMS text',
     'marketing_text' => 'Promotional reminder text',
