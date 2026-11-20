@@ -881,9 +881,15 @@ it('uses the short credit URL by default and supports a custom SMS link in setti
     (new SendPurchaseCreditNotice($customer->id))->handle();
     $notice = app(PurchaseCreditNoticeRepository::class)->findOneByField('customer_id', $customer->id);
     expect($notice->message)->toContain('https://example.com/c');
-    foreach (['javascript:alert(1)', '/bad-link'] as $link) {
-        postJson(route('admin.customers.credit.settings.save'), array_merge($settings, ['sms_link' => $link]))->assertUnprocessable()->assertJsonValidationErrorFor('sms_link');
+    foreach (['ttr.ir/jabfsh', 'متن دلخواه', '/credit'] as $text) {
+        postJson(route('admin.customers.credit.settings.save'), array_merge($settings, ['sms_link' => $text]))->assertRedirect();
+        expect(PurchaseCreditSettings::all()['sms_link'])->toBe($text);
+        $recipient = purchaseCreditCustomer();
+        purchaseCreditOrder($recipient);
+        (new SendPurchaseCreditNotice($recipient->id))->handle();
+        expect(app(PurchaseCreditNoticeRepository::class)->findOneByField('customer_id', $recipient->id)->message)->toContain($text);
     }
+    postJson(route('admin.customers.credit.settings.save'), array_merge($settings, ['sms_link' => ['invalid']]))->assertUnprocessable()->assertJsonValidationErrorFor('sms_link');
     purchaseCreditSettings(['sms_link' => '']);
     $other = purchaseCreditCustomer();
     purchaseCreditOrder($other);

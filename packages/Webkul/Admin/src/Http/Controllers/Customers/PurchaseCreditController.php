@@ -48,7 +48,7 @@ class PurchaseCreditController extends Controller
             'instructions' => 'required|string|max:10000', 'accounting_address' => 'nullable|string|max:3000|required_if:enabled,1',
             'offer_text' => 'required|string|max:1000', 'marketing_text' => 'required|string|max:1000',
             'send_hour' => 'required|integer|min:0|max:23',
-            'sms_link' => 'sometimes|nullable|url:http,https|max:500',
+            'sms_link' => 'sometimes|nullable|string|max:500',
             'reminder_days' => 'required|integer|min:1|max:365',
             'reminder_limit' => 'required|integer|min:0|max:100',
         ]);

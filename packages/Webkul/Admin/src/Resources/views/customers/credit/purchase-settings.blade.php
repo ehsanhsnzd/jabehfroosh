@@ -11,7 +11,7 @@
 @foreach (['factor' => ['0','1','0.0001'], 'months' => ['1','120','1'], 'minimum_amount' => ['1','1000000000000','1'], 'amount_step' => ['1','1000000000000','1'], 'monthly_deduction_percent' => ['0','100','1'], 'send_hour' => ['0','23','1'], 'reminder_days' => ['1','365','1'], 'reminder_limit' => ['0','100','1']] as $key => $bounds)
 <label>@lang('customer::purchase-credit.'.$key)<input class="mt-2 block w-full rounded border px-3 py-2 dark:bg-gray-900" name="{{ $key }}" type="number" min="{{ $bounds[0] }}" max="{{ $bounds[1] }}" step="{{ $bounds[2] }}" value="{{ old($key, $settings[$key]) }}" required></label>
 @endforeach
-<label>@lang('customer::purchase-credit.sms_link')<input type="url" name="sms_link" value="{{ old('sms_link', $settings['sms_link']) }}" placeholder="{{ route('shop.credit.short') }}" maxlength="500" dir="ltr" class="mt-2 block w-full rounded border px-3 py-2 dark:bg-gray-900"></label>
+<label>@lang('customer::purchase-credit.sms_link')<input type="text" name="sms_link" value="{{ old('sms_link', $settings['sms_link']) }}" placeholder="{{ route('shop.credit.short') }}" maxlength="500" dir="ltr" class="mt-2 block w-full rounded border px-3 py-2 dark:bg-gray-900"></label>
 <p class="text-sm">@lang('customer::purchase-credit.smsLinkHelp') {{ route('shop.credit.short') }}</p>
 <p class="text-sm">@lang('customer::purchase-credit.reminderHelp')</p>
 @foreach (['instructions','accounting_address','offer_text','marketing_text'] as $key)
