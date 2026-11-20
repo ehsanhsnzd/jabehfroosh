@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'add-city' => 'Add city',
+    'city-name' => 'City name',
+    'city-created' => 'The city was added to the list.',
+    'duplicate-city' => 'This city already exists in the list.',
+    'custom-cities' => 'Added cities',
+    'new-city-help' => 'New cities start hidden. After adding a city, choose its homepage and product form visibility below and save.',
+
     'manage' => 'Manage provinces and cities',
     'province' => 'Province / region',
     'provinces' => 'Iranian provinces',

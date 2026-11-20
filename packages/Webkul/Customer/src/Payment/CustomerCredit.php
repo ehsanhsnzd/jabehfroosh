@@ -3,6 +3,7 @@
 namespace Webkul\Customer\Payment;
 
 use Webkul\Customer\Helpers\CreditIdentity;
+use Webkul\Customer\Helpers\CreditSplitCheckout;
 use Webkul\Customer\Repositories\CreditAccountRepository;
 use Webkul\Payment\Payment\Payment;
 
@@ -24,7 +25,9 @@ class CustomerCredit extends Payment
             return false;
         }
 
-        return $account && $account->is_active && $amount > 0 && $account->balance_rial >= $amount;
+        $available = $account ? app(CreditAccountRepository::class)->availableBalance($account) : 0;
+
+        return $account && $account->is_active && $amount > 0 && intdiv($available, CreditIdentity::orderRial(1, $cart->base_currency_code)) > 0 && ($available >= $amount || CreditSplitCheckout::gatewayAvailable());
     }
 
     public function getTitle()
@@ -49,5 +52,12 @@ class CustomerCredit extends Payment
         return 0;
     }
 
-    public function getRedirectUrl() {}
+    public function getRedirectUrl()
+    {
+        $cart = $this->getCart();
+        $account = app(CreditAccountRepository::class)->forCustomer(auth()->guard('customer')->user());
+        if ($cart && $account && app(CreditAccountRepository::class)->availableBalance($account) < CreditIdentity::orderRial($cart->base_grand_total, $cart->base_currency_code)) {
+            return route('shop.customers.account.credit.payment.redirect');
+        }
+    }
 }

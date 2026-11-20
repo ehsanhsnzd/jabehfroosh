@@ -18,6 +18,9 @@ class Order extends Base
     public function afterCreated(OrderContract $order)
     {
         try {
+            if (data_get($order->payment?->additional, 'credit_split.state') === 'pending') {
+                return;
+            }
             if (! core()->getConfigData('emails.general.notifications.emails.general.notifications.new_order')) {
                 return;
             }

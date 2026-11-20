@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'chooseDate' => 'انتخاب تاریخ شمسی',
+    'previousMonth' => 'ماه قبل',
+    'nextMonth' => 'ماه بعد',
+    'todayDate' => 'امروز',
+    'clearDate' => 'پاک کردن',
+
     'title' => 'دفتر چک‌های اعتباری',
     'create' => 'ثبت مستقیم چک',
     'edit' => 'جزئیات و مدیریت چک',

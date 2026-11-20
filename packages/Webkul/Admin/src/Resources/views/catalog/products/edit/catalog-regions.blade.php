@@ -12,6 +12,7 @@
     @php
         $product = $product ?? null;
         $selectedRegions = old('catalog_regions', $product?->catalog_regions ?: ($product?->parent?->catalog_regions ?? []));
+        $selectedRegions = array_values(array_diff($selectedRegions, ['other']));
         $availableRegions = \Webkul\Product\Helpers\CatalogRegionSettings::visible('product');
         if (in_array('northwest', $selectedRegions)) {
             $selectedRegions = array_unique(array_merge($selectedRegions, ['tabriz', 'ardabil']));

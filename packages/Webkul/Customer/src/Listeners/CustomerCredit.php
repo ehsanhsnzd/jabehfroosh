@@ -19,6 +19,9 @@ class CustomerCredit
         if ($order->payment->method !== 'customer_credit') {
             return;
         }
+        if (data_get($order->payment->additional, 'credit_split.state') === 'pending') {
+            return;
+        }
         app(CreditAccountRepository::class)->chargeOrder($order);
         if (! $order->invoices()->exists()) {
             $items = $order->items->mapWithKeys(fn ($item) => [$item->id => $item->qty_to_invoice])->filter()->all();

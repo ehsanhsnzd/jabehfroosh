@@ -1,6 +1,17 @@
 <?php
 
 return [
+    'sms_link' => 'Credit SMS link (optional)',
+    'smsLinkHelp' => 'Replaces {link}. Leave empty to use the short link on this site:',
+    'monthly_deduction_percent' => 'Credit deduction percent per additional month',
+    'repaymentMonths' => 'Repayment term',
+    'monthUnit' => 'months',
+    'durationDeduction' => 'Term deduction',
+    'netCredit' => 'Final credit after deduction',
+
+    'amount_step' => 'Credit amount step (Toman)',
+    'uploaded' => 'Uploaded',
+    'newRequest' => 'Request new credit',
     'minimum_amount' => 'Minimum credit (Toman)',
     'identityFront' => 'Front of national ID card',
     'identityBack' => 'Back of national ID card',
@@ -68,8 +79,8 @@ return [
     'all' => 'All',
     'empty' => 'No records.',
     'save' => 'Save',
-    'decrease' => 'Decrease by 5 million Toman',
-    'increase' => 'Increase by 5 million Toman',
+    'decrease' => 'Decrease amount',
+    'increase' => 'Increase amount',
     'smsHelp' => 'Disable credit SMS testing for real delivery and configure the 0098 sender and web-service password under SMS settings. The server must run cron and the purchase-credit queue.',
     'reminder_days' => 'Reminder interval (days)',
     'reminder_limit' => 'Maximum reminders per customer after each purchase',
@@ -90,7 +101,7 @@ return [
     'identityHelp' => 'Upload the front and back of your national ID as two separate files. Images are compressed automatically. Each stored file and each PDF must be smaller than 5 MB.',
     'chooseIdentity' => 'Choose national ID images',
     'sendIdentity' => 'Submit national ID for review',
-    'identityWaiting' => 'Your national ID was submitted. This step becomes green and the cheque step unlocks after our approval.',
+    'identityWaiting' => 'Your identity documents are awaiting review. You can submit the cheque in the next step without waiting for identity approval.',
     'identityApproved' => 'Your national ID is approved',
     'chequeUpload' => 'Upload cheque image',
     'chequeHelp' => 'Upload a readable cheque image and send the original to accounting. Approval follows receipt and review of the original cheque.',

@@ -100,7 +100,7 @@ class CreditChequeRepository extends Repository
             $accounts->forCustomer($customer);
             $accounts->adjust($account->id, $amount, 'increase', 'cheque:'.$cheque->id, trans('customer::cheques.grantReason'), $cheque->reference, $adminId);
             $applications = app(PurchaseCreditApplicationRepository::class);
-            $application = $applications->getModel()->newQuery()->where('customer_id', $customer->id)->lockForUpdate()->first();
+            $application = $applications->getModel()->newQuery()->where('customer_id', $customer->id)->latest('id')->lockForUpdate()->first();
             $total = ($application?->status === 'active' ? $application->approved_toman : 0) + $amount;
             $bypassed = ! $application || $application->identity_bypassed || ! in_array($application->status, ['cheque_pending', 'allocation_pending', 'active']);
             $data = ['customer_id' => $customer->id, 'status' => 'active', 'identity_bypassed' => $bypassed,

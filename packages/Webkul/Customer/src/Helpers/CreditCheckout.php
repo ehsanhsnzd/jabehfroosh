@@ -31,6 +31,7 @@ class CreditCheckout
                 throw ValidationException::withMessages(['credit' => trans('customer::credit.insufficient')]);
             }
 
+            $data['payment']['additional'] = null;
             $order = app(OrderRepository::class)->create($data);
             $locked->update(['is_active' => false]);
 

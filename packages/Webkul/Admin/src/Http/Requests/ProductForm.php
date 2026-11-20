@@ -78,6 +78,7 @@ class ProductForm extends FormRequest
 
         $currentRmaRuleId = $this->product->rma_rule_id;
         $savedRegions = $this->product->catalog_regions ?: ($this->product->parent?->catalog_regions ?? []);
+        $savedRegions = array_values(array_diff($savedRegions, ['other']));
         if (in_array('northwest', $savedRegions)) {
             $savedRegions = array_merge($savedRegions, ['tabriz', 'ardabil']);
         }

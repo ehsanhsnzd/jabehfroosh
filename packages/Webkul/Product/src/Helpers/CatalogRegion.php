@@ -17,28 +17,30 @@ class CatalogRegion
 
         $column = $query->getModel()->qualifyColumn('catalog_regions');
         $parentColumn = $query->getModel()->qualifyColumn('parent_id');
-        $regions = $region === 'northwest' ? ['northwest', 'tabriz', 'ardabil'] : [$region];
+        $regions = match ($region) {
+            'northwest' => ['northwest', 'tabriz', 'ardabil'],
+            'other' => [],
+            default => [$region],
+        };
+        $unassigned = fn ($query, $field) => $query->whereNull($field)->orWhereJsonLength($field, 0)
+            ->orWhere(fn ($query) => $query->whereJsonLength($field, 1)->whereJsonContains($field, 'other'));
 
-        return $query->where(function ($query) use ($column, $parentColumn, $regions) {
-            $query->where(function ($query) use ($column, $regions) {
-                foreach ($regions as $region) {
-                    $query->orWhereJsonContains($column, $region);
-                }
-            })
-                ->orWhere(function ($query) use ($column, $parentColumn, $regions) {
-                    $query->where(fn ($query) => $query->whereNull($column)->orWhereJsonLength($column, 0))
-                        ->where(function ($query) use ($parentColumn, $regions) {
-                            $query->whereNull($parentColumn)
-                                ->orWhereHas('parent', function ($query) use ($regions) {
-                                    $query->whereNull('catalog_regions')
-                                        ->orWhereJsonLength('catalog_regions', 0);
-
-                                    foreach ($regions as $region) {
-                                        $query->orWhereJsonContains('catalog_regions', $region);
-                                    }
-                                });
-                        });
-                });
+        return $query->where(function ($query) use ($column, $parentColumn, $regions, $unassigned) {
+            foreach ($regions as $region) {
+                $query->orWhereJsonContains($column, $region);
+            }
+            $query->orWhere(function ($query) use ($column, $parentColumn, $regions, $unassigned) {
+                $query->where(fn ($query) => $unassigned($query, $column))
+                    ->where(function ($query) use ($parentColumn, $regions, $unassigned) {
+                        $query->whereNull($parentColumn)
+                            ->orWhereHas('parent', function ($query) use ($regions, $unassigned) {
+                                $unassigned($query, 'catalog_regions');
+                                foreach ($regions as $region) {
+                                    $query->orWhereJsonContains('catalog_regions', $region);
+                                }
+                            });
+                    });
+            });
         });
     }
 }

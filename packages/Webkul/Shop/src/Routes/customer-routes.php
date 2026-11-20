@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Webkul\Core\Http\Middleware\NoCacheMiddleware;
 use Webkul\Shop\Http\Controllers\Customer\Account\AddressController;
 use Webkul\Shop\Http\Controllers\Customer\Account\CreditController;
+use Webkul\Shop\Http\Controllers\Customer\Account\CreditPaymentController;
 use Webkul\Shop\Http\Controllers\Customer\Account\DownloadableProductController;
 use Webkul\Shop\Http\Controllers\Customer\Account\EUWithdrawalController as CustomerEUWithdrawalController;
 use Webkul\Shop\Http\Controllers\Customer\Account\OrderController;
@@ -86,9 +87,12 @@ Route::prefix('customer')->group(function () {
          * customer account details.
          */
         Route::prefix('account')->group(function () {
+            Route::get('credit/payment', [CreditPaymentController::class, 'redirect'])->name('shop.customers.account.credit.payment.redirect');
+            Route::get('credit/payment/callback', [CreditPaymentController::class, 'callback'])->name('shop.customers.account.credit.payment.callback');
             Route::get('credit', [CreditController::class, 'index'])->name('shop.customers.account.credit.index');
             Route::get('credit/verify', [CreditController::class, 'verify'])->name('shop.customers.account.credit.verify');
             Route::post('credit/application', [PurchaseCreditController::class, 'store'])->name('shop.customers.account.credit.apply');
+            Route::post('credit/application/{id}/revise', [PurchaseCreditController::class, 'revise'])->whereNumber('id')->name('shop.customers.account.credit.revise');
             Route::post('credit/application/{id}/cheque', [PurchaseCreditController::class, 'cheque'])->whereNumber('id')->name('shop.customers.account.credit.cheque');
             Route::get('credit/application/{id}/documents/{index}', [PurchaseCreditController::class, 'document'])->whereNumber(['id', 'index'])->name('shop.customers.account.credit.document');
 

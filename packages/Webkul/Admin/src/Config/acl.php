@@ -333,7 +333,7 @@ return [
     ], [
         'key' => 'catalog.regions',
         'name' => 'admin::catalog-regions.title',
-        'route' => ['admin.catalog.regions.index', 'admin.catalog.regions.update'],
+        'route' => ['admin.catalog.regions.index', 'admin.catalog.regions.update', 'admin.catalog.regions.store'],
         'sort' => 5,
     ], [
         'key' => 'catalog.products',

@@ -7,11 +7,13 @@
 <select class="rounded border p-2 dark:bg-gray-900" name="status"><option value="">@lang('customer::purchase-credit.all')</option>@foreach (['documents_pending','cheque_pending','allocation_pending','rejected','active'] as $state)<option value="{{ $state }}" @selected(request('status') === $state)>@lang('customer::purchase-credit.'.$state)</option>@endforeach</select>
 <button class="secondary-button">@lang('customer::purchase-credit.filter')</button>
 </form>
+<div class="mb-5">{{ $applications->links() }}</div>
 @forelse ($applications as $application)
 <article class="mb-5 rounded border bg-white p-5 dark:bg-gray-900">
 <h2 class="font-bold">{{ $application->customer?->name }} — {{ $application->customer?->phone }}</h2>
 <p class="my-3">@lang('customer::purchase-credit.'.$application->status)</p>
 <p>@lang('customer::purchase-credit.amount'): {{ number_format($application->requested_toman) }} / @lang('customer::purchase-credit.ceiling'): {{ number_format($application->ceiling_toman) }}</p>
+<p>@lang('customer::purchase-credit.repaymentMonths'): {{ $application->repayment_months }} @lang('customer::purchase-credit.monthUnit') — @lang('customer::purchase-credit.durationDeduction'): {{ $application->deductionPercent() }}٪ — @lang('customer::purchase-credit.netCredit'): {{ number_format($application->netAmount()) }}</p>
 <ul class="my-3">@foreach ($application->documents as $index => $file)<li><a class="text-blue-600 underline" href="{{ route('admin.customers.credit.document', [$application->id, $index]) }}">@if (in_array($file['type'] ?? '', ['national_id_front', 'national_id_back'])){{ trans('customer::purchase-credit.'.($file['type'] === 'national_id_front' ? 'identityFront' : 'identityBack')) }}: @endif{{ $file['name'] }}</a></li>@endforeach</ul>
 @if ($application->rejection_reason)<p>{{ $application->rejection_reason }}</p>@endif
 @if ($application->status === 'active')<p>@lang('customer::purchase-credit.approvedAmount'): {{ number_format($application->approved_toman) }} — @lang('customer::purchase-credit.cheque_reference'): {{ $application->cheque_reference }}</p>@endif
@@ -19,10 +21,10 @@
 @if ($application->status === 'documents_pending')
 <form method="POST" action="{{ route('admin.customers.credit.review', $application->id) }}">@csrf<input type="hidden" name="action" value="documents"><button class="primary-button">@lang('customer::purchase-credit.approveDocuments')</button></form>
 @endif
-@if ($application->status === 'cheque_pending' && collect($application->documents)->contains(fn ($file) => ($file['type'] ?? '') === 'cheque'))
+@if (in_array($application->status, ['documents_pending', 'cheque_pending']) && ! $application->chequeApproved() && collect($application->documents)->contains(fn ($file) => ($file['type'] ?? '') === 'cheque'))
 <form method="POST" action="{{ route('admin.customers.credit.review', $application->id) }}" class="my-4 grid gap-3">@csrf<input type="hidden" name="action" value="cheque">
 <label>@lang('customer::purchase-credit.cheque_reference')<input class="block rounded border p-2 dark:bg-gray-900" name="cheque_reference" maxlength="100" required></label>
-<label>@lang('customer::cheques.dueDate')<input class="block rounded border p-2 dark:bg-gray-900" type="date" name="due_date" required></label>
+<x-admin::form.solar-date name="due_date" :value="old('due_date', '')" :label="trans('customer::cheques.dueDate')" />
 <label>@lang('customer::cheques.amount')<input class="block rounded border p-2 dark:bg-gray-900" type="number" min="1" max="1000000000000" name="cheque_amount" value="{{ $application->requested_toman }}" required></label>
 <label>@lang('customer::cheques.company')<input class="block rounded border p-2 dark:bg-gray-900" name="company_name" maxlength="255"></label>
 <label>@lang('customer::cheques.bank')<input class="block rounded border p-2 dark:bg-gray-900" name="bank_name" maxlength="100"></label>
@@ -31,7 +33,7 @@
 @endif
 @if ($application->status === 'allocation_pending')
 <form method="POST" action="{{ route('admin.customers.credit.review', $application->id) }}" class="my-4 flex flex-wrap gap-3">@csrf<input type="hidden" name="action" value="activate">
-<label>@lang('customer::purchase-credit.approvedAmount')<input class="block rounded border p-2 dark:bg-gray-900" name="amount" type="number" min="5000000" max="{{ $application->requested_toman }}" step="5000000" value="{{ $application->requested_toman }}" required></label>
+<label>@lang('customer::purchase-credit.approvedAmount')<input class="block rounded border p-2 dark:bg-gray-900" name="amount" type="number" min="1" max="{{ $application->netAmount() }}" step="1" value="{{ $application->netAmount() }}" required></label>
 <button class="primary-button">@lang('customer::purchase-credit.activate')</button></form>
 @endif
 <form method="POST" action="{{ route('admin.customers.credit.review', $application->id) }}" class="mt-4 flex gap-3">@csrf<input type="hidden" name="action" value="reject"><input class="rounded border p-2 dark:bg-gray-900" name="reason" maxlength="2000" placeholder="{{ trans('customer::purchase-credit.reason') }}" required><button class="secondary-button">@lang('customer::purchase-credit.reject')</button></form>

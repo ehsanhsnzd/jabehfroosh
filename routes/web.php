@@ -6,6 +6,8 @@ use App\Http\Controllers\CustomerOtpController;
 use Illuminate\Support\Facades\Route;
 use Webkul\Core\Http\Middleware\PreventRequestsDuringMaintenance;
 
+Route::redirect('/c', '/customer/account/credit')->name('shop.credit.short');
+
 Route::post('/catalog/region', [CatalogRegionController::class, 'store'])
     ->name('shop.catalog.region.store');
 

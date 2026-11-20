@@ -25,7 +25,7 @@ class PurchaseCreditController extends Controller
             $q = $request->input('q');
             $query->whereHas('customer', fn ($customer) => $customer->where('phone', 'like', '%'.$q.'%')->orWhere('first_name', 'like', '%'.$q.'%')->orWhere('last_name', 'like', '%'.$q.'%'));
         }
-        $applications = $query->latest('id')->paginate(20)->withQueryString();
+        $applications = $query->latest('id')->paginate(5)->withQueryString();
         $notices = $notices->getModel()->newQuery()->with('customer')->latest('id')->paginate(20, ['*'], 'notice_page');
 
         return view('admin::customers.credit.applications', compact('applications', 'notices'));
@@ -43,9 +43,12 @@ class PurchaseCreditController extends Controller
         $data = $request->validate([
             'factor' => 'required|numeric|min:0|max:1|decimal:0,4', 'months' => 'required|integer|min:1|max:120',
             'minimum_amount' => 'required|integer|min:1|max:1000000000000',
+            'amount_step' => 'required|integer|min:1|max:1000000000000',
+            'monthly_deduction_percent' => 'required|integer|min:0|max:100',
             'instructions' => 'required|string|max:10000', 'accounting_address' => 'nullable|string|max:3000|required_if:enabled,1',
             'offer_text' => 'required|string|max:1000', 'marketing_text' => 'required|string|max:1000',
             'send_hour' => 'required|integer|min:0|max:23',
+            'sms_link' => 'sometimes|nullable|url:http,https|max:500',
             'reminder_days' => 'required|integer|min:1|max:365',
             'reminder_limit' => 'required|integer|min:0|max:100',
         ]);

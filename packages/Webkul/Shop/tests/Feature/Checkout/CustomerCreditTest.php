@@ -3,13 +3,17 @@
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Webkul\Checkout\Models\Cart;
 use Webkul\Checkout\Models\CartAddress;
 use Webkul\Core\Models\CoreConfig;
 use Webkul\Customer\Helpers\CreditCheckout;
 use Webkul\Customer\Helpers\CreditIdentity;
+use Webkul\Customer\Helpers\CreditSplitCheckout;
+use Webkul\Customer\Helpers\PurchaseCreditEligibility;
 use Webkul\Customer\Models\Customer;
 use Webkul\Customer\Payment\CustomerCredit;
 use Webkul\Customer\Repositories\CreditAccountRepository;
@@ -132,6 +136,7 @@ it('rolls back credit, invoices and the order if checkout fails after the debit'
 });
 
 it('rejects unverified, insufficient and frozen credit payments server-side', function () {
+    CoreConfig::query()->updateOrCreate(['code' => 'sales.payment_methods.zarinpal.active', 'channel_code' => core()->getCurrentChannel()->code, 'locale_code' => null], ['value' => '0']);
     $customer = creditCustomer(false);
     $this->loginAsCustomer($customer);
     $account = app(CreditAccountRepository::class)->open(['phone' => $customer->phone], 1, (string) Str::uuid(), null);
@@ -192,3 +197,161 @@ it('requires a valid profile phone before opening credit verification', function
         ->assertRedirect(route('shop.customers.account.profile.edit'))
         ->assertSessionHas('error', trans('customer::credit.completePhone'));
 })->with([null, '123']);
+
+function enableCreditSplitGateway(): void
+{
+    foreach (['active' => '1', 'sandbox' => '1', 'merchant_id' => '00000000-0000-0000-0000-000000000000'] as $key => $value) {
+        CoreConfig::query()->updateOrCreate(['code' => 'sales.payment_methods.zarinpal.'.$key, 'channel_code' => core()->getCurrentChannel()->code, 'locale_code' => null], ['value' => $value]);
+    }
+    Http::preventStrayRequests();
+    Mail::fake();
+}
+
+it('reserves partial credit and confirms the order only after the gateway verifies the remainder', function (string $currency) {
+    enableCreditSplitGateway();
+    $customer = creditCustomer();
+    $this->loginAsCustomer($customer);
+    $cart = creditCheckoutCart($customer);
+    $cart->update(['base_currency_code' => $currency]);
+    cart()->setCart($cart->fresh());
+    $accounts = app(CreditAccountRepository::class);
+    $balance = $currency === 'IRR' ? 10000 : 100000;
+    $account = $accounts->open(['phone' => $customer->phone], $balance, (string) Str::uuid(), null);
+    Http::fake([
+        '*payment/request.json' => Http::response(['data' => ['code' => 100, 'authority' => 'SPLIT-'.$currency]]),
+        '*payment/verify.json' => Http::response(['data' => ['code' => 100, 'ref_id' => 'REF-'.$currency]]),
+    ]);
+    postJson(route('shop.checkout.onepage.payment_methods.store'), ['payment' => ['method' => 'customer_credit']])->assertOk();
+    postJson(route('shop.checkout.onepage.orders.store'))->assertOk()->assertJsonPath('data.redirect_url', route('shop.customers.account.credit.payment.redirect'));
+    get(route('shop.customers.account.credit.payment.redirect'))->assertRedirect();
+    $order = app(OrderRepository::class)->findOneByField('cart_id', $cart->id);
+    $split = $order->payment->additional['credit_split'];
+    expect($order->status)->toBe('pending')->and($order->invoices()->count())->toBe(0)
+        ->and($account->fresh()->balance_rial)->toBe($balance * 10)->and($split['credit_rial'])->toBe($balance * 10)
+        ->and($account->transactions()->where('kind', 'purchase')->count())->toBe(0);
+    Http::assertSent(fn ($request) => str_ends_with($request->url(), '/payment/request.json')
+        && $request['amount'] === (int) round($order->base_grand_total) - intdiv($balance * 10, CreditIdentity::orderRial(1, $currency))
+        && $request['currency'] === ($currency === 'IRR' ? 'IRR' : 'IRT'));
+    get(route('shop.customers.account.credit.payment.redirect'))->assertRedirect();
+    Http::assertSentCount(1);
+    $callback = route('shop.customers.account.credit.payment.callback', ['order' => $order->id, 'token' => $split['token'], 'Authority' => $split['authority'], 'Status' => 'OK']);
+    get($callback)->assertRedirect(route('shop.checkout.onepage.success'));
+    get($callback)->assertRedirect(route('shop.checkout.onepage.success'));
+    Http::assertSentCount(2);
+    expect($account->fresh()->balance_rial)->toBe(0);
+    expect($order->fresh()->status)->toBe('processing')->and($order->invoices()->count())->toBe(1)
+        ->and($order->invoices()->first()->state)->toBe('paid')
+        ->and($account->fresh()->balance_rial)->toBe(0)
+        ->and($cart->fresh()->is_active)->toBe(0)
+        ->and($account->transactions()->where('kind', 'purchase')->count())->toBe(1);
+    Http::assertSent(fn ($request) => str_ends_with($request->url(), '/payment/verify.json') && $request['amount'] === $split['gateway_amount']);
+    expect(app(PurchaseCreditEligibility::class)->orders($customer->id)->whereKey($order->id)->exists())->toBeTrue();
+    $accounts->returnOrderCredit($order, PHP_INT_MAX, 'split-refund-'.$order->id, 'refund');
+    $accounts->returnOrderCredit($order, PHP_INT_MAX, 'split-refund-'.$order->id, 'refund');
+    expect($account->fresh()->balance_rial)->toBe($balance * 10);
+})->with(['TMN', 'IRR']);
+
+it('releases reserved credit once on cancellation failed verification or expired unpaid attempts', function (string $failure) {
+    enableCreditSplitGateway();
+    $customer = creditCustomer();
+    $this->loginAsCustomer($customer);
+    $account = app(CreditAccountRepository::class)->open(['phone' => $customer->phone], 1, (string) Str::uuid(), null);
+    $cart = creditCheckoutCart($customer);
+    cart()->savePaymentMethod(['method' => 'customer_credit']);
+    Http::fake([
+        '*payment/request.json' => Http::response(['data' => ['code' => 100, 'authority' => 'CANCEL-'.$failure]]),
+        '*payment/verify.json' => Http::response(['errors' => ['code' => -51]]),
+    ]);
+    get(route('shop.customers.account.credit.payment.redirect'))->assertRedirect();
+    $order = app(OrderRepository::class)->findOneByField('cart_id', $cart->id);
+    $split = $order->payment->additional['credit_split'];
+    expect($account->fresh()->balance_rial)->toBe(10);
+    expect(app(CreditAccountRepository::class)->availableBalance($account->fresh()))->toBe(0);
+    if ($failure === 'expired') {
+        $this->travel(31)->minutes();
+        $this->artisan('credit:expire-payments')->assertSuccessful();
+    } else {
+        get(route('shop.customers.account.credit.payment.callback', ['order' => $order->id, 'token' => $split['token'], 'Authority' => $split['authority'], 'Status' => $failure === 'cancel' ? 'NOK' : 'OK']))->assertRedirect(route('shop.checkout.onepage.index'));
+    }
+    app(CreditSplitCheckout::class)->cancel($order->id);
+    expect($account->fresh()->balance_rial)->toBe(10)->and($order->fresh()->status)->toBe('canceled')
+        ->and($order->invoices()->count())->toBe(0)->and($cart->fresh()->is_active)->toBe(1)
+        ->and($account->transactions()->whereIn('kind', ['purchase', 'cancel'])->count())->toBe(0);
+})->with(['cancel', 'failed', 'expired']);
+
+it('restores credit if the gateway rejects creating a partial payment', function () {
+    enableCreditSplitGateway();
+    $customer = creditCustomer();
+    $this->loginAsCustomer($customer);
+    $account = app(CreditAccountRepository::class)->open(['phone' => $customer->phone], 1, (string) Str::uuid(), null);
+    $cart = creditCheckoutCart($customer);
+    cart()->savePaymentMethod(['method' => 'customer_credit']);
+    Http::fake(['*payment/request.json' => Http::response(['errors' => ['code' => -9]])]);
+    get(route('shop.customers.account.credit.payment.redirect'))->assertRedirect(route('shop.checkout.onepage.index'));
+    expect($account->fresh()->balance_rial)->toBe(10)
+        ->and(app(OrderRepository::class)->findOneByField('cart_id', $cart->id)->status)->toBe('canceled');
+});
+
+it('cannot spend reserved credit in another cart and rejects forged callback identities', function () {
+    enableCreditSplitGateway();
+    $customer = creditCustomer();
+    $this->loginAsCustomer($customer);
+    $account = app(CreditAccountRepository::class)->open(['phone' => $customer->phone], 1, (string) Str::uuid(), null);
+    $cart = creditCheckoutCart($customer);
+    cart()->savePaymentMethod(['method' => 'customer_credit']);
+    Http::fake(['*payment/request.json' => Http::response(['data' => ['code' => 100, 'authority' => 'SECURITY']])]);
+    get(route('shop.customers.account.credit.payment.redirect'))->assertRedirect();
+    $order = app(OrderRepository::class)->findOneByField('cart_id', $cart->id);
+    $split = $order->payment->additional['credit_split'];
+    get(route('shop.customers.account.credit.payment.callback', ['order' => $order->id, 'token' => 'forged', 'Authority' => $split['authority'], 'Status' => 'OK']))->assertForbidden();
+    $otherCart = creditCheckoutCart($customer);
+    cart()->savePaymentMethod(['method' => 'customer_credit']);
+    expect(fn () => app(CreditSplitCheckout::class)->reserve($otherCart))->toThrow(ValidationException::class);
+    expect($account->fresh()->balance_rial)->toBe(10);
+    expect(app(CreditAccountRepository::class)->availableBalance($account->fresh()))->toBe(0);
+    expect(fn () => app(CreditAccountRepository::class)->adjust($account->id, 1, 'decrease', (string) Str::uuid(), 'Reserved funds', null, 1))->toThrow(ValidationException::class);
+    $this->loginAsCustomer(creditCustomer());
+    get(route('shop.customers.account.credit.payment.callback', ['order' => $order->id, 'token' => $split['token'], 'Authority' => $split['authority'], 'Status' => 'OK']))->assertNotFound();
+});
+
+it('keeps ambiguous payments reserved and reconciles a verified payment after expiry without refunding it', function () {
+    enableCreditSplitGateway();
+    $customer = creditCustomer();
+    $this->loginAsCustomer($customer);
+    $account = app(CreditAccountRepository::class)->open(['phone' => $customer->phone], 1, (string) Str::uuid(), null);
+    $cart = creditCheckoutCart($customer);
+    cart()->savePaymentMethod(['method' => 'customer_credit']);
+    Http::fake([
+        '*payment/request.json' => Http::response(['data' => ['code' => 100, 'authority' => 'AMBIGUOUS']]),
+        '*payment/verify.json' => Http::sequence()->push([], 503)->push([], 503)->push(['data' => ['code' => 101, 'ref_id' => 'ALREADY-PAID']]),
+    ]);
+    get(route('shop.customers.account.credit.payment.redirect'))->assertRedirect();
+    $order = app(OrderRepository::class)->findOneByField('cart_id', $cart->id);
+    $split = $order->payment->additional['credit_split'];
+    get(route('shop.customers.account.credit.payment.callback', ['order' => $order->id, 'token' => $split['token'], 'Authority' => $split['authority'], 'Status' => 'OK']))->assertRedirect(route('shop.checkout.onepage.index'));
+    expect($account->fresh()->balance_rial)->toBe(10)->and($order->fresh()->status)->toBe('pending')->and($cart->fresh()->is_active)->toBe(0);
+    $this->travel(31)->minutes();
+    $this->artisan('credit:expire-payments')->assertSuccessful();
+    expect($account->fresh()->balance_rial)->toBe(10)->and($order->fresh()->status)->toBe('pending');
+    $this->artisan('credit:expire-payments')->assertSuccessful();
+    expect($account->fresh()->balance_rial)->toBe(0);
+    expect($order->fresh()->status)->toBe('processing')->and($order->invoices()->count())->toBe(1)
+        ->and($account->fresh()->balance_rial)->toBe(0)
+        ->and($account->transactions()->where('kind', 'cancel')->count())->toBe(0);
+});
+
+it('ignores client supplied split metadata in a fully funded credit checkout', function () {
+    Mail::fake();
+    $customer = creditCustomer();
+    $this->loginAsCustomer($customer);
+    $account = app(CreditAccountRepository::class)->open(['phone' => $customer->phone], 1000000, (string) Str::uuid(), null);
+    $cart = creditCheckoutCart($customer);
+    cart()->savePaymentMethod(['method' => 'customer_credit']);
+    $cart = $cart->fresh();
+    cart()->setCart($cart);
+    $data = (new OrderResource($cart))->jsonSerialize();
+    $data['payment']['additional'] = ['credit_split' => ['credit_rial' => 1, 'state' => 'paid']];
+    $order = app(CreditCheckout::class)->place($cart, $data);
+    expect($account->fresh()->balance_rial)->toBe(10000000 - CreditIdentity::orderRial($order->base_grand_total, $order->base_currency_code))
+        ->and($order->payment->additional)->toBeNull();
+});

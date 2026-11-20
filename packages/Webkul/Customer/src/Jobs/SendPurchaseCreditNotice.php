@@ -14,7 +14,6 @@ use Webkul\Customer\Helpers\PurchaseCreditEligibility;
 use Webkul\Customer\Helpers\PurchaseCreditSettings;
 use Webkul\Customer\Helpers\PurchaseCreditWorkflow;
 use Webkul\Customer\Repositories\CustomerRepository;
-use Webkul\Customer\Repositories\PurchaseCreditApplicationRepository;
 use Webkul\Customer\Repositories\PurchaseCreditNoticeRepository;
 use Webkul\Sales\Repositories\InvoiceRepository;
 use Webkul\Sales\Repositories\OrderRepository;
@@ -43,10 +42,6 @@ class SendPurchaseCreditNotice implements ShouldBeUnique, ShouldQueue
         if (! $settings['enabled'] || ! $customer || ! app(PurchaseCreditWorkflow::class)->verified($customer)) {
             return;
         }
-        $application = app(PurchaseCreditApplicationRepository::class)->findOneByField('customer_id', $customer->id);
-        if ($application?->status === 'active') {
-            return;
-        }
         $eligibility = app(PurchaseCreditEligibility::class)->calculate($customer);
         if ($eligibility['ceiling'] < $settings['minimum_amount']) {
             return;
@@ -64,7 +59,7 @@ class SendPurchaseCreditNotice implements ShouldBeUnique, ShouldQueue
                 return;
             }
             $lastPaid = app(OrderRepository::class)->getModel()->newQuery()->where('customer_id', $customer->id)
-                ->whereHas('payment', fn ($q) => $q->where('method', '!=', 'customer_credit'))
+                ->whereHas('payment', fn ($q) => PurchaseCreditEligibility::qualifyingPayment($q))
                 ->whereHas('invoices', fn ($q) => $q->where('state', 'paid'))
                 ->addSelect(['paid_time' => app(InvoiceRepository::class)->getModel()->newQuery()
                     ->selectRaw('MAX(COALESCE(purchase_credit_paid_at, created_at))')
@@ -94,7 +89,7 @@ class SendPurchaseCreditNotice implements ShouldBeUnique, ShouldQueue
         }
         $message = strtr((string) $settings[$kind === 'offer' ? 'offer_text' : 'marketing_text'], [
             '{name}' => $customer->name, '{amount}' => strtr(number_format($eligibility['ceiling']), array_combine(str_split('0123456789'), preg_split('//u', '۰۱۲۳۴۵۶۷۸۹', -1, PREG_SPLIT_NO_EMPTY))),
-            '{link}' => route('shop.customers.account.credit.index'),
+            '{link}' => trim((string) $settings['sms_link']) ?: route('shop.credit.short'),
         ]);
         // Reserve before sending. An ambiguous failure is never retried automatically.
         $inserted = $notices->getModel()->newQuery()->insertOrIgnore([

@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'chooseDate' => 'Select Persian date',
+    'previousMonth' => 'Previous month',
+    'nextMonth' => 'Next month',
+    'todayDate' => 'Today',
+    'clearDate' => 'Clear',
+
     'title' => 'Credit cheque ledger',
     'create' => 'Register a cheque directly',
     'edit' => 'Cheque details and management',

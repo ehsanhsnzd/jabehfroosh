@@ -18,7 +18,11 @@ class CreditController extends Controller
         $customer = auth()->guard('customer')->user();
         $purchaseSettings = PurchaseCreditSettings::all();
         $eligibility = app(PurchaseCreditEligibility::class)->calculate($customer);
-        $application = app(PurchaseCreditApplicationRepository::class)->findOneByField('customer_id', $customer->id);
+        $application = app(PurchaseCreditApplicationRepository::class)->getModel()->newQuery()
+            ->where('customer_id', $customer->id)->latest('id')->first();
+        if (request()->boolean('new') && $application?->status === 'active') {
+            $application = null;
+        }
 
         return view('shop::customers.account.credit.index', compact('account', 'transactions', 'customer', 'purchaseSettings', 'eligibility', 'application'));
     }

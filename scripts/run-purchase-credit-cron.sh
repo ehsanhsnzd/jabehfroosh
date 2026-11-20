@@ -11,5 +11,6 @@ fi
 if [[ -z "$php_bin" ]]; then php_bin="$(command -v php)"; fi
 exec 9>storage/framework/purchase-credit-cron.lock
 flock -n 9 || exit 0
+"$php_bin" artisan credit:expire-payments --no-interaction
 "$php_bin" artisan credit:dispatch-notices --no-interaction
 "$php_bin" artisan queue:work database --queue=purchase-credit --stop-when-empty --max-time=50 --tries=1 --timeout=30 --no-interaction

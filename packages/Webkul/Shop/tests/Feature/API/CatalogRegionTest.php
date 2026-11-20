@@ -12,6 +12,8 @@ use Webkul\Shop\Helpers\StorefrontRegion;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\post;
 
+beforeEach(fn () => CatalogRegionSettings::save(['tabriz', 'ardabil', 'northwest', 'other'], ['tabriz', 'ardabil']));
+
 it('stores a supported city in the session and varies browser cache cookies', function ($region) {
     post(route('shop.catalog.region.store'), ['region' => $region])
         ->assertRedirect()
@@ -60,18 +62,18 @@ it('filters cached listings by the selected city while keeping unassigned produc
 
     post(route('shop.catalog.region.store'), ['region' => 'tabriz'])->assertRedirect();
     $first = getJson($url)->assertOk()->json('data');
-    expect(collect($first)->pluck('id')->all())->toEqualCanonicalizing([$tabriz->id, $everywhere->id]);
+    expect(collect($first)->pluck('id')->all())->toEqualCanonicalizing([$tabriz->id, $other->id, $everywhere->id]);
 
     post(route('shop.catalog.region.store'), ['region' => 'ardabil'])->assertRedirect();
     $second = getJson($url)->assertOk()->json('data');
-    expect(collect($second)->pluck('id')->all())->toEqualCanonicalizing([$ardabil->id, $everywhere->id]);
+    expect(collect($second)->pluck('id')->all())->toEqualCanonicalizing([$ardabil->id, $other->id, $everywhere->id]);
 
     $spoofed = getJson($url.'&catalog_region=tabriz')->assertOk()->json('data');
-    expect(collect($spoofed)->pluck('id')->all())->toEqualCanonicalizing([$ardabil->id, $everywhere->id]);
+    expect(collect($spoofed)->pluck('id')->all())->toEqualCanonicalizing([$ardabil->id, $other->id, $everywhere->id]);
 
     post(route('shop.catalog.region.store'), ['region' => 'northwest'])->assertRedirect();
     $regional = getJson($url)->assertOk()->json('data');
-    expect(collect($regional)->pluck('id')->all())->toEqualCanonicalizing([$tabriz->id, $ardabil->id, $northwest->id, $everywhere->id]);
+    expect(collect($regional)->pluck('id')->all())->toEqualCanonicalizing([$tabriz->id, $ardabil->id, $northwest->id, $other->id, $everywhere->id]);
 });
 
 it('inherits parent cities for variants and allows an explicit variant override', function () {
@@ -123,7 +125,7 @@ it('filters cart cross sells by city using a product query', function ($region, 
     ]);
 })->with([
     'no city' => [null, ['tabriz', 'ardabil', 'other']],
-    'tabriz' => ['tabriz', ['tabriz']],
-    'ardabil' => ['ardabil', ['ardabil']],
-    'northwest' => ['northwest', ['tabriz', 'ardabil']],
+    'tabriz' => ['tabriz', ['tabriz', 'other']],
+    'ardabil' => ['ardabil', ['ardabil', 'other']],
+    'northwest' => ['northwest', ['tabriz', 'ardabil', 'other']],
 ]);

@@ -7,6 +7,7 @@
         <p v-if="! cart.credit.active" class="mt-3 text-red-600">@lang('customer::credit.inactiveHelp')</p>
         <p v-else-if="cart.credit.eligible" class="mt-3">@lang('customer::credit.availableHelp')</p>
         <p v-else class="mt-3">@lang('customer::credit.fullPayment')</p>
+        <p v-if="cart.credit.eligible && cart.payment_method === 'customer_credit'" class="mt-3">@lang('customer::credit.creditPortion'): @{{ cart.credit.credit_used }} @lang('customer::credit.toman') — @lang('customer::credit.gatewayPortion'): @{{ cart.credit.gateway_due }} @lang('customer::credit.toman')</p>
         <a :href="cart.credit.history_url" class="mt-3 inline-block text-primary">@lang('customer::credit.transactions')</a>
     </template>
     <template v-else>

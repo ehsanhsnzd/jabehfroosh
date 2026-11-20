@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'splitFailed' => 'Payment is incomplete. Canceled credit is returned; retry verification if the connection failed.',
+    'creditPortion' => 'Paid from credit',
+    'gatewayPortion' => 'Paid through gateway',
+
     'title' => 'Credit',
     'create' => 'Create credit account',
     'edit' => 'Edit account',
@@ -54,7 +58,7 @@ return [
     'fullPayment' => 'Credit pays the entire order. When the balance is insufficient, choose another payment method.',
     'verifyHelp' => 'Verify ownership of your mobile number to use credit assigned to it.',
     'inactiveHelp' => 'This credit account is frozen. Contact support.',
-    'availableHelp' => 'Select credit at the payment-method step to pay this order.',
+    'availableHelp' => 'Choose credit payment to use your balance and pay the remainder through the active gateway.',
     'securityHelp' => 'The mobile number cannot be changed. Balance changes require a ledger entry and a reason. IBAN is encrypted.',
     'csvHelp' => 'Reports use Toman. Negative transactions are debits; account details never change the balance.',
     'manual_credit' => 'Manual increase',

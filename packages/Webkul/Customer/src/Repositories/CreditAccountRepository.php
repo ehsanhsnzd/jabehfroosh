@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use Webkul\Core\Eloquent\Repository;
 use Webkul\Customer\Contracts\CreditAccount;
 use Webkul\Customer\Helpers\CreditIdentity;
+use Webkul\Sales\Repositories\OrderRepository;
 
 class CreditAccountRepository extends Repository
 {
@@ -98,6 +99,38 @@ class CreditAccountRepository extends Repository
         });
     }
 
+    public function availableBalance($account, ?int $exceptOrder = null, bool $lock = false): int
+    {
+        if (! $account->customer_id) {
+            return $account->balance_rial;
+        }
+        $transactions = app(CreditTransactionRepository::class)->getModel()->getTable();
+        $held = app(OrderRepository::class)->getModel()->newQuery()
+            ->join('order_payment', 'order_payment.order_id', '=', 'orders.id')
+            ->where('orders.customer_id', $account->customer_id)->where('orders.status', 'pending')
+            ->where('order_payment.method', 'customer_credit')
+            ->where('order_payment.additional->credit_split->state', 'pending')
+            ->when($exceptOrder, fn ($query) => $query->where('orders.id', '!=', $exceptOrder))
+            ->whereNotExists(fn ($query) => $query->selectRaw('1')->from($transactions)
+                ->whereColumn($transactions.'.order_id', 'orders.id')->where('kind', 'purchase'))
+            ->when($lock, fn ($query) => $query->lockForUpdate())
+            ->sum(DB::raw("CAST(JSON_UNQUOTE(JSON_EXTRACT(order_payment.additional, '$.credit_split.credit_rial')) AS SIGNED)"));
+
+        return max(0, $account->balance_rial - (int) $held);
+    }
+
+    public function settleSplitOrder($order): void
+    {
+        DB::transaction(function () use ($order) {
+            $account = $this->getModel()->newQuery()->where('customer_id', $order->customer_id)->lockForUpdate()->firstOrFail();
+            $amount = (int) data_get($order->payment->additional, 'credit_split.credit_rial');
+            if ($order->payment->method !== 'customer_credit' || $amount < 1 || $amount > CreditIdentity::orderRial($order->base_grand_total, $order->base_currency_code)) {
+                $this->fail('invalid-amount');
+            }
+            $this->postLocked($account, -$amount, 'order:'.$order->id.':charge', 'purchase', trans('customer::credit.order-charge', ['order' => $order->increment_id]), null, ['order_id' => $order->id, 'cart_id' => $order->cart_id]);
+        });
+    }
+
     public function chargeOrder($order): void
     {
         if ($order->payment->method !== 'customer_credit') {
@@ -119,7 +152,11 @@ class CreditAccountRepository extends Repository
             if (! $account->is_active) {
                 $this->fail('frozen');
             }
-            $amount = CreditIdentity::orderRial($order->base_grand_total, $order->base_currency_code);
+            $total = CreditIdentity::orderRial($order->base_grand_total, $order->base_currency_code);
+            $amount = (int) data_get($order->payment->additional, 'credit_split.credit_rial', $total);
+            if ($amount < 1 || $amount > $total) {
+                $this->fail('invalid-amount');
+            }
             if ($amount <= 0 || ! $order->cart_id) {
                 $this->fail('invalid-amount');
             }
@@ -161,7 +198,7 @@ class CreditAccountRepository extends Repository
         }
 
         $balance = $account->balance_rial + $amount;
-        if ($balance < 0) {
+        if ($balance < 0 || ($amount < 0 && -$amount > $this->availableBalance($account, $extra['order_id'] ?? null, true))) {
             $this->fail('insufficient');
         }
         if ($balance > 100000000000000) {

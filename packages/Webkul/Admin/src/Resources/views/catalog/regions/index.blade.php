@@ -1,6 +1,20 @@
 <x-admin::layouts>
     <x-slot:title>@lang('admin::catalog-regions.title')</x-slot>
 
+    <form method="POST" action="{{ route('admin.catalog.regions.store') }}" class="box-shadow mb-6 rounded bg-white p-4 dark:bg-gray-900">
+        @csrf
+        <h2 class="mb-4 text-base font-semibold">@lang('admin::catalog-regions.add-city')</h2>
+        <div class="flex flex-wrap items-end gap-4">
+            <label class="grid gap-2">
+                <span>@lang('admin::catalog-regions.city-name')</span>
+                <input type="text" name="region_name" value="{{ old('region_name') }}" minlength="2" maxlength="100" required class="rounded border p-2 dark:bg-gray-900">
+            </label>
+            <button type="submit" class="primary-button">@lang('admin::catalog-regions.add-city')</button>
+        </div>
+        @error('region_name')<p role="alert" class="mt-3 text-red-600">{{ $message }}</p>@enderror
+        <p class="mt-3 text-sm text-gray-500">@lang('admin::catalog-regions.new-city-help')</p>
+    </form>
+
     <form method="POST" action="{{ route('admin.catalog.regions.update') }}">
         @csrf
         @method('PUT')
@@ -16,7 +30,7 @@
             <div class="mb-4 text-red-600">{{ $errors->first() }}</div>
         @endif
 
-        @foreach (['provinces' => config('catalog-provinces'), 'legacy' => array_diff_key(config('catalog-regions'), config('catalog-provinces'))] as $section => $options)
+        @foreach (['provinces' => config('catalog-provinces'), 'legacy' => array_diff_key(config('catalog-regions'), config('catalog-provinces')), 'custom-cities' => \Webkul\Product\Helpers\CatalogRegionSettings::custom()] as $section => $options)
             <div class="box-shadow mb-5 overflow-x-auto rounded bg-white p-4 dark:bg-gray-900">
                 <h2 class="mb-4 text-base font-semibold">@lang('admin::catalog-regions.'.$section)</h2>
                 <table class="w-full text-sm">
@@ -33,7 +47,7 @@
                                 <td class="p-3">{{ $label }}</td>
                                 @foreach (['home', 'product'] as $surface)
                                     <td class="p-3 text-center">
-                                        @if ($surface !== 'product' || $code !== 'northwest')
+                                        @if ($surface !== 'product' || ! in_array($code, ['northwest', 'other']))
                                             <input
                                                 type="checkbox"
                                                 name="{{ $surface }}[]"

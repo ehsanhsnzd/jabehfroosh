@@ -18,6 +18,7 @@ use Webkul\Admin\Http\Controllers\Catalog\ProductController;
  */
 Route::prefix('catalog')->group(function () {
     Route::get('regions', [CatalogRegionController::class, 'index'])->name('admin.catalog.regions.index');
+    Route::post('regions', [CatalogRegionController::class, 'store'])->name('admin.catalog.regions.store');
     Route::put('regions', [CatalogRegionController::class, 'update'])->name('admin.catalog.regions.update');
 
     /**

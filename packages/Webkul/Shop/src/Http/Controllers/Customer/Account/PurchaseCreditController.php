@@ -17,6 +17,7 @@ class PurchaseCreditController extends Controller
         $request->validate([
             'amount' => 'required|integer|min:'.PurchaseCreditSettings::minimumAmount().'|max:1000000000000',
             'accept_terms' => 'accepted',
+            'repayment_months' => 'sometimes|required|integer|min:1|max:4',
             'national_id_front' => 'required|file|mimes:pdf,jpg,jpeg,png|max:20480',
             'national_id_back' => 'required|file|mimes:pdf,jpg,jpeg,png|max:20480',
         ]);
@@ -26,7 +27,7 @@ class PurchaseCreditController extends Controller
             foreach (['national_id_front', 'national_id_back'] as $side) {
                 $files[] = app(CreditDocumentStorage::class)->store($request->file($side), $customer->id, $side);
             }
-            $workflow->submit($customer, $request->integer('amount'), $files);
+            $workflow->submit($customer, $request->integer('amount'), $files, $request->integer('repayment_months', 1), true);
         } catch (\Throwable $exception) {
             foreach ($files as $file) {
                 Storage::disk('private')->delete($file['path']);
@@ -34,7 +35,19 @@ class PurchaseCreditController extends Controller
             throw $exception;
         }
 
-        return redirect()->route('shop.customers.account.credit.index')->with('success', trans('customer::purchase-credit.saved'));
+        return redirect()->route('shop.customers.account.credit.index', ['step' => 3])->with('success', trans('customer::purchase-credit.saved'));
+    }
+
+    public function revise(Request $request, int $id, PurchaseCreditWorkflow $workflow)
+    {
+        $request->validate([
+            'amount' => 'required|integer|min:1|max:1000000000000',
+            'repayment_months' => 'required|integer|min:1|max:4',
+            'accept_terms' => 'accepted',
+        ]);
+        $workflow->revise(auth()->guard('customer')->user(), $id, $request->integer('amount'), $request->integer('repayment_months'));
+
+        return redirect()->route('shop.customers.account.credit.index', ['step' => 3])->with('success', trans('customer::purchase-credit.saved'));
     }
 
     public function cheque(Request $request, int $id, PurchaseCreditWorkflow $workflow)
@@ -50,7 +63,7 @@ class PurchaseCreditController extends Controller
             throw $exception;
         }
 
-        return redirect()->route('shop.customers.account.credit.index')->with('success', trans('customer::purchase-credit.saved'));
+        return redirect()->route('shop.customers.account.credit.index', ['step' => 3])->with('success', trans('customer::purchase-credit.saved'));
     }
 
     public function document(int $id, int $index, PurchaseCreditApplicationRepository $applications)
