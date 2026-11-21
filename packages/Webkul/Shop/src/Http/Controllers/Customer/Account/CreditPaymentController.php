@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Webkul\Checkout\Facades\Cart;
 use Webkul\Customer\Helpers\CreditSplitCheckout;
 use Webkul\Sales\Repositories\OrderRepository;
+use Webkul\Shop\Helpers\CartRegionAvailability;
 use Webkul\Zarinpal\Http\Controllers\ZarinpalController;
 
 class CreditPaymentController extends ZarinpalController
@@ -27,6 +28,7 @@ class CreditPaymentController extends ZarinpalController
                 Cart::collectTotals();
                 $cart = Cart::getCart();
                 abort_unless($cart && ! Cart::hasError(), 422);
+                app(CartRegionAvailability::class)->validateSavedAddress($cart);
                 $order = app(CreditSplitCheckout::class)->reserve($cart);
                 session(['credit_split_order_id' => $order->id]);
             }

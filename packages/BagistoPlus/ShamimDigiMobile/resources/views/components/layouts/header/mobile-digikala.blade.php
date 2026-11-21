@@ -6,6 +6,8 @@
         : route('shop.customer.session.create');
     $logoUrl = core()->getCurrentChannel()->logo_url ?? asset('themes/shop/shamim-pack/images/jabehfroosh-logo-professional-v2.png');
     $isHome = request()->routeIs('shop.home.index');
+    $currentCategory = request()->attributes->get('shop.current_category');
+    $searchAction = $currentCategory ? request()->url() : route('shop.search.index');
     $selectedRegion = \Webkul\Shop\Helpers\StorefrontRegion::selected();
     $availableRegions = \Webkul\Product\Helpers\CatalogRegionSettings::visible('home');
     $quickLinks = collect($section->blocks)->where('type', 'quick_link')->map(fn ($block) => [
@@ -145,7 +147,7 @@
     </nav>
 
     <div class="sh-digi-mobile-header__toolbar">
-        <form action="{{ route('shop.search.index') }}" class="sh-digi-search" role="search">
+        <form action="{{ $searchAction }}" class="sh-digi-search" role="search">
             <label class="sr-only" for="sh-digi-mobile-search">@lang('shop::app.components.layouts.header.mobile.search')</label>
             <button type="submit" class="sh-digi-search__icon" aria-label="@lang('shop::app.components.layouts.header.mobile.search')"><span class="icon-search text-xl"></span></button>
             <input id="sh-digi-mobile-search" type="search" name="query" value="{{ request('query') }}" class="sh-digi-search__input" placeholder=" " aria-label="{{ $searchPlaceholder }}" autocomplete="off">
@@ -176,22 +178,7 @@
         </nav>
     </div>
 
-    <dialog id="sh-digi-region-dialog" class="sh-digi-region-dialog" aria-labelledby="sh-digi-region-title">
-        <div class="sh-digi-region-dialog__heading">
-            <h2 id="sh-digi-region-title">انتخاب شهر</h2>
-            <button type="button" data-region-close aria-label="بستن">×</button>
-        </div>
-        <p>محصولات متناسب با شهر انتخابی شما نمایش داده می‌شوند.</p>
-        <form action="{{ route('shop.catalog.region.store') }}" method="POST">
-            @csrf
-            @foreach ($availableRegions as $code => $label)
-                <button type="submit" name="region" value="{{ $code }}" @class(['sh-digi-region-option', 'is-selected' => $selectedRegion === $code])>
-                    {{ $label }}
-                    @if ($selectedRegion === $code)<span aria-hidden="true">✓</span>@endif
-                </button>
-            @endforeach
-        </form>
-    </dialog>
+    @include('shop::components.region-dialog')
 </div>
 
 @pushOnce('scripts')

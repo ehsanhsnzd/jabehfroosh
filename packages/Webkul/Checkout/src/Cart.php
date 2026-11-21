@@ -456,6 +456,8 @@ class Cart
                 'state',
                 'city',
                 'postcode',
+                'latitude',
+                'longitude',
                 'phone',
             ])
             ->merge([
@@ -506,6 +508,8 @@ class Cart
             'state',
             'city',
             'postcode',
+            'latitude',
+            'longitude',
             'phone',
         ];
 

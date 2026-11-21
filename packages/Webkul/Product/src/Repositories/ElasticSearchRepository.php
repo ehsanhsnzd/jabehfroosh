@@ -48,6 +48,15 @@ class ElasticSearchRepository
             $filters['filter'][]['term']['type'] = $params['type'];
         }
 
+        $sort = $this->getSortOptions($options);
+        if (! empty($params['query'])) {
+            $sort = [
+                ['search_priority' => ['order' => 'desc', 'unmapped_type' => 'long', 'missing' => 0]],
+                $sort,
+                ['id' => ['order' => 'asc']],
+            ];
+        }
+
         $results = ElasticSearch::search([
             'index' => $params['index'] ?? $this->getIndexName(),
             'ignore_unavailable' => true,
@@ -58,7 +67,7 @@ class ElasticSearchRepository
                 'query' => [
                     'bool' => $filters ?: new \stdClass,
                 ],
-                'sort' => $this->getSortOptions($options),
+                'sort' => $sort,
             ],
         ]);
 

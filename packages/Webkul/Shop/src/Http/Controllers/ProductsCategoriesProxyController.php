@@ -55,6 +55,8 @@ class ProductsCategoriesProxyController extends Controller
         $category = $this->categoryRepository->findBySlug($slugOrURLKey);
 
         if ($category) {
+            $request->attributes->set('shop.current_category', $category);
+
             return view('shop::categories.view', [
                 'category' => $category,
                 'params' => [

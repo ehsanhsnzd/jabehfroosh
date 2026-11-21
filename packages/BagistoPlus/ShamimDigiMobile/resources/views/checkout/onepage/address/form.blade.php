@@ -1,3 +1,4 @@
+@include('shop::components.neshan-address')
 @pushOnce('scripts')
     <script
         type="text/x-template"
@@ -60,6 +61,7 @@
                 {!! view_render_event('bagisto.shop.checkout.onepage.address.form.last_name.after') !!}
             </div>
 
+            <v-neshan-address :control-name="controlName" :latitude="address.latitude" :longitude="address.longitude" v-on:selected="applyMapAddress" />
             <!-- Street Address -->
             <x-shop::form.control-group>
                 <x-shop::form.control-group.label class="required !mt-0">
@@ -69,7 +71,7 @@
                 <x-shop::form.control-group.control
                     type="text"
                     ::name="controlName + '.address.[0]'"
-                    ::value="address.address[0]"
+                    v-model="streetAddress"
                     rules="required|address"
                     :label="trans('shop::app.checkout.onepage.address.street-address')"
                     :placeholder="trans('shop::app.checkout.onepage.address.street-address')"
@@ -233,6 +235,8 @@
         app.component('v-checkout-address-form', {
             template: '#v-checkout-address-form-template',
 
+            emits: ['destination-change'],
+
             props: {
                 controlName: {
                     type: String,
@@ -260,6 +264,7 @@
 
             data() {
                 return {
+                    streetAddress: this.address.address?.[0] || '',
                     selectedCountry: this.address.country || 'IR',
 
                     selectedState: this.address.state || '',
@@ -274,7 +279,20 @@
                 }
             },
 
+            watch: {
+                destinationKey: {
+                    immediate: true,
+                    handler() {
+                        this.$emit('destination-change', this.controlName, {
+                            country: this.selectedCountry, state: this.selectedState, city: this.selectedCity,
+                        });
+                    },
+                },
+            },
             computed: {
+                destinationKey() {
+                    return [this.selectedCountry, this.selectedState, this.selectedCity].join('|');
+                },
                 iranCities() {
                     return this.iranProvinces.find(province => province.name === this.selectedState)?.cities || [];
                 },
@@ -291,6 +309,14 @@
             },
 
             methods: {
+                applyMapAddress(location) {
+                    const normalize = value => (value || '').replace(/[ي]/g, 'ی').replace(/[ك]/g, 'ک').replace(/[\s\u200c]/g, '');
+                    const province = this.iranProvinces.find(value => normalize(value.name) === normalize(location.state));
+                    this.selectedCountry = 'IR';
+                    this.selectedState = province?.name || '';
+                    this.selectedCity = province?.cities.find(city => normalize(city) === normalize(location.city)) || '';
+                    this.streetAddress = location.address;
+                },
                 changeProvince() {
                     this.selectedCity = '';
                 },

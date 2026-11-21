@@ -4,6 +4,7 @@ namespace Webkul\Shop\Http\Controllers\API;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 use Webkul\CartRule\Repositories\CartRuleCouponRepository;
 use Webkul\Checkout\Facades\Cart;
 use Webkul\Checkout\Models\CartAddress;
@@ -11,12 +12,37 @@ use Webkul\Product\Exceptions\InsufficientProductInventoryException;
 use Webkul\Product\Helpers\CatalogRegion;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Shipping\Facades\Shipping;
+use Webkul\Shop\Helpers\CartRegionAvailability;
 use Webkul\Shop\Helpers\StorefrontRegion;
 use Webkul\Shop\Http\Resources\CartResource;
 use Webkul\Shop\Http\Resources\ProductResource;
 
 class CartController extends APIController
 {
+    public function prepareCheckout(): JsonResource
+    {
+        $region = StorefrontRegion::selected();
+        if (! $region) {
+            throw ValidationException::withMessages(['region' => trans('shop::delivery.choose-city')]);
+        }
+        $cart = Cart::getCart();
+        abort_unless($cart && $cart->is_active, 422);
+        $available = app(CartRegionAvailability::class)->availableItemIds($cart, $region);
+        if (! $available) {
+            throw ValidationException::withMessages(['region' => trans('shop::delivery.none-available')]);
+        }
+        foreach ($cart->items as $item) {
+            if (! in_array($item->id, $available)) {
+                Cart::removeItem($item->id);
+            }
+        }
+        Cart::collectTotals();
+
+        return new JsonResource(['redirect_url' => auth()->guard('customer')->check()
+            ? route('shop.checkout.onepage.index')
+            : route('shop.customer.session.index', ['redirect_to' => '/checkout/onepage'])]);
+    }
+
     /**
      * Create a new controller instance.
      *

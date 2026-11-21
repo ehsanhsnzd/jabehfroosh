@@ -478,6 +478,10 @@ class ProductRepository extends Repository
             /**
              * Sort collection.
              */
+            if (! empty($params['query'])) {
+                $qb->orderByDesc('products.search_priority');
+            }
+
             $sortOptions = $this->getSortOptions($params);
 
             if ($sortOptions['order'] != 'rand') {
@@ -514,6 +518,10 @@ class ProductRepository extends Repository
                 }
             } else {
                 return $qb->inRandomOrder();
+            }
+
+            if (! empty($params['query'])) {
+                $qb->orderBy('products.id');
             }
 
             return $qb->groupBy('products.id');

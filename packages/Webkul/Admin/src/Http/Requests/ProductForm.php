@@ -98,6 +98,7 @@ class ProductForm extends FormRequest
             'guest_checkout' => ['sometimes', 'required', 'in:0,1'],
             'new' => ['sometimes', 'required', 'in:0,1'],
             'featured' => ['sometimes', 'required', 'in:0,1'],
+            'search_priority' => ['sometimes', 'required', 'integer', 'min:0', 'max:1000000'],
             'catalog_regions' => ['sometimes', 'array'],
             'catalog_regions.*' => ['string', 'distinct', Rule::in(array_unique(array_merge(array_keys(CatalogRegionSettings::visible('product')), $savedRegions)))],
             'rma_rule_id' => [

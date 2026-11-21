@@ -252,6 +252,7 @@ class ElasticSearch extends AbstractIndexer
             'type' => $this->product->type,
             'sku' => $this->product->sku,
             'attribute_family_id' => $this->product->attribute_family_id,
+            'search_priority' => (int) $this->product->search_priority,
             'category_ids' => $this->product->categories->pluck('id')->toArray(),
             'created_at' => $this->product->created_at,
         ], $this->product->additional ?? []);

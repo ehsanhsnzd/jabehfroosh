@@ -26,7 +26,7 @@
                         <span class="icon-star-fill" aria-hidden="true"></span>
                     </div>
 
-                    <div class="sh-digi-product-card__colors" v-if="product.print_colors.length" aria-label="رنگ‌های چاپ">
+                    <div class="sh-digi-product-card__colors" v-if="product.print_colors?.length" aria-label="رنگ‌های چاپ">
                         <span
                             v-for="(color, index) in product.print_colors"
                             :key="index"
@@ -145,6 +145,15 @@
                     class="break-words whitespace-normal text-base [word-break:normal]"
                     v-text="formatProductName(product.name)"
                 ></p>
+
+                <div class="sh-digi-product-card__colors" v-if="product.print_colors?.length" aria-label="رنگ‌های چاپ">
+                    <span
+                        v-for="(color, index) in product.print_colors"
+                        :key="index"
+                        class="sh-digi-product-card__color"
+                        :style="{ backgroundColor: color }"
+                    ></span>
+                </div>
 
                 {!! view_render_event('bagisto.shop.components.products.card.name.after') !!}
 

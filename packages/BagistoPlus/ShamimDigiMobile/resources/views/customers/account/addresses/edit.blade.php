@@ -1,3 +1,4 @@
+@include('shop::components.neshan-address')
 <x-shop::layouts.account>
     <!-- Page Title -->
     <x-slot:title>
@@ -160,6 +161,7 @@
                     $addresses = explode(PHP_EOL, $address->address);
                 @endphp
 
+                <v-neshan-address :latitude="@js(old('latitude', $address->latitude))" :longitude="@js(old('longitude', $address->longitude))" v-on:selected="applyMapAddress" />
                 <!-- Street Address -->
                 <x-shop::form.control-group>
                     <x-shop::form.control-group.label class="required">
@@ -169,7 +171,7 @@
                     <x-shop::form.control-group.control
                         type="text"
                         name="address[]"
-                        :value="collect(old('address'))->first() ?? $addresses[0]"
+                        v-model="mapStreet"
                         rules="required|address"
                         :label="trans('shop::app.customers.account.addresses.edit.street-address')"
                         :placeholder="trans('shop::app.customers.account.addresses.edit.street-address')"
@@ -235,7 +237,13 @@
                     <x-shop::form.control-group.label class="{{ core()->isStateRequired() ? 'required' : '' }}">
                         @lang('shop::app.customers.account.addresses.edit.state')
                     </x-shop::form.control-group.label>
-                    <template v-if="haveStates()">
+                    <template v-if="addressData.country === 'IR'">
+                        <x-shop::form.control-group.control type="select" name="state" v-model="addressData.state" rules="required" @change="mapCity = ''">
+                            <option value="">@lang('shop::app.checkout.onepage.address.select-state')</option>
+                            <option v-for="province in iranProvinces" :key="province.name" :value="province.name">@{{ province.name }}</option>
+                        </x-shop::form.control-group.control>
+                    </template>
+                    <template v-else-if="haveStates()">
                         <x-shop::form.control-group.control
                             type="select"
                             name="state"
@@ -259,7 +267,7 @@
                             type="text"
                             name="state"
                             rules="{{ core()->isStateRequired() ? 'required' : '' }}"
-                            :value="old('state') ?? $address->state"
+                            v-model="addressData.state"
                             :label="trans('shop::app.customers.account.addresses.edit.state')"
                             :placeholder="trans('shop::app.customers.account.addresses.edit.state')"
                         />
@@ -275,14 +283,22 @@
                         @lang('shop::app.customers.account.addresses.edit.city')
                     </x-shop::form.control-group.label>
 
-                    <x-shop::form.control-group.control
+                    <template v-if="addressData.country === 'IR'">
+                        <x-shop::form.control-group.control type="select" name="city" v-model="mapCity" rules="required" ::disabled="!addressData.state">
+                            <option value="">@lang('shop::app.checkout.onepage.address.city')</option>
+                            <option v-for="city in iranCities" :key="city" :value="city">@{{ city }}</option>
+                        </x-shop::form.control-group.control>
+                    </template>
+                    <template v-else>
+                        <x-shop::form.control-group.control
                         type="text"
-                        name="city"
+                        name="city" v-model="mapCity"
                         rules="required"
-                        :value="old('city') ?? $address->city"
+
                         :label="trans('shop::app.customers.account.addresses.edit.city')"
                         :placeholder="trans('shop::app.customers.account.addresses.edit.city')"
                     />
+                    </template>
 
                     <x-shop::form.control-group.error control-name="city" />
                 </x-shop::form.control-group>
@@ -345,17 +361,32 @@
 
                 data() {
                     return {
+                        mapStreet: @json(collect(old('address', $address->address ? explode(PHP_EOL, $address->address) : []))->first()),
+                        mapCity: @json(old('city', $address->city)),
                         addressData: {
                             country: "{{ old('country') ?? $address->country }}",
 
                             state: "{{ old('state') ?? $address->state }}",
                         },
 
+                        iranProvinces: @json(\Webkul\Shop\Helpers\IranAddress::provinces()),
+
                         countryStates: @json(core()->groupedStatesByCountries()),
                     };
                 },
 
+                computed: {
+                    iranCities() {
+                        return this.iranProvinces.find(province => province.name === this.addressData.state)?.cities || [];
+                    },
+                },
                 methods: {
+                    applyMapAddress(location) {
+                        this.addressData.country = 'IR';
+                        this.addressData.state = location.state;
+                        this.mapCity = location.city;
+                        this.mapStreet = location.address;
+                    },
                     haveStates() {
                         return !!this.countryStates[this.addressData.country]?.length;
                     },

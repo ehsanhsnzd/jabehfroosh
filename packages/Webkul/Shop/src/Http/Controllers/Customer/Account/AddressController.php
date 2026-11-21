@@ -59,6 +59,8 @@ class AddressController extends Controller
             'state',
             'city',
             'postcode',
+            'latitude',
+            'longitude',
             'phone',
             'email',
             'default_address',
@@ -128,6 +130,8 @@ class AddressController extends Controller
             'state',
             'city',
             'postcode',
+            'latitude',
+            'longitude',
             'phone',
             'email',
         ]), [

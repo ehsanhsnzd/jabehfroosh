@@ -39,6 +39,7 @@ class Product extends Model implements ProductContract
         'variant_discount_override',
         'variant_discount_percent',
         'catalog_regions',
+        'search_priority',
     ];
 
     /**
@@ -51,6 +52,7 @@ class Product extends Model implements ProductContract
         'variant_discount_override' => 'decimal:2',
         'variant_discount_percent' => 'decimal:2',
         'catalog_regions' => 'array',
+        'search_priority' => 'integer',
     ];
 
     /**

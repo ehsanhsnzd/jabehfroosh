@@ -45,6 +45,8 @@ class AddressRequest extends FormRequest
             'country' => core()->isCountryRequired() ? ['required'] : ['nullable'],
             'state' => core()->isStateRequired() ? ['required'] : ['nullable'],
             'city' => ['required', 'string'],
+            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'postcode' => core()->isPostCodeRequired() ? ['required', new PostCode] : [new PostCode],
             'phone' => ['nullable', new PhoneNumber],
             'vat_id' => [(new VatIdRule)->setCountry($this->input('country'))],

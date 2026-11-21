@@ -5,6 +5,8 @@ namespace Webkul\Shop\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Webkul\Customer\Helpers\CreditSummary;
+use Webkul\Shop\Helpers\CartRegionAvailability;
+use Webkul\Shop\Helpers\StorefrontRegion;
 use Webkul\Tax\Facades\Tax;
 
 class CartResource extends JsonResource
@@ -39,6 +41,8 @@ class CartResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'delivery_region' => StorefrontRegion::selected(),
+            'deliverable_item_ids' => app(CartRegionAvailability::class)->availableItemIds($this->resource, StorefrontRegion::selected()),
             'credit' => CreditSummary::forCart($this->resource),
             'is_guest' => $this->is_guest,
             'customer_id' => $this->customer_id,

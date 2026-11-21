@@ -224,12 +224,32 @@
 
         {!! view_render_event('bagisto.shop.checkout.cart.summary.proceed_to_checkout.before') !!}
 
-        <a
-            href="{{ auth()->guard('customer')->check() ? route('shop.checkout.onepage.index') : route('shop.customer.session.index', ['redirect_to' => '/checkout/onepage']) }}"
-            class="primary-button mt-4 place-self-end rounded-2xl px-11 py-3 max-md:my-4 max-md:max-w-full max-md:rounded-lg max-md:py-3 max-md:text-sm max-sm:w-full max-sm:py-2"
-        >
-            @lang('shop::app.checkout.cart.summary.proceed-to-checkout')
-        </a>
+        <p v-if="hasBlockedItems" class="text-sm" role="status">@lang('shop::delivery.removed-info')</p>
+        <p v-if="noDeliverableItems" class="text-sm text-red-600" role="alert">@lang('shop::delivery.none-available')</p>
+        <p v-if="deliveryError" class="text-sm text-red-600" role="alert" v-text="deliveryError"></p>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px;">
+            <button
+                type="button"
+                class="secondary-button rounded-2xl max-md:rounded-lg"
+                style="width: 100%; min-width: 0; max-width: 100%; min-height: 56px; padding: 12px 8px; margin: 0; font-size: 14px;"
+                aria-haspopup="dialog"
+                aria-controls="sh-cart-region-dialog"
+                :disabled="isStoring"
+                @click="openRegionDialog"
+            >
+                @{{ deliveryRegionLabel || @js(trans('shop::delivery.select-city')) }}
+            </button>
+            <button
+                type="button"
+                @click="proceedCheckout"
+                :disabled="isStoring || noDeliverableItems"
+                :style="isStoring || noDeliverableItems ? { opacity: 0.45, cursor: 'not-allowed' } : null"
+                class="primary-button rounded-2xl max-md:rounded-lg"
+                style="width: 100%; min-width: 0; max-width: 100%; min-height: 56px; padding: 12px 8px; margin: 0; font-size: 14px;"
+            >
+                @lang('shop::app.checkout.cart.summary.proceed-to-checkout')
+            </button>
+        </div>
 
         {!! view_render_event('bagisto.shop.checkout.cart.summary.proceed_to_checkout.after') !!}
     </div>

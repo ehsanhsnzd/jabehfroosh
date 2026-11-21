@@ -1317,6 +1317,15 @@ return [
         'icon' => 'settings/address.svg',
         'sort' => 1,
     ], [
+        'key' => 'customer.address.neshan',
+        'name' => 'shop::delivery.map-settings',
+        'info' => 'shop::delivery.map-settings-help',
+        'sort' => 3,
+        'fields' => [
+            ['name' => 'web_key', 'title' => 'shop::delivery.map-web-key', 'type' => 'text', 'placeholder' => 'web.…', 'validation' => 'nullable|string|max:500'],
+            ['name' => 'service_key', 'title' => 'shop::delivery.map-service-key', 'type' => 'password', 'placeholder' => 'service.…', 'validation' => 'nullable|string|max:500'],
+        ],
+    ], [
         'key' => 'customer.address.requirements',
         'name' => 'admin::app.configuration.index.customer.address.requirements.title',
         'info' => 'admin::app.configuration.index.customer.address.requirements.title-info',

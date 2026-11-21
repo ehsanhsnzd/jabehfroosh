@@ -106,6 +106,7 @@ class ProductController extends Controller
             'type' => 'required',
             'attribute_family_id' => 'required',
             'sku' => ['required', 'unique:products,sku', new Slug],
+            'search_priority' => ['sometimes', 'required', 'integer', 'min:0', 'max:1000000'],
             'catalog_regions' => ['sometimes', 'array'],
             'catalog_regions.*' => ['string', 'distinct', Rule::in(array_keys(CatalogRegionSettings::visible('product')))],
             'super_attributes' => 'array|min:1',
@@ -138,6 +139,7 @@ class ProductController extends Controller
             'price',
             'packaging_product',
             'catalog_regions',
+            'search_priority',
         ]));
 
         Event::dispatch('catalog.product.create.after', $product);

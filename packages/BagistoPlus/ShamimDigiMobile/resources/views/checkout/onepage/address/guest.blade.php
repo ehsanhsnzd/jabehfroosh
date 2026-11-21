@@ -34,7 +34,7 @@
                     </div>
 
                     <!-- Billing Address Form -->
-                    <v-checkout-address-form
+                    <v-checkout-address-form v-on:destination-change="previewDestination"
                         control-name="billing"
                         :address="cart.billing_address || undefined"
                     ></v-checkout-address-form>
@@ -81,7 +81,7 @@
                         </div>
 
                         <!-- Shipping Address Form -->
-                        <v-checkout-address-form
+                        <v-checkout-address-form v-on:destination-change="previewDestination"
                             control-name="shipping"
                             :address="cart.shipping_address || undefined"
                         ></v-checkout-address-form>
@@ -96,9 +96,10 @@
                         class="primary-button rounded-2xl px-11 py-3 max-md:w-full max-md:max-w-full max-md:rounded-lg"
                         :title="trans('shop::app.checkout.onepage.address.proceed')"
                         ::loading="isStoring"
-                        ::disabled="isStoring"
+                        ::disabled="isStoring || deliveryChecking || deliveryBlocked"
                     />
                 </div>
+                <p v-if="deliveryError" class="mt-3 text-red-600" role="alert" v-text="deliveryError"></p>
             </form>
         </x-shop::form>
     </script>
@@ -116,6 +117,11 @@
                     useBillingAddressForShipping: true,
 
                     isStoring: false,
+                    deliveryError: '',
+                    deliveryChecking: false,
+                    deliveryBlocked: false,
+                    deliveryCheckVersion: 0,
+                    destinationDrafts: {},
                 }
             },
 
@@ -125,7 +131,36 @@
                 }
             },
 
+            watch: {
+                useBillingAddressForShipping() {
+                    const type = this.useBillingAddressForShipping ? 'billing' : 'shipping';
+                    this.previewDestination(type, this.destinationDrafts[type]);
+                },
+            },
             methods: {
+                async previewDestination(type, address) {
+                    this.destinationDrafts[type] = address;
+                    const destinationType = this.useBillingAddressForShipping ? 'billing' : 'shipping';
+                    if (type !== destinationType) return;
+                    const version = ++this.deliveryCheckVersion;
+                    this.deliveryError = '';
+                    this.deliveryBlocked = false;
+                    this.deliveryChecking = false;
+                    if (!address?.city || !address?.state || !this.cart.have_stockable_items) return;
+                    this.deliveryChecking = true;
+                    try {
+                        await this.$axios.post(@js(route('shop.checkout.onepage.addresses.check')), {
+                            country: address.country || 'IR', state: address.state, city: address.city,
+                        });
+                    } catch (error) {
+                        if (version !== this.deliveryCheckVersion) return;
+                        this.deliveryError = error.response?.data?.message || '';
+                        this.deliveryBlocked = error.response?.status === 422;
+                    } finally {
+                        if (version === this.deliveryCheckVersion) this.deliveryChecking = false;
+                    }
+                },
+
                 addAddress(params, {
                     setErrors
                 }) {
@@ -133,11 +168,12 @@
 
                     params['billing']['use_for_shipping'] = this.useBillingAddressForShipping;
 
-                    this.moveToNextStep();
+                    this.deliveryError = '';
 
                     this.$axios.post('{{ route('shop.checkout.onepage.addresses.store') }}', params)
                         .then((response) => {
                             this.isStoring = false;
+                            this.moveToNextStep();
 
                             if (response.data.data.redirect_url) {
                                 window.location.href = response.data.data.redirect_url;
@@ -151,6 +187,8 @@
                         })
                         .catch(error => {
                             this.isStoring = false;
+                            this.deliveryError = error.response?.data?.message || '';
+                            this.$emit('processing', 'address');
 
                             if (error.response.status == 422) {
                                 setErrors(error.response.data.errors);

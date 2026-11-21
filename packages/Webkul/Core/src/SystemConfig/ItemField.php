@@ -102,15 +102,19 @@ class ItemField
             return '';
         }
 
+        // Input types already provide strings; these Laravel-only rules have no VeeValidate equivalent.
+        $validation = implode('|', array_filter(explode('|', $this->validation),
+            fn ($rule) => ! in_array($rule, ['nullable', 'string'], true)));
+
         foreach ($this->veeValidateMappings as $laravelRule => $veeValidateRule) {
             if (! array_key_exists($this->getType(), $veeValidateRule)) {
                 continue;
             }
 
-            $this->validation = str_replace($laravelRule, $veeValidateRule[$this->getType()], $this->validation);
+            $validation = str_replace($laravelRule, $veeValidateRule[$this->getType()], $validation);
         }
 
-        return $this->validation;
+        return $validation;
     }
 
     /**

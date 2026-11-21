@@ -99,32 +99,33 @@ class ProductCardResource extends JsonResource
         $attributeRepository = app(AttributeRepository::class);
         $optionRepository = app(AttributeOptionRepository::class);
 
-        $attributes = collect([
-            'paper_type',
-            'sale_unit',
-            'color',
-        ])->mapWithKeys(fn (string $code) => [$code => $attributeRepository->findOneByField('code', $code)]);
+        $attributes = $attributeRepository->getModel()->newQuery()
+            ->whereIn('code', ['paper_type', 'sale_unit'])
+            ->orWhere('code', 'like', 'color%')
+            ->get()->keyBy('code');
 
-        $saleUnitAttribute = $attributes['sale_unit'];
+        $saleUnitAttribute = $attributes->get('sale_unit');
         $saleUnitValue = $this->getCustomAttributeValue($saleUnitAttribute);
         $saleUnit = $saleUnitValue ? $optionRepository->find($saleUnitValue) : null;
 
-        $colorAttribute = $attributes['color'];
+        $colorAttributes = $attributes->filter(fn ($attribute) => preg_match('/^color[0-9]*$/D', $attribute->code)
+            && in_array($attribute->type, ['select', 'multiselect']))
+            ->sortBy('code', SORT_NATURAL);
+        $products = collect([$this->resource]);
+        if ($this->type === 'configurable') {
+            $products = $products->concat($this->variants()->with('attribute_values')->get());
+        }
+        $colorOptionIds = $products->flatMap(fn ($product) => $colorAttributes->flatMap(function ($attribute) use ($product) {
+            $value = $product->getCustomAttributeValue($attribute);
 
-        $colorOptionIds = $this->type === 'configurable'
-            ? $this->variants()->get()->map(fn ($variant) => $variant->getCustomAttributeValue($colorAttribute))
-            : collect([$this->getCustomAttributeValue($colorAttribute)]);
-
-        $printColors = $colorOptionIds
-            ->filter()
-            ->map(fn ($optionId) => $optionRepository->find($optionId)?->swatch_value)
-            ->filter()
-            ->unique()
-            ->values()
-            ->all();
+            return is_array($value) ? $value : explode(',', (string) $value);
+        }))->filter(fn ($value) => ctype_digit((string) $value) && (int) $value > 0)->unique()->values();
+        $options = $optionRepository->getModel()->newQuery()->whereIn('id', $colorOptionIds)->get()->keyBy('id');
+        $printColors = $colorOptionIds->map(fn ($optionId) => $options->get($optionId)?->swatch_value)
+            ->filter()->unique()->values()->all();
 
         return [
-            'paper_type' => $this->getCustomAttributeValue($attributes['paper_type']),
+            'paper_type' => $this->getCustomAttributeValue($attributes->get('paper_type')),
             'sale_unit' => $saleUnit?->label ?: $saleUnit?->admin_name ?: 'عدد',
             'print_colors' => $printColors,
         ];

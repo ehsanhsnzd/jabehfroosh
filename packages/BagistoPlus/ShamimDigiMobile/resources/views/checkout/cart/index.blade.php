@@ -98,6 +98,7 @@
             id="v-cart-template"
         >
             <div>
+                @include('shop::components.region-dialog', ['checkout' => true, 'availableRegions' => \Webkul\Product\Helpers\CatalogRegionSettings::visible('home'), 'selectedRegion' => \Webkul\Shop\Helpers\StorefrontRegion::selected()])
                 <!-- Cart Shimmer Effect -->
                 <template v-if="isLoading">
                     <x-shop::shimmer.checkout.cart :count="3" />
@@ -175,8 +176,10 @@
                             <div
                                 class="grid gap-y-6"
                                 v-for="item in cart?.items"
+                                :key="item.id"
+
                             >
-                                <div class="flex justify-between gap-x-2.5 border-b pb-5">
+                                <div class="flex justify-between gap-x-2.5 border-b pb-5" :style="isItemDeliverable(item) ? null : { opacity: 0.45 }">
                                     <div class="flex gap-x-5">
                                         <div class="mt-11 select-none max-md:mt-9 max-sm:mt-7">
                                             <input
@@ -389,6 +392,7 @@
                                         {!! view_render_event('bagisto.shop.checkout.cart.remove_button.after') !!}
                                     </div>
                                 </div>
+                                <p v-if="! isItemDeliverable(item)" class="text-sm text-red-600" role="status">@lang('shop::delivery.unavailable')</p>
                             </div>
 
                             {!! view_render_event('bagisto.shop.checkout.cart.item.listing.after') !!}
@@ -461,6 +465,9 @@
                 data() {
                     return {
                         cart: [],
+                        cityConfirmed: false,
+                        deliveryError: '',
+                        regionLabels: @json(\Webkul\Product\Helpers\CatalogRegionSettings::visible('home')),
 
                         allSelected: false,
 
@@ -487,12 +494,61 @@
                 },
 
                 computed: {
+                    deliveryRegionLabel() {
+                        return this.regionLabels[this.cart.delivery_region] || '';
+                    },
+                    noDeliverableItems() {
+                        return !!this.cart.delivery_region && !(this.cart.deliverable_item_ids || []).length;
+                    },
+                    hasBlockedItems() {
+                        return !!this.cart.delivery_region && (this.cart.deliverable_item_ids || []).length < (this.cart.items || []).length;
+                    },
                     selectedItemsCount() {
                         return this.cart.items.filter(item => item.selected).length;
                     },
                 },
 
                 methods: {
+                    isItemDeliverable(item) {
+                        return !this.cart.delivery_region || (this.cart.deliverable_item_ids || []).includes(item.id);
+                    },
+                    openRegionDialog() {
+                        this.$el.querySelector('#sh-cart-region-dialog')?.showModal();
+                    },
+                    closeRegionDialog() {
+                        this.$el.querySelector('#sh-cart-region-dialog')?.close();
+                    },
+                    async selectDeliveryRegion(region) {
+                        this.isStoring = true;
+                        this.deliveryError = '';
+                        try {
+                            await this.$axios.post(@js(route('shop.catalog.region.store')), { region });
+                            const response = await this.$axios.get(@js(route('shop.api.checkout.cart.index')));
+                            this.cart = response.data.data;
+                            this.cityConfirmed = true;
+                            this.closeRegionDialog();
+                        } catch (error) {
+                            this.deliveryError = error.response?.data?.message || @js(trans('shop::delivery.choose-city'));
+                        } finally {
+                            this.isStoring = false;
+                        }
+                    },
+                    async proceedCheckout() {
+                        if (!this.cityConfirmed || !this.cart.delivery_region) {
+                            this.openRegionDialog();
+                            return;
+                        }
+                        if (this.noDeliverableItems || this.isStoring) return;
+                        this.isStoring = true;
+                        this.deliveryError = '';
+                        try {
+                            const response = await this.$axios.post(@js(route('shop.api.checkout.cart.prepare')));
+                            window.location.href = response.data.data.redirect_url;
+                        } catch (error) {
+                            this.deliveryError = error.response?.data?.message || @js(trans('shop::delivery.none-available'));
+                            this.isStoring = false;
+                        }
+                    },
                     getCart() {
                         this.$axios.get('{{ route('shop.api.checkout.cart.index') }}')
                             .then(response => {

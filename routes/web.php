@@ -3,6 +3,7 @@
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CatalogRegionController;
 use App\Http\Controllers\CustomerOtpController;
+use App\Http\Controllers\NeshanAddressController;
 use Illuminate\Support\Facades\Route;
 use Webkul\Core\Http\Middleware\PreventRequestsDuringMaintenance;
 
@@ -20,3 +21,5 @@ Route::middleware(['shop', PreventRequestsDuringMaintenance::class])->prefix('cu
     Route::post('send', [CustomerOtpController::class, 'send'])->middleware('throttle:5,1')->name('shop.customer.otp.send');
     Route::post('verify', [CustomerOtpController::class, 'verify'])->middleware('throttle:10,1')->name('shop.customer.otp.verify');
 });
+
+Route::middleware(['shop', 'throttle:30,1'])->get('/address/neshan/reverse', [NeshanAddressController::class, 'reverse'])->name('shop.address.neshan.reverse');

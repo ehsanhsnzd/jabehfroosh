@@ -82,7 +82,7 @@ class CatalogApiCache
     protected function key(string $segment, array $params): string
     {
         return implode(':', [
-            'shop_api_regions_v2',
+            'shop_api_regions_v3',
             $this->version(),
             $segment,
             core()->getCurrentChannel()->id,

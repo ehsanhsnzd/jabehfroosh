@@ -184,7 +184,7 @@
     .sh-digi-region-dialog__heading h2 { margin: 0; font-size: 19px; font-weight: 750; }
     .sh-digi-region-dialog__heading button { width: 36px; height: 36px; border-radius: 50%; background: #f1f2f4; font-size: 25px; line-height: 1; }
     .sh-digi-region-dialog > p { margin: 12px 0 20px; color: #81858b; font-size: 12px; }
-    .sh-digi-region-dialog form { display: grid; gap: 10px; }
+    .sh-digi-region-dialog form, .sh-digi-region-options { display: grid; gap: 10px; }
     .sh-digi-region-option { display: flex; width: 100%; min-height: 48px; align-items: center; justify-content: space-between; padding: 12px 16px; border: 1px solid #e4e4e8; border-radius: 12px; background: #f8f8fa; text-align: right; }
     .sh-digi-region-option:hover, .sh-digi-region-option.is-selected { border-color: #9f17f4; background: #f7edff; color: #9f17f4; }
 </style>

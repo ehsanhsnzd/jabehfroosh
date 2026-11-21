@@ -1,3 +1,4 @@
+@include('shop::components.neshan-address')
 <x-shop::layouts.account>
     <!-- Page Title -->
     <x-slot:title>
@@ -141,6 +142,7 @@
 
                     {!! view_render_event('bagisto.shop.customers.account.addresses.create_form_controls.vat_id.after') !!}
 
+                    <v-neshan-address v-on:selected="applyMapAddress" />
                     <!-- Street Address -->
                     <x-shop::form.control-group>
                         <x-shop::form.control-group.label class="required">
@@ -150,8 +152,9 @@
                         <x-shop::form.control-group.control
                             type="text"
                             name="address[]"
+                            v-model="mapStreet"
                             rules="required|address"
-                            :value="collect(old('address'))->first()"
+
                             :label="trans('shop::app.customers.account.addresses.create.street-address')"
                             :placeholder="trans('shop::app.customers.account.addresses.create.street-address')"
                         />
@@ -216,7 +219,13 @@
                             @lang('shop::app.customers.account.addresses.create.state')
                         </x-shop::form.control-group.label>
 
-                        <template v-if="haveStates()">
+                        <template v-if="country === 'IR'">
+                        <x-shop::form.control-group.control type="select" name="state" v-model="state" rules="required" @change="mapCity = ''">
+                            <option value="">@lang('shop::app.checkout.onepage.address.select-state')</option>
+                            <option v-for="province in iranProvinces" :key="province.name" :value="province.name">@{{ province.name }}</option>
+                        </x-shop::form.control-group.control>
+                    </template>
+                    <template v-else-if="haveStates()">
                             <x-shop::form.control-group.control
                                 type="select"
                                 id="state"
@@ -239,7 +248,7 @@
                             <x-shop::form.control-group.control
                                 type="text"
                                 name="state"
-                                :value="old('state')"
+                                v-model="state"
                                 rules="{{ core()->isStateRequired() ? 'required' : '' }}"
                                 :label="trans('shop::app.customers.account.addresses.create.state')"
                                 :placeholder="trans('shop::app.customers.account.addresses.create.state')"
@@ -257,14 +266,22 @@
                             @lang('shop::app.customers.account.addresses.create.city')
                         </x-shop::form.control-group.label>
 
+                        <template v-if="country === 'IR'">
+                        <x-shop::form.control-group.control type="select" name="city" v-model="mapCity" rules="required" ::disabled="!state">
+                            <option value="">@lang('shop::app.checkout.onepage.address.city')</option>
+                            <option v-for="city in iranCities" :key="city" :value="city">@{{ city }}</option>
+                        </x-shop::form.control-group.control>
+                    </template>
+                    <template v-else>
                         <x-shop::form.control-group.control
                             type="text"
-                            name="city"
+                            name="city" v-model="mapCity"
                             rules="required"
-                            :value="old('city')"
+
                             :label="trans('shop::app.customers.account.addresses.create.city')"
                             :placeholder="trans('shop::app.customers.account.addresses.create.city')"
                         />
+                    </template>
 
                         <x-shop::form.control-group.error control-name="city" />
                     </x-shop::form.control-group>
@@ -354,15 +371,30 @@
 
                 data() {
                     return {
-                        country: "{{ old('country') }}",
+                        mapStreet: @json(collect(old('address', []))->first()),
+                        mapCity: @json(old('city', '')),
+                        country: @json(old('country', 'IR')),
 
                         state: "{{ old('state') }}",
+
+                        iranProvinces: @json(\Webkul\Shop\Helpers\IranAddress::provinces()),
 
                         countryStates: @json(core()->groupedStatesByCountries()),
                     }
                 },
 
+                computed: {
+                    iranCities() {
+                        return this.iranProvinces.find(province => province.name === this.state)?.cities || [];
+                    },
+                },
                 methods: {
+                    applyMapAddress(location) {
+                        this.country = 'IR';
+                        this.state = location.state;
+                        this.mapCity = location.city;
+                        this.mapStreet = location.address;
+                    },
                     haveStates() {
                         /*
                          * The double negation operator is used to convert the value to a boolean.

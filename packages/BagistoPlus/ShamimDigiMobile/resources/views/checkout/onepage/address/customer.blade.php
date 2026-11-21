@@ -249,9 +249,10 @@
                                 class="primary-button rounded-2xl px-11 py-3 max-md:rounded-lg max-sm:w-full max-sm:max-w-full max-sm:py-1.5"
                                 :title="trans('shop::app.checkout.onepage.address.proceed')"
                                 ::loading="isStoring"
-                                ::disabled="isStoring"
+                                ::disabled="isStoring || deliveryChecking || deliveryBlocked"
                             />
                         </div>
+                        <p v-if="deliveryError" class="mt-3 text-red-600" role="alert" v-text="deliveryError"></p>
                     </form>
                 </x-shop::form>
             </template>
@@ -287,7 +288,7 @@
                         </div>
 
                         <!-- Address Form Vue Component -->
-                        <v-checkout-address-form
+                        <v-checkout-address-form v-on:destination-change="previewDestination"
                             :control-name="activeAddressForm"
                             :address="selectedAddressForEdit || undefined"
                         ></v-checkout-address-form>
@@ -321,6 +322,7 @@
                                 ::disabled="isStoring"
                             />
                         </div>
+                        <p v-if="deliveryError" class="mt-3 text-red-600" role="alert" v-text="deliveryError"></p>
                     </form>
                 </x-shop::form>
             </template>
@@ -360,9 +362,18 @@
                     isLoading: true,
 
                     isStoring: false,
+                    deliveryError: '',
+                    deliveryChecking: false,
+                    deliveryBlocked: false,
+                    deliveryCheckVersion: 0,
                 }
             },
 
+            watch: {
+                selectedAddresses: { deep: true, handler() { this.checkSelectedDestination(); } },
+                useBillingAddressForShipping() { this.checkSelectedDestination(); },
+                activeAddressForm() { this.checkSelectedDestination(); },
+            },
             created() {
                 if (this.cart.billing_address) {
                     this.useBillingAddressForShipping = this.cart.billing_address.use_for_shipping;
@@ -374,6 +385,35 @@
             },
 
             methods: {
+                async previewDestination(type, address) {
+                    const destinationType = this.useBillingAddressForShipping ? 'billing' : 'shipping';
+                    if (type !== destinationType) return;
+                    const version = ++this.deliveryCheckVersion;
+                    this.deliveryError = '';
+                    this.deliveryBlocked = false;
+                    this.deliveryChecking = false;
+                    if (!address?.city || !address?.state || !this.cart.have_stockable_items) return;
+                    this.deliveryChecking = true;
+                    try {
+                        await this.$axios.post(@js(route('shop.checkout.onepage.addresses.check')), {
+                            country: address.country || 'IR', state: address.state, city: address.city,
+                        });
+                    } catch (error) {
+                        if (version !== this.deliveryCheckVersion) return;
+                        this.deliveryError = error.response?.data?.message || '';
+                        this.deliveryBlocked = error.response?.status === 422;
+                    } finally {
+                        if (version === this.deliveryCheckVersion) this.deliveryChecking = false;
+                    }
+                },
+                checkSelectedDestination() {
+                    if (this.activeAddressForm) return;
+                    const type = this.useBillingAddressForShipping ? 'billing' : 'shipping';
+                    const id = this.selectedAddresses[type + '_address_id'];
+                    const address = this.customerSavedAddresses[type].find(address => address.id == id);
+                    this.previewDestination(type, address);
+                },
+
                 getCustomerSavedAddresses() {
                     this.$axios.get('{{ route('shop.api.customers.account.addresses.index') }}')
                         .then(response => {
@@ -520,6 +560,8 @@
                         })
                         .catch(error => {
                             this.isStoring = false;
+                            this.deliveryError = error.response?.data?.message || '';
+                            this.$emit('processing', 'address');
 
                             if (error.response.status == 422) {
                                 let errors = {};
@@ -548,6 +590,8 @@
                         })
                         .catch(error => {
                             this.isStoring = false;
+                            this.deliveryError = error.response?.data?.message || '';
+                            this.$emit('processing', 'address');
 
                             if (error.response.status == 422) {
                                 let errors = {};
@@ -579,11 +623,12 @@
 
                     this.isStoring = true;
 
-                    this.moveToNextStep();
+                    this.deliveryError = '';
 
                     this.$axios.post('{{ route('shop.checkout.onepage.addresses.store') }}', payload)
                         .then((response) => {
                             this.isStoring = false;
+                            this.moveToNextStep();
 
                             if (response.data.data.redirect_url) {
                                 window.location.href = response.data.data.redirect_url;
@@ -597,7 +642,7 @@
                         })
                         .catch(error => {
                             this.isStoring = false;
-
+                            this.deliveryError = error.response?.data?.message || '';
                             this.$emit('processing', 'address');
 
                             if (error.response.status == 422) {

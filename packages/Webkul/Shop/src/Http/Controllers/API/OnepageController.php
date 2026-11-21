@@ -13,6 +13,7 @@ use Webkul\Payment\Facades\Payment;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Transformers\OrderResource;
 use Webkul\Shipping\Facades\Shipping;
+use Webkul\Shop\Helpers\CartRegionAvailability;
 use Webkul\Shop\Http\Requests\CartAddressRequest;
 use Webkul\Shop\Http\Resources\CartResource;
 
@@ -38,6 +39,18 @@ class OnepageController extends APIController
         return new CartResource($cart);
     }
 
+    public function checkAddress(): JsonResource
+    {
+        $address = request()->validate([
+            'country' => ['nullable', 'string', 'max:2'],
+            'state' => ['required', 'string', 'max:200'],
+            'city' => ['required', 'string', 'max:200'],
+        ]);
+        app(CartRegionAvailability::class)->validateAddress(Cart::getCart(), $address);
+
+        return new JsonResource(['available' => true]);
+    }
+
     /**
      * Store address.
      */
@@ -61,6 +74,11 @@ class OnepageController extends APIController
                 'redirect_url' => route('shop.checkout.cart.index'),
             ]);
         }
+
+        app(CartRegionAvailability::class)->validateAddress(
+            Cart::getCart(),
+            ! empty($params['billing']['use_for_shipping']) ? $params['billing'] : ($params['shipping'] ?? [])
+        );
 
         Cart::saveAddresses($params);
 
@@ -95,6 +113,8 @@ class OnepageController extends APIController
      */
     public function storeShippingMethod()
     {
+        app(CartRegionAvailability::class)->validateSavedAddress(Cart::getCart());
+
         $validatedData = $this->validate(request(), [
             'shipping_method' => 'required',
         ]);
@@ -121,6 +141,8 @@ class OnepageController extends APIController
      */
     public function storePaymentMethod()
     {
+        app(CartRegionAvailability::class)->validateSavedAddress(Cart::getCart());
+
         $validatedData = $this->validate(request(), [
             'payment' => 'required',
         ]);
@@ -150,6 +172,8 @@ class OnepageController extends APIController
      */
     public function storeOrder()
     {
+        app(CartRegionAvailability::class)->validateSavedAddress(Cart::getCart());
+
         if (Cart::hasError()) {
             return new JsonResource([
                 'redirect' => true,

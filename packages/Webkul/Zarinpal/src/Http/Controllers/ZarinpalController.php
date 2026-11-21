@@ -11,6 +11,7 @@ use Webkul\Sales\Repositories\OrderItemRepository;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Repositories\RefundRepository;
 use Webkul\Sales\Transformers\OrderResource;
+use Webkul\Shop\Helpers\CartRegionAvailability;
 use Webkul\Zarinpal\Models\Zarinpal;
 use Webkul\Zarinpal\Repositories\ZarinpalRepository;
 
@@ -101,6 +102,7 @@ class ZarinpalController extends Controller
         }
 
         try {
+            app(CartRegionAvailability::class)->validateSavedAddress(Cart::getCart());
             $code = $this->getTransactionCode();
 
             if ($code) {

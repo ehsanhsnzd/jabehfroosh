@@ -84,6 +84,9 @@ class CoreConfigRepository extends Repository
                     $value = request()->file($fieldName)->store('configuration');
                 }
 
+                // Optional cleared inputs are null after middleware, but core_config.value is not nullable.
+                $value ??= '';
+
                 if (! count($coreConfigValue)) {
                     parent::create([
                         'code' => $fieldName,

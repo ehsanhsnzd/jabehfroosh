@@ -70,6 +70,8 @@ Route::group(['prefix' => 'api'], function () {
 
         Route::post('move-to-wishlist', 'moveToWishlist')->name('shop.api.checkout.cart.move_to_wishlist');
 
+        Route::post('prepare-checkout', 'prepareCheckout')->name('shop.api.checkout.cart.prepare');
+
         Route::post('coupon', 'storeCoupon')->name('shop.api.checkout.cart.coupon.apply');
 
         Route::post('estimate-shipping-methods', 'estimateShippingMethods')->name('shop.api.checkout.cart.estimate_shipping');
@@ -81,6 +83,8 @@ Route::group(['prefix' => 'api'], function () {
 
     Route::controller(OnepageController::class)->prefix('checkout/onepage')->group(function () {
         Route::get('summary', 'summary')->name('shop.checkout.onepage.summary');
+
+        Route::post('check-address', 'checkAddress')->name('shop.checkout.onepage.addresses.check');
 
         Route::post('addresses', 'storeAddress')->name('shop.checkout.onepage.addresses.store');
 

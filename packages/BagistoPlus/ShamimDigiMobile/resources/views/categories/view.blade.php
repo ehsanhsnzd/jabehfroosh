@@ -197,6 +197,8 @@
                     return {
                         isMobile: window.innerWidth <= 767,
 
+                        searchQuery: @json(is_string(request()->query('query')) ? request()->query('query') : ''),
+
                         isLoading: true,
 
                         isDrawerActive: {
@@ -225,7 +227,9 @@
 
                 computed: {
                     queryParams() {
-                        let queryParams = Object.assign({}, this.filters.filter, this.filters.toolbar.applied);
+                        let queryParams = Object.assign({}, this.filters.filter, this.filters.toolbar.applied, { query: this.searchQuery });
+                        delete queryParams.category_id;
+                        delete queryParams.page;
 
                         return this.removeJsonEmptyValues(queryParams);
                     },
@@ -263,8 +267,8 @@
 
                         document.body.style.overflow = 'scroll';
 
-                        this.$axios.get("{{ route('shop.api.products.index', ['category_id' => $category->id]) }}", {
-                                params: this.queryParams
+                        this.$axios.get("{{ route('shop.api.products.index') }}", {
+                                params: { ...this.queryParams, category_id: @json($category->id) }
                             })
                             .then(response => {
                                 this.isLoading = false;
@@ -284,7 +288,11 @@
 
                         this.loader = true;
 
-                        this.$axios.get(this.links.next)
+                        const page = new URL(this.links.next, window.location.origin).searchParams.get('page');
+
+                        this.$axios.get("{{ route('shop.api.products.index') }}", {
+                                params: { ...this.queryParams, category_id: @json($category->id), page },
+                            })
                             .then(response => {
                                 this.loader = false;
 
